@@ -1,10 +1,5 @@
-import { appManager } from '@kit.AbilityKit'
 import { router } from '@kit.ArkUI'
-import { batteryInfo, deviceInfo } from '@kit.BasicServicesKit'
-import { statfs } from '@kit.CoreFileKit'
-import { hidebug } from '@kit.PerformanceAnalysisKit'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
-import { GIGA_BYTE } from '../../common/utils'
 
 interface UsageItem {
   icon: Resource
@@ -18,59 +13,12 @@ export struct MyTabsComp {
   // 用户信息持久化
   @StorageLink(LOGIN_INFO) loginInfo: LoginInfoResponse = {}
   @StorageLink('topHeight') topHeight: number = 0
-  @Prop @Watch('onTabChange') currentIndex: number
+  @Prop currentIndex: number
   @State deviceName: string = ''
   @State batteryState: number = 0
   @State memorySize: number = 0
   @State cpuUsage: number = 0
   @State statfsFreeSize: number = 0
-
-  onTabChange() {
-    if (this.currentIndex === 2) {
-      this.getData()
-    }
-  }
-
-  aboutToAppear() {
-    this.getData()
-  }
-
-  getData() {
-    this.getDeviceName()
-    this.getCpuUsage()
-    this.getAppMemorySize()
-    this.getStatfsSize()
-    this.getBatteryState()
-  }
-
-  // 获取设备名称
-  async getDeviceName() {
-    // 模拟器为 emulator
-    this.deviceName = deviceInfo.marketName
-  }
-
-  // 获取进程 CPU 占用率
-  getCpuUsage() {
-    this.cpuUsage = hidebug.getCpuUsage() * 100
-  }
-
-  // 获取应用内存大小
-  async getAppMemorySize() {
-    this.memorySize = await appManager.getAppMemorySize()
-  }
-
-  // 获取剩余存储
-  async getStatfsSize() {
-    const context = getContext()
-    // 字节数转GB
-    this.statfsFreeSize = statfs.getFreeSizeSync(context.filesDir) / GIGA_BYTE
-    // 可在 系统设置 -> 存储 验证剩余容量
-  }
-
-  // 获取电量信息
-  async getBatteryState() {
-    this.batteryState = batteryInfo.batterySOC
-  }
 
   // 标题行
   @Builder
