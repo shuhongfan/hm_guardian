@@ -73,7 +73,7 @@ struct CompressPhotoIndexPage {
                           .borderRadius(6)
                           .clip(true)
                         }
-                      }, (item: photoAccessHelper.PhotoAsset) => item.uri)
+                      })
                     }
                   }
 
