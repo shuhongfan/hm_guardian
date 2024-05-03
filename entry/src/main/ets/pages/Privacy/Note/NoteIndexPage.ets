@@ -1,4 +1,3 @@
-// TODO: 增加删除动画效果
 import { router } from '@kit.ArkUI'
 import dayjs from 'dayjs'
 import { EmptyTipsComp } from '../../../common/components/EmptyTips'
@@ -8,9 +7,8 @@ interface NoteItem {
   id: number | null
   title: string
   content: string
-  time: number
+  date_added: number
 }
-
 
 @Entry
 @Component
@@ -33,22 +31,6 @@ struct NoteIndexPage {
     .justifyContent(FlexAlign.SpaceEvenly)
   }
 
-  @Builder
-  NavigationMenus() {
-    Row() {
-      if (this.list.length) {
-        Text('编辑')
-          .fontSize(16)
-          .fontColor($r('app.color.font'))
-          .onClick(() => {
-            // 编辑
-          })
-      }
-    }
-    .height('100%')
-    .padding({ right: 25 })
-  }
-
   build() {
     Navigation() {
       Stack({ alignContent: Alignment.Bottom }) {
@@ -62,7 +44,7 @@ struct NoteIndexPage {
                       Text(item.title)
                         .fontSize(16)
                         .fontColor($r('app.color.font2'))
-                      Text(dayjs(item.time)
+                      Text(dayjs(item.date_added)
                         .format('YYYY年MM月DD日'))
                         .fontSize(12)
                         .fontColor($r('app.color.font_sub'))
@@ -137,6 +119,5 @@ struct NoteIndexPage {
     .title('笔记')
     .titleMode(NavigationTitleMode.Mini)
     .mode(NavigationMode.Stack)
-    .menus(this.NavigationMenus)
   }
 }
