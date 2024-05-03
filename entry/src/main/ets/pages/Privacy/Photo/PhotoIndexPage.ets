@@ -1,12 +1,11 @@
-import { ValuesBucket } from '@kit.ArkData'
 import { router } from '@kit.ArkUI'
 import { EmptyTipsComp } from '../../../common/components'
 
-// 图片和视频文件关键信息。(PhotoKeys)
-export interface PrivacyPhotoDBInfo extends ValuesBucket {
-  id: number | null // 新增时 id 为 null ，自动生成自增 id
-  mediaUri: string // 文件uri
-  privacyUri: string // 沙箱文件uri
+// 图片和视频文件关键信息
+export interface PhotoItem {
+  id: number
+  media_uri: string // 文件uri
+  privacy_uri: string // 沙箱文件uri
   media_type: number // 媒体文件类型
   date_added: number // 添加日期
 }
@@ -17,20 +16,20 @@ interface RouterParams {
 
 interface GroupItem {
   date: string;
-  list: PrivacyPhotoDBInfo[]; // 这里需要根据你的数据结构添加适当的类型
+  list: PhotoItem[]; // 这里需要根据你的数据结构添加适当的类型
 }
 
 @Entry
 @Component
 struct PhotoIndexPage {
   @State isEditing: boolean = false
-  @State list: PrivacyPhotoDBInfo[] = []
+  @State list: PhotoItem[] = []
   @State groupList: GroupItem[] = []
   @State selectedName: string[] = []
   // 路由参数
   @State routerParams: RouterParams = {}
   @State isShowDelete: boolean = false
-  private selectedList: PrivacyPhotoDBInfo[] = []
+  private selectedList: PhotoItem[] = []
 
   @Builder
   NavigationMenus() {
@@ -105,21 +104,21 @@ struct PhotoIndexPage {
                 ListItemGroup({ header: this.ListHeader(item.date) }) {
                   ListItem() {
                     GridRow({ gutter: 2, columns: 4 }) {
-                      ForEach(item.list, (item: PrivacyPhotoDBInfo) => {
+                      ForEach(item.list, (item: PhotoItem) => {
                         GridCol() {
                           Stack({ alignContent: Alignment.TopStart }) {
                             // TODO: 共享元素转场
-                            Image(item.privacyUri)
+                            Image(item.privacy_uri)
                               .width('100%')
                               .height('100%')
                               .objectFit(ImageFit.Cover)
                               .autoResize(true)
                               .interpolation(ImageInterpolation.Medium)
-                              .sharedTransition(item.privacyUri, { duration: 400, curve: Curve.Linear })
+                              .sharedTransition(item.privacy_uri, { duration: 400, curve: Curve.Linear })
                               .onClick(() => {
                                 // TODO：预览图片
                               })
-                            Checkbox({ name: item.privacyUri })
+                            Checkbox({ name: item.privacy_uri })
                               .selectedColor($r('app.color.brand'))
                               .margin({ left: 4, top: 4 })
                               .visibility(this.isEditing ? Visibility.Visible : Visibility.None)
