@@ -1,6 +1,6 @@
 import { router } from '@kit.ArkUI'
 import dayjs from 'dayjs'
-import { EmptyTipsComp } from '../../../common/components/EmptyTips'
+import { EmptyTipsComp } from '../../../common/components'
 
 // 隐私笔记
 interface NoteItem {
@@ -13,6 +13,7 @@ interface NoteItem {
 @Entry
 @Component
 struct NoteIndexPage {
+  // 笔记列表
   @State list: NoteItem[] = []
 
   @Builder
