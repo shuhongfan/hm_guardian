@@ -1,11 +1,10 @@
-import { ValuesBucket } from '@kit.ArkData'
 import { NavigationTitleBuilder } from '../../../common/builders'
 
-// 图片和视频文件关键信息。(PhotoKeys)
-export interface PrivacyPhotoDBInfo extends ValuesBucket {
-  id: number | null // 新增时 id 为 null ，自动生成自增 id
-  mediaUri: string // 文件uri
-  privacyUri: string // 沙箱文件uri
+// 图片和视频文件关键信息
+export interface PhotoItem {
+  id: number
+  media_uri: string // 媒体文件uri
+  privacy_uri: string // 沙箱文件uri
   media_type: number // 媒体文件类型
   date_added: number // 添加日期
 }
@@ -17,7 +16,7 @@ interface RouterParams {
 @Entry
 @Component
 struct PhotoPreviewPage {
-  @State list: PrivacyPhotoDBInfo[] = []
+  @State list: PhotoItem[] = []
   @State activePhotoUri: string = ''
   @State activeIndex: number = 0
   // 路由参数
@@ -29,9 +28,9 @@ struct PhotoPreviewPage {
     Navigation() {
       Stack({ alignContent: Alignment.Bottom }) {
         Swiper(this.swiperController) {
-          ForEach(this.list, (item: PrivacyPhotoDBInfo) => {
+          ForEach(this.list, (item: PhotoItem) => {
             // TODO: 共享元素转场
-            Image(item.privacyUri)
+            Image(item.privacy_uri)
               .width('100%')
               .objectFit(ImageFit.Contain)
               .sharedTransition('sharedImage', { duration: 800, curve: Curve.Linear, delay: 100 })
@@ -52,8 +51,8 @@ struct PhotoPreviewPage {
           // 小图区域
           Scroll(this.scrollerController) {
             Row({ space: 4 }) {
-              ForEach(this.list, (item: PrivacyPhotoDBInfo, index: number) => {
-                Image(item.privacyUri)
+              ForEach(this.list, (item: PhotoItem, index: number) => {
+                Image(item.privacy_uri)
                   .width(62)
                   .height(62)
                   .objectFit(ImageFit.Cover)
