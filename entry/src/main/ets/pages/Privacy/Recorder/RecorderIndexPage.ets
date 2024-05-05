@@ -1,8 +1,13 @@
 import { ValuesBucket } from '@kit.ArkData'
 import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 import { EmptyTipsComp } from '../../../common/components'
 import { CustomInputDialog } from '../../../common/dialog'
 
+// 用于把毫秒格式化成 mm:ss 的相对时间插件
+dayjs.extend(duration)
+
+// 注意：隐私录音的数据库准备完毕后，请删除这个类型，否者类型可能会冲突
 export interface PrivacyRecorderDBInfo extends ValuesBucket {
   id: number | null // 新增时 id 为 null ，自动生成自增 id
   filePath: string
@@ -123,7 +128,8 @@ struct RecorderIndexPage {
                           .width(22)
                           .aspectRatio(1)
                           .fillColor('#A6B6C4')
-                        Text(item.duration + 'mm:ss')
+                        Text(dayjs.duration(item.duration)
+                          .format('mm:ss'))
                           .fontSize(12)
                           .fontColor('#A6B6C4')
                           .lineHeight(25)
