@@ -61,15 +61,6 @@ struct AuthPatternLockSettingsPage {
           .onPatternComplete((input: number[]) => {
             // TODO：密码输入结束时触发该回调
           })
-
-        Row({ space: 20 }) {
-          Text('设置文本密码')
-            .fontSize(14)
-            .fontColor($r('app.color.font2'))
-            .onClick(() => {
-              router.replaceUrl({ url: 'pages/Privacy/Password/PasswordTextConfirmPage' })
-            })
-        }
       }
       .padding({ top: 140 })
     }
