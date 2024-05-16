@@ -1,6 +1,6 @@
 import { sensor } from '@kit.SensorServiceKit'
-import { NavigationTitleBuilder } from '../../common/builders'
-import { themeManager } from '../../manager'
+import { NavigationTitleBuilder } from '../../../common/builders/index'
+import { themeManager } from '../../../manager/index'
 
 @Entry
 @Component

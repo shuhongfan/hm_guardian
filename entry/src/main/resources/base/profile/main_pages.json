@@ -36,7 +36,7 @@
     "pages/Guard/Indoor/IndoorCheckMovePage",
     "pages/Guard/Alarm/GuardAlarmPage",
     "pages/Guard/Alarm/CountdownPage",
-    "pages/Guard/CheckCameraPage",
+    "pages/Guard/Indoor/CheckCameraPage",
     "pages/Guard/Fake/FakeTelPage",
     "pages/Guard/EmergencyContactPage",
     "pages/Guard/Fake/FakeVoicePage",

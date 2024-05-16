@@ -330,7 +330,7 @@ export struct GuardTabsComp {
                   colors: [['#F0FBE3', 0], ['#FCEDDE', 1]]
                 })
                 .onClick(() => {
-                  router.pushUrl({ url: 'pages/Guard/CheckCameraPage' })
+                  router.pushUrl({ url: 'pages/Guard/Indoor/CheckCameraPage' })
                 })
 
               }

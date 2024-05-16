@@ -80,7 +80,7 @@ struct GuardIndoorIndexPage {
           .justifyContent(FlexAlign.SpaceBetween)
           .borderRadius(10)
           .onClick(() => {
-            router.pushUrl({ url: 'pages/Guard/CheckCameraPage' })
+            router.pushUrl({ url: 'pages/Guard/Indoor/CheckCameraPage' })
           })
 
           Row() {

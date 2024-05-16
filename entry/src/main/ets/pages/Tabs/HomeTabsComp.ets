@@ -241,7 +241,7 @@ struct HomeTool {
     { title: '硬件信息', icon: $r("app.media.ic_tools_yjxx"), url: '/pages/Hardware/HardwareIndexPage' },
     { title: '日历清理', icon: $r("app.media.ic_tools_rlql"), url: '/pages/Calendar/CalendarIndexPage' },
     { title: '照片压缩', icon: $r("app.media.ic_tools_zpys"), url: '/pages/Cleaner/Compress/CompressPhotoPage' },
-    { title: '摄像头检测', icon: $r("app.media.ic_tools_sxtjc"), url: '/pages/Guard/CheckCameraPage' },
+    { title: '摄像头检测', icon: $r("app.media.ic_tools_sxtjc"), url: '/pages/Guard/Indoor/CheckCameraPage' },
     { title: '照片清理', icon: $r("app.media.ic_tools_zpql"), url: '/pages/Cleaner/CleanerSelectPage' },
     { title: '视频压缩', icon: $r("app.media.ic_tools_spys"), url: '/' },
     { title: '流量监控', icon: $r("app.media.ic_tools_lljk"), url: '/' },
