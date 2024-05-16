@@ -16,7 +16,7 @@ struct CalendarOverduePage {
   @State groupList: GroupItem[] = []
   @State isEditing: boolean = false
   @State isShowSheet: boolean = false
-  @State selectNames: string[] = []
+  @State selectedNames: string[] = []
 
   @Builder
   NavigationMenus() {
@@ -143,7 +143,7 @@ struct CalendarOverduePage {
             // 多选框群组
             CheckboxGroup()
               .onChange((event) => {
-                this.selectNames = event.name
+                this.selectedNames = event.name
               })
             Text('全选')
               .fontSize(12)
@@ -155,7 +155,7 @@ struct CalendarOverduePage {
             .layoutWeight(1)
             .borderRadius(10)
             .backgroundColor($r('app.color.danger'))
-            .enabled(this.selectNames.length > 0)
+            .enabled(this.selectedNames.length > 0)
             .onClick(() => {
               // TODO：批量删除
             })

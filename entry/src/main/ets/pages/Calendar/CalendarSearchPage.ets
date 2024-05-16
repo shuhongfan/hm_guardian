@@ -13,7 +13,7 @@ struct CalendarSearchPage {
   @State activeEvent: calendarManager.Event | null = null
   @State isShowSheet: boolean = false
   @State isEditing: boolean = false
-  @State selectNames: string[] = []
+  @State selectedNames: string[] = []
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
@@ -151,7 +151,7 @@ struct CalendarSearchPage {
             // 多选框群组
             CheckboxGroup()
               .onChange((event) => {
-                this.selectNames = event.name
+                this.selectedNames = event.name
               })
             Text('全选')
               .fontSize(12)
@@ -163,7 +163,7 @@ struct CalendarSearchPage {
             .layoutWeight(1)
             .borderRadius(10)
             .backgroundColor($r('app.color.danger'))
-            .enabled(this.selectNames.length > 0)
+            .enabled(this.selectedNames.length > 0)
             .onClick(() => {
               // TODO：批量删除
             })

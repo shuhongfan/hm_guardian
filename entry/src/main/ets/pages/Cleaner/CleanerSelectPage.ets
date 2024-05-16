@@ -12,7 +12,7 @@ interface RouterParams {
 struct CleanerSelectPage {
   @State routerParams: RouterParams | null = null
   @State list: photoAccessHelper.PhotoAsset[] = []
-  @State selectNames: string[] = []
+  @State selectedNames: string[] = []
   @State selectedSize: number = 0
 
   onPageShow() {
@@ -34,7 +34,7 @@ struct CleanerSelectPage {
           .fontSize(16)
           .fontColor($r('app.color.white'))
 
-          Text(`已选择${this.selectNames.length}张`)
+          Text(`已选择${this.selectedNames.length}张`)
             .fontSize(12)
             .fontColor($r('app.color.white'))
         }
@@ -86,7 +86,7 @@ struct CleanerSelectPage {
         Column() {
           CheckboxGroup()
             .onChange((event) => {
-              this.selectNames = event.name
+              this.selectedNames = event.name
             })
           Text('全选')
             .fontColor($r('app.color.font2'))
