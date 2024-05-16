@@ -3,20 +3,10 @@ export const PRIVACY_SETTINGS = 'PRIVACY_SETTINGS'
 
 // 隐私空间设置类型
 export interface PrivacySettings {
-  patternPassword?: string // 图形密码
-  textPassword?: string // 文本密码
-  passwordType?: PasswordType // 密码类型 图形/文本
-  protectQuestionIndex?: number // 密保问题下标
-  protectQuestionAnswer?: string // 密保问题答案
+  patternPassword?: string     // 图案锁密码
   isOpenUserAuthLock?: boolean // 是否启用指纹或面容ID解锁
   isOpenAntiCracking?: boolean // 是否开启防破解
   antiCrackingLastFailedTimeStamp?: number // 上次失败尝试时间戳
-}
-
-// 密码类型
-export enum PasswordType {
-  Pattern = 'PATTERN',
-  Text = 'TEXT'
 }
 
 /** 密保问题 */

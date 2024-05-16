@@ -43,17 +43,17 @@ src
     │   ├── ContactSettingsPage.ets        // 通讯录设置页
     │   └── ContactUnknownPage.ets         // 异常联系人
     ├── Guard   // 守护中心
+    │   ├── EmergencyContactPage.ets    // 紧急联系人
+    │   ├── Indoor
+    │   │   ├── IndoorCheckMovePage.ets   // 手机防移动
+    │   │   ├── CheckCameraPage.ets       // 摄像头检测
+    │   │   └── IndoorIndexPage.ets       // 室内守护
     │   ├── Alarm
     │   │   ├── CountdownPage.ets       // 警报器倒计时
     │   │   └── GuardAlarmPage.ets      // 警报器页面
-    │   ├── CheckCameraPage.ets         // 摄像头检测
-    │   ├── EmergencyContactPage.ets    // 紧急联系人
     │   ├── Fake
     │   │   ├── FakeTelPage.ets         // 伪装来电
     │   │   └── FakeVoicePage.ets       // 伪装声音
-    │   ├── Indoor
-    │   │   ├── IndoorCheckMovePage.ets   // 手机防移动
-    │   │   └── IndoorIndexPage.ets       // 室内守护
     │   └── Outdoor
     │       ├── GuardNightPage.ets        // 夜路守护
     │       └── GuardPolicePage.ets       // 附近派出所
