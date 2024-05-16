@@ -6,7 +6,9 @@ import { TitleDividerComp } from '../../common/components/TitleDividerComp';
 @Entry
 @Component
 struct CalendarFraudPage {
+  // 日程列表
   @State list: calendarManager.Event[] = []
+  // 选中项
   @State selectedName: string[] = []
 
   build() {

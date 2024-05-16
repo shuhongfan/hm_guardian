@@ -104,25 +104,19 @@ struct CalendarIndexPage {
                   router.pushUrl({ url: 'pages/Calendar/CalendarOverduePage' })
                 })
 
-              CellRow({
-                icon: $r('app.media.ic_calendar_protect'),
-                title: '日历防诈骗须知',
-                desc: '-',
-                empty: '如何彻底告别日历骚扰',
-                count: 0
-              })
-                .onClick(() => {
-                  router.pushUrl({ url: 'pages/Calendar/CalendarKnowledgePage' })
-                })
             }
             .padding(10)
             .layoutWeight(1)
             .backgroundColor($r('app.color.white'))
 
             Column({ space: 10 }) {
-              Button('添加诈骗日程')
+              Button('添加普通日程')
                 .onClick(async () => {
                   // 
+                })
+              Button('添加重要日程')
+                .onClick(async () => {
+                  //
                 })
               Button('添加过期日程')
                 .onClick(async () => {

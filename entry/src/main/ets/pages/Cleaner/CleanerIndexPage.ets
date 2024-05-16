@@ -1,9 +1,8 @@
-// TODO: 处理临界状态，安全渐变，警告渐变色
 import { router } from '@kit.ArkUI'
 import { statfs } from '@kit.CoreFileKit'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../common/builders'
-import { formatByteLength } from '../../common/utils'
+import { formatByteLength, GIGA_BYTE } from '../../common/utils'
 import { themeManager } from '../../manager'
 
 interface ClearItem {
@@ -11,22 +10,6 @@ interface ClearItem {
   name: string
   list: photoAccessHelper.PhotoAsset[]
   size: number
-}
-
-export interface PhotoInfo {
-  uri: string
-  display_name: string
-  title: string
-  media_type: number
-  size: number
-  date_added: number
-  date_modified: number
-  duration: number
-  width: number
-  height: number
-  date_taken: number
-  orientation: number
-  is_favorite: number
 }
 
 @Entry
@@ -51,29 +34,11 @@ struct CleanerScanResultPage {
       size: 0
     }, // 1
     {
-      icon: $r('app.media.ic_clean_lpzp'),
-      name: '连拍照片',
-      list: [],
-      size: 0
-    }, // 2
-    {
-      icon: $r('app.media.ic_clean_zpzp'),
-      name: '自拍照片',
-      list: [],
-      size: 0
-    }, // 3
-    {
-      icon: $r("app.media.ic_clean_ljzp"),
-      name: '滤镜照片',
-      list: [],
-      size: 0
-    }, // 4
-    {
       icon: $r('app.media.ic_clean_dttp'),
       name: '动态图片',
       list: [],
       size: 0
-    },// 5
+    },// 2
   ]
 
   onPageShow() {
@@ -98,7 +63,7 @@ struct CleanerScanResultPage {
       Stack({ alignContent: Alignment.Bottom }) {
         Column() {
           Row({ space: 5 }) {
-            Text(formatByteLength(this.freeSize, 0))
+            Text((this.freeSize / GIGA_BYTE).toFixed(1))
               .fontSize(50)
               .fontColor($r('app.color.white'))
             Column() {

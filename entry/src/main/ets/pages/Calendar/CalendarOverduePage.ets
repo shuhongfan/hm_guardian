@@ -2,6 +2,7 @@ import { calendarManager } from '@kit.CalendarKit';
 import dayjs from 'dayjs';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
 
+// 日程信息
 interface GroupItem {
   date: string
   list: calendarManager.Event[]

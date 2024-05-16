@@ -7,7 +7,6 @@
     "pages/Settings/SettingsPermissionPage",
     "pages/Calendar/CalendarIndexPage",
     "pages/Calendar/CalendarSearchPage",
-    "pages/Calendar/CalendarKnowledgePage",
     "pages/Calendar/CalendarOverduePage",
     "pages/Calendar/CalendarFraudPge",
     "pages/Privacy/PrivacyIndexPage",
