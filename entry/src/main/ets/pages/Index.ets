@@ -3,12 +3,11 @@ import { GuardTabsComp } from './Tabs/GuardTabsComp';
 import { HomeTabsComp } from './Tabs/HomeTabsComp';
 import { MyTabsComp } from './Tabs/MyTabsComp';
 
-// TODO: 切换页面时，更新我的页面信息
-
 @Entry
 @Component
 struct Index {
-  @State currentIndex: number = 0
+  // @Provide 装饰器和 @Consume装饰器：与后代组件双向同步
+  @Provide currentIndex: number = 0
   @StorageLink('bottomHeight') bottomHeight: number = 0
 
   onPageShow() {
@@ -52,7 +51,7 @@ struct Index {
       .tabBar(this.TabBuilder('守护中心', 1, $r('app.media.ic_tab_shzx_filled'), $r('app.media.ic_tab_shzx')))
 
       TabContent() {
-        MyTabsComp({ currentIndex: this.currentIndex })
+        MyTabsComp()
       }
       .tabBar(this.TabBuilder('我的', 2, $r('app.media.ic_tab_wode_filled'), $r('app.media.ic_tab_wode')))
     }
