@@ -5,6 +5,8 @@ export const PRIVACY_SETTINGS = 'PRIVACY_SETTINGS'
 export interface PrivacySettings {
   patternPassword?: string     // 图案锁密码
   isOpenUserAuthLock?: boolean // 是否启用指纹或面容ID解锁
+  protectQuestionIndex?: number // 密保问题下标
+  protectQuestionAnswer?: string // 密保问题答案
   isOpenAntiCracking?: boolean // 是否开启防破解
   antiCrackingLastFailedTimeStamp?: number // 上次失败尝试时间戳
 }

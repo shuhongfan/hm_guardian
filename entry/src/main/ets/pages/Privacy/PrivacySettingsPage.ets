@@ -82,14 +82,6 @@ struct PrivacySettingsPage {
             .onClick(() => {
               router.pushUrl({ url: 'pages/Privacy/Auth/AuthPatternLockSettingsPage' })
             })
-          CellRowArrowComp({
-            title: this.privacySettings.textPassword ? '修改文本密码' : '创建文本密码',
-            rightText: this.privacySettings.textPassword ? '' : '未创建',
-            rightTextColor: $r('app.color.font_sub'),
-          })
-            .onClick(() => {
-              router.pushUrl({ url: '' })
-            })
           CellRowArrowComp({ title: '密码保护问题' })
             .onClick(() => {
               router.pushUrl({ url: 'pages/Privacy/Auth/AuthProtectPage' })
