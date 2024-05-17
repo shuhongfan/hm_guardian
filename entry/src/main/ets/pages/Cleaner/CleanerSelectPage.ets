@@ -68,7 +68,7 @@ struct CleanerSelectPage {
                   .width('100%')
                   .aspectRatio(1)
                 }
-              }, ((item: photoAccessHelper.PhotoAsset) => item.uri))
+              })
             }
 
             Blank()
