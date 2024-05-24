@@ -97,7 +97,6 @@ struct HomeEntry {
           })
           .onClick(() => {
             showDevelopingTips()
-            // router.pushUrl({ url: 'pages/Check/CheckPage' })
           })
       }
     }
@@ -158,23 +157,8 @@ struct HomeShortcut {
     // 跳转页面
     if (item.url === '/') {
       showDevelopingTips()
-      return
-    }
-    if (item.title === '隐私空间') {
-      this.openPrivacyPage()
-      return
-    }
-    router.pushUrl({ url: item.url.slice(1) })
-  }
-
-  // 打开隐私空间
-  openPrivacyPage() {
-    if (!this.privacySettings.patternPassword) {
-      // 如果还没设置过图形密码，跳转到设置页
-      router.pushUrl({ url: 'pages/Privacy/Auth/AuthPatternLockSettingsPage' })
     } else {
-      // 已设置图形密码，跳转到解锁页
-      router.pushUrl({ url: 'pages/Privacy/Auth/AuthPatternLockPage' })
+      router.pushUrl({ url: item.url.slice(1) })
     }
   }
 
@@ -206,27 +190,6 @@ struct HomeShortcut {
           .onClick(() => {
             this.openShortcutPage(item)
           })
-          // 绑定优先识别手势
-          .priorityGesture(
-            // 长按
-            LongPressGesture({ duration: 1000 })
-              .onAction(() => {
-                // 隐藏隐私空间入口
-                if (item.title === '隐私空间') {
-                  this.list[index] = {
-                    title: '日历清理',
-                    icon: $r('app.media.ic_home_shortcut_rlql'),
-                    url: '/'
-                  }
-                } else if (item.title === '日历清理') {
-                  this.list[index] = {
-                    title: '隐私空间',
-                    icon: $r('app.media.ic_home_shortcut_yskj'),
-                    url: '/pages/Privacy/PrivacyIndexPage'
-                  }
-                }
-              })
-          )
         }
       })
     }
@@ -267,9 +230,10 @@ struct HomeTool {
             .justifyContent(FlexAlign.Center)
             .onClick(() => {
               if (item.url === '/') {
-                return showDevelopingTips()
+                showDevelopingTips()
+              } else {
+                router.pushUrl({ url: item.url.slice(1) })
               }
-              router.pushUrl({ url: item.url.slice(1) })
             })
           }
         })
