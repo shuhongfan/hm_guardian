@@ -12,6 +12,50 @@ import { connection } from '@kit.NetworkKit';
 // 注册 dayjs 插件(相对时间-运行时间)
 dayjs.extend(duration)
 
+/**
+ * 计算子网掩码
+ * @param prefixLength 前缀长度
+ * @returns 子网掩码字符串
+ */
+function calculateSubnetMask(prefixLength: number): string {
+  // 计算每个字节的子网掩码部分
+  let subnetMask = '';
+  for (let i = 0; i < 4; i++) {
+    // 每个字节中的有效位数
+    const bits = Math.min(prefixLength, 8);
+    // 计算子网掩码字节的值并添加到结果字符串
+    subnetMask += (256 - Math.pow(2, 8 - bits)) + '.';
+    // 更新剩余的位数
+    prefixLength -= bits;
+  }
+  // 去除末尾的点并返回子网掩码字符串
+  return subnetMask.slice(0, -1);
+}
+
+/**
+ * 计算广播地址
+ * @param ipAddress IP地址字符串，例如 "192.168.2.13"
+ * @param subnetMask 子网掩码字符串，例如 "255.255.255.0"
+ * @returns 广播地址字符串
+ */
+function calculateBroadcastAddress(ipAddress: string, subnetMask: string): string {
+  // 将IP地址字符串转换为数字数组
+  const ipParts: number[] = ipAddress.split('.')
+    .map(Number);
+  // 将子网掩码字符串转换为数字数组
+  const subnetParts: number[] = subnetMask.split('.')
+    .map(Number);
+  // 计算每个字节的广播地址部分
+  const broadcastParts: number[] = [];
+  for (let i = 0; i < 4; i++) {
+    // 计算每个字节的广播地址值并添加到结果数组
+    broadcastParts.push(ipParts[i] | (255 - subnetParts[i]));
+  }
+  // 将结果数组转换为字符串并使用点分隔
+  return broadcastParts.join('.');
+}
+
+
 @Entry
 @Component
 struct HardwareIndexPage {
@@ -148,6 +192,10 @@ struct HardwareIndexPage {
     if (linkAddress) {
       // 提取 IP 地址
       this.IPAddress = linkAddress.address.address
+      // 计算子网掩码（了解）
+      this.subnetMask = calculateSubnetMask(linkAddress.prefixLength)
+      // 计算广播地址（了解）
+      this.broadcastAddress = calculateBroadcastAddress(this.IPAddress, this.subnetMask)
     }
   }
 
