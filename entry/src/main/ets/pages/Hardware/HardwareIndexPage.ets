@@ -222,7 +222,10 @@ struct HardwareIndexPage {
   async getSensorInfo() {
     // 获取所有传感器信息
     const list = await sensor.getSensorList()
-    AlertDialog.show({ message: JSON.stringify(list, null, 2) })
+    // AlertDialog.show({ message: JSON.stringify(list, null, 2) })
+    // 提取传感器的 id，用于查询是否支持某个传感器（模拟器也支持部分虚拟传感器，如：加速度传感器）
+    this.supportSensorIds = list.map(item => item.sensorId)
+    // AlertDialog.show({ message: JSON.stringify(ids, null, 2) })
   }
 
   @Builder
@@ -294,6 +297,7 @@ struct HardwareIndexPage {
             ForEach(SENSOR_NAME_LIST, (item: SensorName) => {
               ListRow({
                 title: item.sensorName,
+                // supportSensorIds 支持的传感器 id 集合
                 value: this.supportSensorIds.includes(item.sensorId) ? '有' : '-'
               })
             })

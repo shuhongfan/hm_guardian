@@ -3,7 +3,8 @@ export interface SensorName {
   sensorName: string
 }
 
-// 传感器名称
+// 传感器名称 和 id 的对应关系，参考文档
+// https://docs.openharmony.cn/pages/v4.1/zh-cn/application-dev/reference/apis-sensor-service-kit/js-apis-sensor.md#sensorid9
 export const SENSOR_NAME_LIST: SensorName[] = [
   {
     "sensorId": 1,
