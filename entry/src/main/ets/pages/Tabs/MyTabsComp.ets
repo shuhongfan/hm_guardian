@@ -18,6 +18,7 @@ export struct MyTabsComp {
   @StorageLink('topHeight') topHeight: number = 0
   // @Provide 装饰器和 @Consume 装饰器：与后代组件双向同步
   @Consume @Watch('onTabsChange') currentIndex: number
+  @Consume @Watch('onTabsChange') isPageShow: boolean
   // 设备产品名称
   @State deviceName: string = ''
   // 电池电量百分比
@@ -35,9 +36,9 @@ export struct MyTabsComp {
     this.getBatteryInfo()
   }
 
-  // 当 Tabs 发生变化时（监听父组件的 currentIndex）
+  // 当 Tabs 发生变化 && 页面显示 时（监听父组件的 currentIndex 和 isPageShow）
   onTabsChange() {
-    if (this.currentIndex === 2) {
+    if (this.currentIndex === 2 && this.isPageShow === true) {
       this.getDebugInfo()
       this.getStatfsInfo()
       this.getBatteryInfo()
