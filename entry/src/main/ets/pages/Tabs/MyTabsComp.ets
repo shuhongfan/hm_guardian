@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 import { deviceInfo } from '@kit.BasicServicesKit'
 import { hidebug } from '@kit.PerformanceAnalysisKit'
+import { statfs } from '@kit.CoreFileKit'
 
 interface UsageItem {
   icon: Resource
@@ -29,6 +30,7 @@ export struct MyTabsComp {
   aboutToAppear() {
     this.getDeviceInfo()
     this.getDebugInfo()
+    this.getStatfsInfo()
   }
 
   // 获取设备产品名称
@@ -45,6 +47,16 @@ export struct MyTabsComp {
     // 1MB = 1024KB （Windows 系统，普遍混淆）
     // 1MB = 1000KB （MAC 系统，手机系统，Linux 系统，U 盘、DVD 光盘、、、）
    this.memorySize = Number(hidebug.getPss()) / 1000
+  }
+
+  getStatfsInfo(){
+    // 温馨提示：statfs 其实是 '@ohos.file.statvfs'，经历了两次改名 statfs -> statvfs -> statfs
+    const context = getContext()
+    // 获取指定文件系统空闲字节数 Byte
+   //  1000MB  =  1GB
+   //  1000KB  =  1MB
+   //  1000B  =  1KB
+   this.statfsFreeSize = statfs.getFreeSizeSync(context.filesDir) / (1000 * 1000 * 1000)
   }
 
   // 标题行
@@ -189,7 +201,7 @@ export struct MyTabsComp {
               this.UsageColumn({
                 icon: $r('app.media.ic_my_storage'),
                 name: '剩余存储',
-                value: this.statfsFreeSize.toFixed(0),
+                value: this.statfsFreeSize.toFixed(1),
                 unit: 'GB'
               })
             }
