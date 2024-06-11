@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 // 导入 dayjs 插件(相对时间-运行时间)
 import duration from 'dayjs/plugin/duration';
 import { connection } from '@kit.NetworkKit';
+import { display } from '@kit.ArkUI';
 
 // 注册 dayjs 插件(相对时间-运行时间)
 dayjs.extend(duration)
@@ -102,6 +103,8 @@ struct HardwareIndexPage {
     this.getProcessInfo()
     // 获取网络信息
     this.getConnectionInfo()
+    // 获取屏幕信息
+    this.getDisplayInfo()
   }
 
   // 获取设备信息
@@ -197,6 +200,18 @@ struct HardwareIndexPage {
       // 计算广播地址（了解）
       this.broadcastAddress = calculateBroadcastAddress(this.IPAddress, this.subnetMask)
     }
+  }
+
+  // 获取屏幕属性
+  getDisplayInfo() {
+    const defaultDisplay = display.getDefaultDisplaySync()
+    // 分辨率
+    this.displayWidth = defaultDisplay.width
+    this.displayHeight = defaultDisplay.height
+    // 刷新率
+    this.displayRefreshRate = defaultDisplay.refreshRate
+    // 像素密度
+    this.displayDensityDPI = defaultDisplay.densityDPI
   }
 
   @Builder
