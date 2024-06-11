@@ -112,6 +112,8 @@ struct HardwareIndexPage {
       // this.netBearType = '有网络'
       // 有网络的情况下，再检测是什么网络
       this.getNetBearType()
+      // 有网络的情况下，获取网络连接信息
+      this.getNetProperties()
     } else {
       this.netBearType = '无网络'
     }
@@ -121,9 +123,9 @@ struct HardwareIndexPage {
   getNetBearType() {
     // 1. 获取默认网络
     const netHandle = connection.getDefaultNetSync()
-    // 2. 获取默认网络的连接信息
+    // 2. 获取网络能力信息
     const netCapabilities = connection.getNetCapabilitiesSync(netHandle)
-    // 3. 判断网络类型
+    // 3. 判断网络类型（按优先级展示: 以太网网络 > Wi-Fi网络 > 窝网络）
     if (netCapabilities.bearerTypes.includes(connection.NetBearType.BEARER_ETHERNET)) {
       this.netBearType = '以太网网络' // 网线
     } else if (netCapabilities.bearerTypes.includes(connection.NetBearType.BEARER_WIFI)) {
@@ -132,6 +134,20 @@ struct HardwareIndexPage {
       this.netBearType = '蜂窝网络'
     } else {
       this.netBearType = '有网络'
+    }
+  }
+
+  // 获取网络连接信息（提取 IP 地址）
+  getNetProperties() {
+    // 1. 获取默认网络
+    const netHandle = connection.getDefaultNetSync()
+    // 2. 获取网络连接信息
+    const connectionProperties = connection.getConnectionPropertiesSync(netHandle)
+    // 3. 提取链路信息
+    const linkAddress = connectionProperties.linkAddresses[0]
+    if (linkAddress) {
+      // 提取 IP 地址
+      this.IPAddress = linkAddress.address.address
     }
   }
 
