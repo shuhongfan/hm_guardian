@@ -7,6 +7,7 @@ import { process } from '@kit.ArkTS';
 import dayjs from 'dayjs';
 // 导入 dayjs 插件(相对时间-运行时间)
 import duration from 'dayjs/plugin/duration';
+import { connection } from '@kit.NetworkKit';
 
 // 注册 dayjs 插件(相对时间-运行时间)
 dayjs.extend(duration)
@@ -55,6 +56,8 @@ struct HardwareIndexPage {
     this.getDeviceInfo()
     // 获取进程相关信息
     this.getProcessInfo()
+    // 获取网络
+    this.getConnectionInfo()
   }
 
   // 获取设备信息
@@ -94,11 +97,23 @@ struct HardwareIndexPage {
   // 计算运行时间：D天HH小时mm分
   formatToDate(seconds: number) {
     // 依赖 duration 插件，duration 函数才能正常运行
-    dayjs.extend(duration)
+    // dayjs.extend(duration)
     // 根据秒数计算运行时长，返回 dayjs 对象
     const dayjsInstance = dayjs.duration(seconds, 'seconds')
     // 格式化 dayjs 对象
     return dayjsInstance.format('D天H小时mm分')
+  }
+
+  // 获取网络信息
+  getConnectionInfo() {
+    // 获取检查默认数据网络是否被激活（检测是否有网络）
+    const isHasDefaultNet = connection.hasDefaultNetSync()
+    if (isHasDefaultNet === true) {
+      this.netBearType = '有网络'
+      // 有网络的情况下，再检测是什么网络
+    } else {
+      this.netBearType = '无网络'
+    }
   }
 
   @Builder
