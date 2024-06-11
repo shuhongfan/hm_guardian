@@ -1,6 +1,7 @@
 import { router } from '@kit.ArkUI'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 import { deviceInfo } from '@kit.BasicServicesKit'
+import { hidebug } from '@kit.PerformanceAnalysisKit'
 
 interface UsageItem {
   icon: Resource
@@ -19,18 +20,31 @@ export struct MyTabsComp {
   // 设备产品名称
   @State deviceName: string = ''
   @State batteryState: number = 0
+  // 内存占用
   @State memorySize: number = 0
+  // CPU 占用率
   @State cpuUsage: number = 0
   @State statfsFreeSize: number = 0
 
   aboutToAppear() {
     this.getDeviceInfo()
+    this.getDebugInfo()
   }
 
   // 获取设备产品名称
   getDeviceInfo(){
     // 模拟器 emulator
     this.deviceName = deviceInfo.marketName
+  }
+
+  // 获取调试信息，CPU 占用率，内存
+  getDebugInfo(){
+    // 获取进程的CPU使用率。 如占用率为50%，则返回0.5。
+   this.cpuUsage =  hidebug.getCpuUsage() * 100
+    // 获取应用进程实际使用的物理内存大小，单位为kB
+    // 1MB = 1024KB （Windows 系统，普遍混淆）
+    // 1MB = 1000KB （MAC 系统，手机系统，Linux 系统，U 盘、DVD 光盘、、、）
+   this.memorySize = Number(hidebug.getPss()) / 1000
   }
 
   // 标题行
