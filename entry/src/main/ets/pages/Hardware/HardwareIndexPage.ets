@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { connection } from '@kit.NetworkKit';
 import { display } from '@kit.ArkUI';
+import { sensor } from '@kit.SensorServiceKit';
 
 // 注册 dayjs 插件(相对时间-运行时间)
 dayjs.extend(duration)
@@ -105,6 +106,8 @@ struct HardwareIndexPage {
     this.getConnectionInfo()
     // 获取屏幕信息
     this.getDisplayInfo()
+    // 获取传感器信息
+    this.getSensorInfo()
   }
 
   // 获取设备信息
@@ -204,6 +207,7 @@ struct HardwareIndexPage {
 
   // 获取屏幕属性
   getDisplayInfo() {
+    // 获取默认屏幕
     const defaultDisplay = display.getDefaultDisplaySync()
     // 分辨率
     this.displayWidth = defaultDisplay.width
@@ -212,6 +216,13 @@ struct HardwareIndexPage {
     this.displayRefreshRate = defaultDisplay.refreshRate
     // 像素密度
     this.displayDensityDPI = defaultDisplay.densityDPI
+  }
+
+  // 获取传感器信息
+  async getSensorInfo() {
+    // 获取所有传感器信息
+    const list = await sensor.getSensorList()
+    AlertDialog.show({ message: JSON.stringify(list, null, 2) })
   }
 
   @Builder
