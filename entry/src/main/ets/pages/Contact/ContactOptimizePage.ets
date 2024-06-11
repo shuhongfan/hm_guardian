@@ -85,14 +85,6 @@ struct ContactOptimizePage {
           type: 'Button',
           url: 'pages/Contact/ContactUnknownPage'
         })
-        CellRow({
-          icon: $r('app.media.ic_contact_qtyc'),
-          title: '其他异常联系人',
-          desc: '发现 - 个其他异常联系人',
-          empty: '未发现其他异常联系人',
-          count: 0,
-          type: 'Button'
-        })
       }
       .width('100%')
       .layoutWeight(1)
