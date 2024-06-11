@@ -2,6 +2,14 @@ import { NavigationTitleBuilder } from '../../common/builders';
 import { SENSOR_NAME_LIST, SensorName } from '../../common/constants';
 import { themeManager } from '../../manager';
 import { deviceInfo } from '@kit.BasicServicesKit';
+import { process } from '@kit.ArkTS';
+// 导入 dayjs 核心包
+import dayjs from 'dayjs';
+// 导入 dayjs 插件(相对时间-运行时间)
+import duration from 'dayjs/plugin/duration';
+
+// 注册 dayjs 插件(相对时间-运行时间)
+dayjs.extend(duration)
 
 @Entry
 @Component
@@ -45,17 +53,52 @@ struct HardwareIndexPage {
   aboutToAppear(): void {
     // 获取设备信息
     this.getDeviceInfo()
+    // 获取进程相关信息
+    this.getProcessInfo()
   }
 
+  // 获取设备信息
   getDeviceInfo() {
-    // 产品名称，可用于区分 模拟器、手机
+    // 产品名称，可用于区分 模拟器(emulator)、真机(产品型号)
     this.marketName = deviceInfo.marketName
     // 系统版本
     this.osFullName = deviceInfo.osFullName
-    // 系统软件API版本
+    // 系统软件API版本(API 9、11、12 等)
     this.sdkApiVersion = deviceInfo.sdkApiVersion.toString()
     // 设备类型，可用于区分 手机、平板、PC、车机、手表、电视 等
     this.deviceType = deviceInfo.deviceType
+  }
+
+  // 获取进程相关的信息
+  getProcessInfo() {
+    // 获取当前系统已运行的秒数(用于计算启动时间，运行时长)
+    this.uptime = process.uptime()
+  }
+
+  // 计算上次启动时间，YYYY-MM-DD HH:mm:ss
+  formatToDateTime(seconds: number) {
+    // 减去秒数，返回 dayjs 对象
+    const dayjsInstance = dayjs()
+      .subtract(seconds, 'seconds')
+    // 格式化 dayjs 对象
+    return dayjsInstance.format('YYYY-MM-DD HH:mm:ss')
+    // format 格式化占位符
+    // 年 year     YYYY
+    // 月 mouth    MM
+    // 日 day      DD
+    // 时 hour     hh 12小时 / HH 24小时
+    // 分 minute   mm
+    // 秒 second   ss
+  }
+
+  // 计算运行时间：D天HH小时mm分
+  formatToDate(seconds: number) {
+    // 依赖 duration 插件，duration 函数才能正常运行
+    dayjs.extend(duration)
+    // 根据秒数计算运行时长，返回 dayjs 对象
+    const dayjsInstance = dayjs.duration(seconds, 'seconds')
+    // 格式化 dayjs 对象
+    return dayjsInstance.format('D天H小时mm分')
   }
 
   @Builder
@@ -107,8 +150,8 @@ struct HardwareIndexPage {
       Column() {
         List() {
           ListItemGroup({ header: this.ListTitle('基本信息') }) {
-            ListRow({ title: '上次启动', value: String(this.uptime) })
-            ListRow({ title: '运行时间', value: String(this.uptime) })
+            ListRow({ title: '上次启动', value: this.formatToDateTime(this.uptime) })
+            ListRow({ title: '运行时间', value: this.formatToDate(this.uptime) })
           }
 
           ListItemGroup({ header: this.ListTitle('网络信息') }) {
