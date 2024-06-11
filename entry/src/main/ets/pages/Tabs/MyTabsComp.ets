@@ -1,6 +1,6 @@
 import { router } from '@kit.ArkUI'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
-import { deviceInfo } from '@kit.BasicServicesKit'
+import { batteryInfo, deviceInfo } from '@kit.BasicServicesKit'
 import { hidebug } from '@kit.PerformanceAnalysisKit'
 import { statfs } from '@kit.CoreFileKit'
 
@@ -20,6 +20,7 @@ export struct MyTabsComp {
   @Consume currentIndex: number
   // 设备产品名称
   @State deviceName: string = ''
+  // 电池电量百分比
   @State batteryState: number = 0
   // 内存占用
   @State memorySize: number = 0
@@ -31,32 +32,39 @@ export struct MyTabsComp {
     this.getDeviceInfo()
     this.getDebugInfo()
     this.getStatfsInfo()
+    this.getBatteryInfo()
   }
 
   // 获取设备产品名称
-  getDeviceInfo(){
+  getDeviceInfo() {
     // 模拟器 emulator
     this.deviceName = deviceInfo.marketName
   }
 
   // 获取调试信息，CPU 占用率，内存
-  getDebugInfo(){
+  getDebugInfo() {
     // 获取进程的CPU使用率。 如占用率为50%，则返回0.5。
-   this.cpuUsage =  hidebug.getCpuUsage() * 100
+    this.cpuUsage = hidebug.getCpuUsage() * 100
     // 获取应用进程实际使用的物理内存大小，单位为kB
     // 1MB = 1024KB （Windows 系统，普遍混淆）
     // 1MB = 1000KB （MAC 系统，手机系统，Linux 系统，U 盘、DVD 光盘、、、）
-   this.memorySize = Number(hidebug.getPss()) / 1000
+    this.memorySize = Number(hidebug.getPss()) / 1000
   }
 
-  getStatfsInfo(){
+  getStatfsInfo() {
     // 温馨提示：statfs 其实是 '@ohos.file.statvfs'，经历了两次改名 statfs -> statvfs -> statfs
     const context = getContext()
+    // 关于千字节百科解释：https://baike.baidu.com/item/KB/331
+    //  1000MB  =  1GB
+    //  1000KB  =  1MB
+    //  1000B  =  1KB
     // 获取指定文件系统空闲字节数 Byte
-   //  1000MB  =  1GB
-   //  1000KB  =  1MB
-   //  1000B  =  1KB
-   this.statfsFreeSize = statfs.getFreeSizeSync(context.filesDir) / (1000 * 1000 * 1000)
+    this.statfsFreeSize = statfs.getFreeSizeSync(context.filesDir) / (1000 * 1000 * 1000)
+  }
+
+  getBatteryInfo() {
+    // 当前设备剩余电池电量百分比
+    this.batteryState = batteryInfo.batterySOC
   }
 
   // 标题行
