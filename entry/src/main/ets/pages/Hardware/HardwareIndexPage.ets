@@ -56,7 +56,7 @@ struct HardwareIndexPage {
     this.getDeviceInfo()
     // 获取进程相关信息
     this.getProcessInfo()
-    // 获取网络
+    // 获取网络信息
     this.getConnectionInfo()
   }
 
@@ -109,10 +109,29 @@ struct HardwareIndexPage {
     // 获取检查默认数据网络是否被激活（检测是否有网络）
     const isHasDefaultNet = connection.hasDefaultNetSync()
     if (isHasDefaultNet === true) {
-      this.netBearType = '有网络'
+      // this.netBearType = '有网络'
       // 有网络的情况下，再检测是什么网络
+      this.getNetBearType()
     } else {
       this.netBearType = '无网络'
+    }
+  }
+
+  // 获取网络类型（以太网、WIFI、蜂窝）
+  getNetBearType() {
+    // 1. 获取默认网络
+    const netHandle = connection.getDefaultNetSync()
+    // 2. 获取默认网络的连接信息
+    const netCapabilities = connection.getNetCapabilitiesSync(netHandle)
+    // 3. 判断网络类型
+    if (netCapabilities.bearerTypes.includes(connection.NetBearType.BEARER_ETHERNET)) {
+      this.netBearType = '以太网网络' // 网线
+    } else if (netCapabilities.bearerTypes.includes(connection.NetBearType.BEARER_WIFI)) {
+      this.netBearType = 'Wi-Fi网络'
+    } else if (netCapabilities.bearerTypes.includes(connection.NetBearType.BEARER_CELLULAR)) {
+      this.netBearType = '蜂窝网络'
+    } else {
+      this.netBearType = '有网络'
     }
   }
 
