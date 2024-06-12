@@ -15,6 +15,30 @@
     {
       "name": "permission_reason_calendar",
       "value": "use calendar reason"
+    },
+    {
+      "name": "permission_reason_camera",
+      "value": "use"
+    },
+    {
+      "name": "permission_reason_microphone",
+      "value": "use"
+    },
+    {
+      "name": "permission_reason_contact",
+      "value": "use"
+    },
+    {
+      "name": "permission_reason_imageVideo",
+      "value": "use"
+    },
+    {
+      "name": "permission_reason_notification",
+      "value": "use"
+    },
+    {
+      "name": "permission_reason_location",
+      "value": "use"
     }
   ]
 }

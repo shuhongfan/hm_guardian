@@ -15,6 +15,30 @@
     {
       "name": "permission_reason_calendar",
       "value": "用于添加日程，清理过期日程"
+    },
+    {
+      "name": "permission_reason_camera",
+      "value": "用于隐私空间拍照"
+    },
+    {
+      "name": "permission_reason_microphone",
+      "value": "用于隐私空间录音"
+    },
+    {
+      "name": "permission_reason_contact",
+      "value": "用于联系人备份"
+    },
+    {
+      "name": "permission_reason_imageVideo",
+      "value": "用于导入隐私照片、照片压缩"
+    },
+    {
+      "name": "permission_reason_notification",
+      "value": "用于提醒通知"
+    },
+    {
+      "name": "permission_reason_location",
+      "value": "用于室外守护位置分享"
     }
   ]
 }

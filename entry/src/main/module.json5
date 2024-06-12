@@ -7,6 +7,7 @@
       {
         "name": "ohos.permission.GET_NETWORK_INFO"
       },
+      // -------------------- user_grant --------------------
       // 日历权限（权限组-读写）
       // 权限等级: normal        对所有应用开放
       // 授权方式: user_grant    需弹窗
@@ -25,7 +26,31 @@
         "reason": "$string:permission_reason_calendar",
         // 应用场景(API 11 为必填属性)
         "usedScene": {}
-      }
+      },
+      // 相机
+      {
+        "name": "ohos.permission.CAMERA",
+        "reason": '$string:permission_reason_camera',
+        "usedScene": {}
+      },
+      // 麦克风
+      {
+        "name": "ohos.permission.MICROPHONE",
+        "reason": '$string:permission_reason_microphone',
+        "usedScene": {}
+      },
+      // 位置信息
+      {
+        "name": "ohos.permission.APPROXIMATELY_LOCATION",
+        "reason": '$string:permission_reason_location',
+        "usedScene": {}
+      },
+      {
+        "name": "ohos.permission.LOCATION",
+        "reason": '$string:permission_reason_location',
+        "usedScene": {}
+      },
+      // -------------------- user_grant --------------------
     ],
     "name": "entry",
     "type": "entry",
