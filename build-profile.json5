@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.cer",
+          "storePassword": "0000001BEC926065A2B73E54011B387CC2599760E4EE02B7ED62C67BC9E11A5F046AD4439D2903023BC32F",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BEF5F31E7ADE2D3391CAE4223678EE4CB4953A85293186A1BD6EDEDFA6D1E21D31C90904049F9CE",
+          "profile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p12"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",

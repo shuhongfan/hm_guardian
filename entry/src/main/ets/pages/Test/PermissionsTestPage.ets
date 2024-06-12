@@ -138,14 +138,16 @@ struct PermissionsTestPage {
             })
           Button('申请权限-调用封装')
             .onClick(async () => {
-              const isAuth = await permissionManager.requestPermissions(['ohos.permission.CAMERA'])
+              const isAuth = await permissionManager.requestPermissions(['ohos.permission.READ_CONTACTS',
+                'ohos.permission.WRITE_CONTACTS'])
               promptAction.showToast({ message: '能否调用权限：' + isAuth })
               // 权限允许后，后续就能调用相机的 API 了
               AlertDialog.show({ message: '现在调用相机的API啦' })
             })
           Button('检测权限-调用封装')
             .onClick(() => {
-              const isAuth = permissionManager.checkPermissions(['ohos.permission.CAMERA'])
+              const isAuth =
+                permissionManager.checkPermissions(['ohos.permission.READ_CONTACTS', 'ohos.permission.WRITE_CONTACTS'])
               AlertDialog.show({ message: JSON.stringify(isAuth, null, 2) })
             })
           Text('当前 CAMERA 权限为：' + permissionManager.checkPermissions(['ohos.permission.CAMERA']))
