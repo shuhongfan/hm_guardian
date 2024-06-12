@@ -124,6 +124,26 @@ struct SettingsPermissionPage {
     }))
   }
 
+  // 关闭权限，注意：鸿蒙没有关闭权限的API，需要用户自行到设置页关闭
+  closePermission() {
+    promptAction.showDialog({
+      alignment: DialogAlignment.Center,
+      title: '温馨提示',
+      message: '关闭权限会影响应用的正常运行，您确定关闭吗？',
+      buttons: [
+        { text: '取消', color: $r('app.color.brand') },
+        { text: '狠心关闭', color: $r('app.color.font_sub') },
+      ]
+    })
+      .then((res) => {
+        // 用户点击了去设置
+        if (res.index === 1) {
+          // 通过代码打开当前应用的设置页
+          permissionManager.openPermissionSettingsPage()
+        }
+      })
+  }
+
   build() {
     Navigation() {
       Row() {
@@ -172,7 +192,9 @@ struct SettingsPermissionPage {
           .backgroundColor(Color.Transparent)
           .margin({ top: 20 })
           .onClick(() => {
-            // TODO:关闭权限
+            // TODO: 关闭权限，弹窗提示，关闭权限需到设置页关闭
+            // 注意：鸿蒙没有关闭权限的API，需要用户自行到设置页关闭
+            this.closePermission()
           })
       }
       .width('100%')
