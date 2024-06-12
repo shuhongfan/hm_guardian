@@ -1,6 +1,6 @@
 import { Permissions } from '@kit.AbilityKit';
 import { NavigationTitleBuilder } from '../../common/builders';
-import { themeManager } from '../../manager';
+import { permissionManager, themeManager } from '../../manager';
 
 interface PermissionItem {
   name: string
@@ -10,6 +10,7 @@ interface PermissionItem {
   timeStamp: number // 用于更新授权状态
 }
 
+// 权限管理设置页
 @Entry
 @Component
 struct SettingsPermissionPage {
@@ -103,7 +104,7 @@ struct SettingsPermissionPage {
 
 
             // 是否已开启权限
-            if (false) {
+            if (permissionManager.checkPermissions(item.permissions)) {
               Text('已开启')
                 .fontSize(14)
                 .fontColor($r('app.color.brand'))
