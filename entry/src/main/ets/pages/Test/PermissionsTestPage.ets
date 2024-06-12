@@ -1,6 +1,20 @@
 // 用于讲解和测试 鸿蒙应用 权限的页面
-import { abilityAccessCtrl, bundleManager, common } from '@kit.AbilityKit'
+import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.AbilityKit'
 import { promptAction } from '@kit.ArkUI'
+
+// 官方文档：https://docs.openharmony.cn/pages/v4.1/zh-cn/application-dev/security/AccessToken/request-user-authorization.md
+// 如何化简官方文档的例子:
+// 以 向用户申请授权 -> 开发步骤 -> 2.校验当前是否已经授权  为例，
+// 官方文档示例有 40 行，优化后核心代码其实只有 3 行
+// 化简代码步骤：
+//   1. 删除非必要的类型定义
+//   2. 删除非必要的 try catch 和 console
+//   3. 合并冗余代码，优化代码
+function checkAccessToken(permission: Permissions) {
+  let atManager = abilityAccessCtrl.createAtManager();
+  let bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+  return atManager.checkAccessTokenSync(bundleInfo.appInfo.accessTokenId, permission);
+}
 
 // 打开应用设置页的函数封装，写法固定
 function openSettingPage() {
