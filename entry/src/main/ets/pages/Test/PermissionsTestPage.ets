@@ -1,6 +1,7 @@
 // 用于讲解和测试 鸿蒙应用 权限的页面
 import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.AbilityKit'
 import { promptAction } from '@kit.ArkUI'
+import { permissionManager, themeManager } from '../../manager';
 
 // 官方文档：https://docs.openharmony.cn/pages/v4.1/zh-cn/application-dev/security/AccessToken/request-user-authorization.md
 // 如何化简官方文档的例子:
@@ -40,6 +41,13 @@ function openSettingPage() {
 @Entry
 @Component
 struct PermissionsTestPage {
+  // 页面加载时
+  aboutToAppear() {
+    // 测试 manager 导入
+    themeManager.enableFullScreen()
+    permissionManager.checkPermissions([])
+  }
+
   build() {
     Navigation() {
       Scroll() {
