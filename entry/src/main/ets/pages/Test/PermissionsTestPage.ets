@@ -143,6 +143,12 @@ struct PermissionsTestPage {
               // 权限允许后，后续就能调用相机的 API 了
               AlertDialog.show({ message: '现在调用相机的API啦' })
             })
+          Button('检测权限-调用封装')
+            .onClick(() => {
+              const isAuth = permissionManager.checkPermissions(['ohos.permission.CAMERA'])
+              AlertDialog.show({ message: JSON.stringify(isAuth, null, 2) })
+            })
+          Text('当前 CAMERA 权限为：' + permissionManager.checkPermissions(['ohos.permission.CAMERA']))
         }
         .constraintSize({ minHeight: '100%' })
       }

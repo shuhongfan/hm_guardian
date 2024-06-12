@@ -2,9 +2,25 @@ import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.Abil
 
 class PermissionManager {
 
-  // 检查是否授权
+  /**
+   * 检查是否授权
+   * @param permissions 权限列表
+   * @returns 返回授权结果
+   */
   checkPermissions(permissions: Permissions[]) {
-
+    // 1. 创建应用权限管理器
+    const atManager = abilityAccessCtrl.createAtManager()
+    // 2. 获取 bundle 包信息，Sync 写法
+    const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag
+      .GET_BUNDLE_INFO_WITH_APPLICATION)
+    // AlertDialog.show({ message: JSON.stringify(bundleInfo, null, 2) })
+    // 3. 提取 tokenID
+    const tokenID = bundleInfo.appInfo.accessTokenId
+    // 4. 检测是否授权，Sync 写法，升级成遍历权限组（数组）！！！
+    const grantStatus = permissions.map(item => atManager.checkAccessTokenSync(tokenID, item))
+    // 返回权限数组的检测结果
+    // 注意：当前函数没有用到 Promise，都是用 Sync 函数，好处：可直接再组件渲染权限检测结果
+    return grantStatus.every(v => v === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED)
   }
 
   /**
