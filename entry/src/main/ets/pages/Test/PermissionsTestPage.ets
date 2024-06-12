@@ -129,6 +129,13 @@ struct PermissionsTestPage {
                 }
               })
             })
+          Divider()
+            .strokeWidth(1)
+
+          Button('打开设置页-调用封装')
+            .onClick(() => {
+              permissionManager.openPermissionSettingsPage()
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
