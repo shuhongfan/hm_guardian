@@ -136,6 +136,13 @@ struct PermissionsTestPage {
             .onClick(() => {
               permissionManager.openPermissionSettingsPage()
             })
+          Button('申请权限-调用封装')
+            .onClick(async () => {
+              const isAuth = await permissionManager.requestPermissions(['ohos.permission.CAMERA'])
+              promptAction.showToast({ message: '能否调用权限：' + isAuth })
+              // 权限允许后，后续就能调用相机的 API 了
+              AlertDialog.show({ message: '现在调用相机的API啦' })
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }

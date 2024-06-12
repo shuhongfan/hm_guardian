@@ -1,4 +1,4 @@
-import { bundleManager, common, Permissions } from '@kit.AbilityKit';
+import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.AbilityKit';
 
 class PermissionManager {
 
@@ -7,9 +7,24 @@ class PermissionManager {
 
   }
 
-  // 动态申请授权（首次弹窗申请）
+  /**
+   * 动态申请授权（首次弹窗申请）
+   * @param permissions 权限列表
+   * @returns 返回授权结果，授权成功为 Promise.resolve(), 拒绝授权为 Promise.reject()
+   */
   async requestPermissions(permissions: Permissions[]) {
-
+    // 1. 创建应用权限管理器
+    const atManager = abilityAccessCtrl.createAtManager()
+    // 2. 向用户申请 user_grant 权限（温馨提示：首次申请时会弹窗，后续申请则不会再出现弹窗）
+    const requestResult = await atManager.requestPermissionsFromUser(
+      getContext(), // 应用上下文
+      permissions   // 参数：权限列表(数组)
+    )
+    // 通过 every 检查权限是否都成功授权
+    const isAuth = requestResult.authResults.every(item => item === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED)
+    // Promise.resolve()   返回 Promise 成功，await 后续代码，正常执行
+    // Promise.reject()    返回 Promise 错误，await 后续代码，不被执行，Promise.reject() 的结果可被 catch 捕获
+    return isAuth === true ? Promise.resolve(true) : Promise.reject(false)
   }
 
   /**
