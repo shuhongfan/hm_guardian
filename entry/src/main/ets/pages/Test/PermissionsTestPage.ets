@@ -10,7 +10,7 @@ struct PermissionsTestPage {
         Column({ space: 10 }) {
           Button('检查授权')
             .onClick(() => {
-              // 1. 获取程序访问控制管理
+              // 1. 创建应用权限管理器
               const atManager = abilityAccessCtrl.createAtManager()
               // 2. 获取 bundle 包信息
               const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag
@@ -26,6 +26,18 @@ struct PermissionsTestPage {
               } else if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
                 AlertDialog.show({ message: '授权失败/未授权/拒绝授权' })
               }
+            })
+          Button('申请权限，授权方式：user_grant')
+            .onClick(async () => {
+              // 1. 创建应用权限管理器
+              const atManager = abilityAccessCtrl.createAtManager()
+              // 2. 向用户申请 user_grant 权限（温馨提示：首次申请时会弹窗，后续申请则不会再出现弹窗）
+              const requestResult = await atManager.requestPermissionsFromUser(
+                getContext(), // 应用上下文
+                ['ohos.permission.READ_CALENDAR', 'ohos.permission.WRITE_CALENDAR']  // 权限列表(数组)
+              )
+              // 测试代码
+              AlertDialog.show({ message: JSON.stringify(requestResult, null, 2) })
             })
         }
         .constraintSize({ minHeight: '100%' })
