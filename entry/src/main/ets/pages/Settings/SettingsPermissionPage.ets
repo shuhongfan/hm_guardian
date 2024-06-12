@@ -1,6 +1,7 @@
 import { Permissions } from '@kit.AbilityKit';
 import { NavigationTitleBuilder } from '../../common/builders';
 import { permissionManager, themeManager } from '../../manager';
+import { promptAction } from '@kit.ArkUI';
 
 interface PermissionItem {
   name: string
@@ -77,6 +78,34 @@ struct SettingsPermissionPage {
     themeManager.settingStatusBarBlack()
   }
 
+  // 申请权限
+  async requestPermission(item: PermissionItem) {
+    // 申请权限
+    try {
+      await permissionManager.requestPermissions(item.permissions)
+      //   允许 -> 变成 Text 文本
+    } catch (error) {
+      //   禁止 -> 引导用户打开设置页开启权限
+      // 如果禁止授权，先弹窗询问，用户点击按钮后打开设置页
+      promptAction.showDialog({
+        alignment: DialogAlignment.Center,
+        title: '温馨提示',
+        message: item.desc,
+        buttons: [
+          { text: '取消', color: $r('app.color.font_sub') },
+          { text: '去设置', color: $r('app.color.brand') },
+        ]
+      })
+        .then((res) => {
+          // 用户点击了去设置
+          if (res.index === 1) {
+            // 通过代码打开当前应用的设置页
+            permissionManager.openPermissionSettingsPage()
+          }
+        })
+    }
+  }
+
   build() {
     Navigation() {
       Row() {
@@ -112,6 +141,7 @@ struct SettingsPermissionPage {
               Toggle({ type: ToggleType.Switch, isOn: false })
                 .onChange(async () => {
                   // TODO：更新所有权限授权状态
+                  this.requestPermission(item)
                 })
             }
           }
