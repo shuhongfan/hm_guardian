@@ -72,6 +72,8 @@ struct SettingsPermissionPage {
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
+    // 页面显示，刷新权限列表
+    this.updatePermission()
   }
 
   onPageHide() {
@@ -104,6 +106,22 @@ struct SettingsPermissionPage {
           }
         })
     }
+    // 不管允许，还是拒绝，最终其实都要 刷新权限列表
+    this.updatePermission()
+  }
+
+  // 刷新权限列表
+  updatePermission() {
+    // 重新赋值整个数组
+    this.permissionList = this.permissionList.map<PermissionItem>((item => {
+      return {
+        name: item.name,
+        title: item.title,
+        desc: item.desc,
+        permissions: item.permissions,
+        timeStamp: Date.now()
+      }
+    }))
   }
 
   build() {
