@@ -1,14 +1,16 @@
 {
   "app": {
+    // 证书签名信息，每个同学的都不一样，克隆项目的时候，先把默认的签名信息删除掉，再通过 DevEco Studio 自己生成
+    // 应用运行到真机，也必须签名（手机安全要求）
     "signingConfigs": [
       {
         "name": "default",
         "type": "HarmonyOS",
         "material": {
           "certpath": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.cer",
-          "storePassword": "0000001BEC926065A2B73E54011B387CC2599760E4EE02B7ED62C67BC9E11A5F046AD4439D2903023BC32F",
+          "storePassword": "0000001B8EB9C6F5F5D94EB99BDA540048B6896D1B36E6BF50765C7FCBC20AE352BE9597BB54649864EDAE",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BEF5F31E7ADE2D3391CAE4223678EE4CB4953A85293186A1BD6EDEDFA6D1E21D31C90904049F9CE",
+          "keyPassword": "0000001B84408AC248C2AB7B97C461D2D621941FEA759A1CE59C2CBBE29165DE21EEF0F87B6557080AA3FE",
           "profile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p12"
