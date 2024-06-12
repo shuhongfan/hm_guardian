@@ -11,6 +11,10 @@
     {
       "name": "EntryAbility_label",
       "value": "守护助手"
+    },
+    {
+      "name": "permission_reason_calendar",
+      "value": "用于添加日程，清理过期日程"
     }
   ]
 }

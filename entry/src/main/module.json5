@@ -2,8 +2,29 @@
   "module": {
     // main 权限
     "requestPermissions": [
+      // 权限等级: normal        对所有应用开放
+      // 授权方式: system_grant  系统静默授权，无弹窗
       {
         "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      // 日历权限（权限组-读写）
+      // 权限等级: normal        对所有应用开放
+      // 授权方式: user_grant    需弹窗
+      {
+        // 读日历（权限组）
+        "name": "ohos.permission.READ_CALENDAR",
+        // 申请权限的原因说明(API 11 为必填属性)
+        "reason": "$string:permission_reason_calendar",
+        // 应用场景(API 11 为必填属性)
+        "usedScene": {}
+      },
+      {
+        // 写日历（权限组）
+        "name": "ohos.permission.WRITE_CALENDAR",
+        // 申请权限的原因说明(API 11 为必填属性)
+        "reason": "$string:permission_reason_calendar",
+        // 应用场景(API 11 为必填属性)
+        "usedScene": {}
       }
     ],
     "name": "entry",
