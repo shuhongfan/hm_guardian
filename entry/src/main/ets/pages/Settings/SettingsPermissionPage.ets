@@ -103,6 +103,7 @@ struct SettingsPermissionPage {
 
 
             // 是否已开启权限
+            // TODO: 检测权限是否开启
             if (false) {
               Text('已开启')
                 .fontSize(14)
@@ -110,7 +111,7 @@ struct SettingsPermissionPage {
             } else {
               Toggle({ type: ToggleType.Switch, isOn: false })
                 .onChange(async () => {
-                  // TODO：更新所有权限授权状态
+                  // TODO：点击申请权限
                 })
             }
           }
@@ -123,7 +124,7 @@ struct SettingsPermissionPage {
           .backgroundColor(Color.Transparent)
           .margin({ top: 20 })
           .onClick(() => {
-            // TODO:关闭权限
+            // TODO: 关闭权限，弹窗提示，关闭权限需到设置页关闭
           })
       }
       .width('100%')
