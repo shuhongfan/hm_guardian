@@ -145,6 +145,8 @@ struct SettingsPermissionPage {
     }
     // 更新通知权限
     this.updateNotification()
+    // 主动触发列表更新，更新所有的列表按钮状态
+    this.updatePermission()
   }
 
   // 刷新权限列表
