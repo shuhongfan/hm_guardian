@@ -1,7 +1,8 @@
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../common/builders'
 import { formatByteLength } from '../../common/utils'
-import { themeManager } from '../../manager'
+import { cleanerManager, themeManager } from '../../manager'
+import { router } from '@kit.ArkUI'
 
 interface RouterParams {
   name: string
@@ -15,12 +16,31 @@ struct CleanerSelectPage {
   @State selectedNames: string[] = []
   @State selectedSize: number = 0
 
+  aboutToAppear() {
+    // 获取页面参数
+    const params = router.getParams() as RouterParams
+    if (params) {
+      // 保存路由参数
+      this.routerParams = params
+      // 获取图片列表
+      this.getList()
+    }
+  }
+
   onPageShow() {
     themeManager.settingStatusBarWhite()
   }
 
   onPageHide() {
     themeManager.settingStatusBarBlack()
+  }
+
+  // 获取图片列表
+  async getList() {
+    if (this.routerParams?.name === '屏幕截图') {
+      // 获取屏幕截图
+      this.list = await cleanerManager.getScreenshotList()
+    }
   }
 
   build() {

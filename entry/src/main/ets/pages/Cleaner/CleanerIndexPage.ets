@@ -200,6 +200,7 @@ struct CleanerScanResultPage {
                 .onClick(() => {
                   router.pushUrl({
                     url: 'pages/Cleaner/CleanerSelectPage',
+                    // 传递标题名称到瘦身选择页
                     params: { name: item.name }
                   })
                 })
