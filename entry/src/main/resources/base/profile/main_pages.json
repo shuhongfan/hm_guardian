@@ -42,6 +42,7 @@
     "pages/Guard/Fake/FakeVoicePage",
     "pages/Guard/Outdoor/GuardNightPage",
     "pages/Guard/Outdoor/GuardPolicePage",
-    "pages/Test/PermissionsTestPage"
+    "pages/Test/PermissionsTestPage",
+    "pages/Test/MediaLibraryKitTestPage"
   ]
 }
