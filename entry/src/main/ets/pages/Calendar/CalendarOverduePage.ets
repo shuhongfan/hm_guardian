@@ -4,7 +4,7 @@ import { TitleDividerComp } from '../../common/components/TitleDividerComp';
 
 // 日程信息
 interface GroupItem {
-  date: string
+  year: string
   list: calendarManager.Event[]
 }
 
@@ -92,7 +92,7 @@ struct CalendarOverduePage {
       Column() {
         List() {
           ForEach(this.groupList, (item: GroupItem) => {
-            ListItemGroup({ header: this.ListHeader(item.date) }) {
+            ListItemGroup({ header: this.ListHeader(item.year) }) {
               ForEach(item.list, (event: calendarManager.Event) => {
                 ListItem() {
                   Row() {
