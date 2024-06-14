@@ -10,6 +10,10 @@ struct MediaLibraryKitTestPage {
   @State isAuth: boolean = false
   // 图片数量
   @State photoCount: number = 0
+  // 图片路径
+  @State photoAssetUri: string = ''
+  // 图片名称
+  @State photoAssetDisplayName: string = ''
 
   aboutToAppear() {
     // 申请权限
@@ -44,7 +48,7 @@ struct MediaLibraryKitTestPage {
                 })
             })
 
-          Button('获取图库资源-图片数量')
+          Button('获取图库资源')
             .onClick(async () => {
               // 1. 获取图库管理器
               const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
@@ -53,14 +57,21 @@ struct MediaLibraryKitTestPage {
               // 3. 获取图库资源核心 API： getAssets
               // 注意： 调用 getAssets 前，需提前申请 IMAGEVIDEO 的权限，否者调用失败
               const fetchResult = await phAccessHelper.getAssets({
-                fetchColumns: [],
-                // 必传参数：谓词（查找条件）
-                predicates: predicates
+                fetchColumns: [], // 必传参数：查询列
+                predicates: predicates  // 必传参数：谓词（查找条件）
               })
               // 获取图片数量
               this.photoCount = fetchResult.getCount()
+              // 获取第一张图片资源对象
+              const photoAsset = await fetchResult.getFirstObject()
+              // 提取图片属性
+              this.photoAssetUri = photoAsset.uri // 图片 uri (路径)
+              this.photoAssetDisplayName = photoAsset.displayName // 图片名称
             })
-          Text('图片数量：' + this.photoCount)
+          Text('总图片数量：' + this.photoCount)
+          Text('第一张图片名称：' + this.photoAssetDisplayName)
+          Image(this.photoAssetUri)
+            .height(200)
         }
         .constraintSize({ minHeight: '100%' })
       }
