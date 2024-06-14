@@ -13,7 +13,7 @@ interface RouterParams {
 struct CleanerSelectPage {
   @State routerParams: RouterParams | null = null
   @State list: photoAccessHelper.PhotoAsset[] = []
-  @State @Watch('onSelectedChange') selectedNames: string[] = []
+  @State @Watch('onSelectedChange') selectedUris: string[] = []
   @State selectedSize: number = 0
 
   aboutToAppear() {
@@ -46,7 +46,7 @@ struct CleanerSelectPage {
   // 当选择按钮发生变化时，计算节省空间大小
   onSelectedChange() {
     // 根据选中的 uri 过滤出选中的图片资源
-    const selectedList = this.list.filter(item => this.selectedNames.includes(item.uri))
+    const selectedList = this.list.filter(item => this.selectedUris.includes(item.uri))
     // 通过 reduce 累加文件大小
     this.selectedSize = selectedList.reduce((acc, v) => v.get(photoAccessHelper.PhotoKeys.SIZE) as number + acc, 0)
   }
@@ -54,10 +54,12 @@ struct CleanerSelectPage {
   // 删除图片
   async deletePhotos() {
     // 删除选中的图片
-    await cleanerManager.deletePhotos(this.selectedNames)
+    await cleanerManager.deletePhotos(this.selectedUris)
     // 成功轻提示
     promptAction.showToast({ message: '删除成功，共节省' + formatByteLength(this.selectedSize) })
     // 获取获取图片列表，注意 ForEach 更新问题
+    // JSON.stringify(PhotoAsset) 会得到 {} 空对象，导致 ForEach 无法生成唯一标识
+    // 需通过 ForEach 的第三个参数，指定唯一标识
     this.getList()
   }
 
@@ -72,7 +74,7 @@ struct CleanerSelectPage {
           .fontSize(16)
           .fontColor($r('app.color.white'))
 
-          Text(`已选择${this.selectedNames.length}张`)
+          Text(`已选择${this.selectedUris.length}张`)
             .fontSize(12)
             .fontColor($r('app.color.white'))
         }
@@ -107,7 +109,8 @@ struct CleanerSelectPage {
                   .aspectRatio(1)
                 }
 
-                // JSON.stringify(PhotoAsset) 会得到 {} 空对象，最终导致 ForEach 通过唯一标识更新列表
+                // JSON.stringify(PhotoAsset) 会得到 {} 空对象，导致 ForEach 无法生成唯一标识
+                // 通过第三个参数，把唯一标识调整为 item.uri
               }, (item: photoAccessHelper.PhotoAsset) => item.uri)
             }
 
@@ -126,7 +129,7 @@ struct CleanerSelectPage {
         Column() {
           CheckboxGroup()
             .onChange((event) => {
-              this.selectedNames = event.name
+              this.selectedUris = event.name
             })
           Text('全选')
             .fontColor($r('app.color.font2'))
