@@ -21,6 +21,12 @@ struct MediaLibraryKitTestPage {
   @State photoAssetSize: string = ''
   // 图片添加日期
   @State photoAssetDateAdded: string = ''
+  // 相册封面
+  @State albumCoverUri: string = ''
+  // 相册名称
+  @State albumName: string = ''
+  // 相册数量
+  @State albumCount: string = ''
 
   aboutToAppear() {
     // 申请权限
@@ -106,7 +112,7 @@ struct MediaLibraryKitTestPage {
           Text('第一张图片文件大小：' + this.photoAssetSize)
           Text('第一张图片添加时间：' + this.photoAssetDateAdded)
           Image(this.photoAssetUri)
-            .height(200)
+            .height(100)
 
           Button('删除第一张图片')
             .onClick(async () => {
@@ -125,6 +131,30 @@ struct MediaLibraryKitTestPage {
               await photoAccessHelper.MediaAssetChangeRequest.deleteAssets(getContext(), [photoAsset])
               promptAction.showToast({ message: '删除成功' })
             })
+
+          Button('获取用户相册')
+            .onClick(async () => {
+              // 1. 建立检索条件，用于获取用户相册。
+              const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
+              const predicates = new dataSharePredicates.DataSharePredicates()
+              // 2. 调用 PhotoAccessHelper.getAlbums 接口获取用户相册资源。
+              const fetchResult = await phAccessHelper.getAlbums(
+                photoAccessHelper.AlbumType.USER, // 相册类型(用户相册，系统相册)
+                photoAccessHelper.AlbumSubtype.USER_GENERIC, // 相册子类型（用户相册，收藏夹、视频相册）
+                { fetchColumns: [], predicates }   // 可选参数
+              )
+              // 3. 调用 FetchResult.getFirstObject 接口获取第一个用户相册。
+              const album = await fetchResult.getFirstObject()
+              // 提取 用户相册封面、相册名称、相册图片数量
+              this.albumCoverUri = album.coverUri
+              this.albumName = album.albumName
+              this.albumCount = album.count.toString()
+            })
+          Image(this.albumCoverUri)
+            .width(100)
+            .height(100)
+          Text('相册名称：' + this.albumName)
+          Text('相册内资源数量：' + this.albumCount)
         }
         .constraintSize({ minHeight: '100%' })
       }
