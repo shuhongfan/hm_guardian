@@ -2,6 +2,7 @@ import { Permissions } from '@kit.AbilityKit'
 import { promptAction } from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { permissionManager } from '.'
+import { dataSharePredicates } from '@kit.ArkData'
 
 class CleanerManager {
   // 权限
@@ -9,9 +10,9 @@ class CleanerManager {
   // 图片资源
   private photoAssets: photoAccessHelper.PhotoAsset[] = []
   // 图片字段
-  private columns: photoAccessHelper.PhotoKeys[] = [
+  private fetchColumns: photoAccessHelper.PhotoKeys[] = [
     photoAccessHelper.PhotoKeys.DATE_ADDED,
-    photoAccessHelper.PhotoKeys.SIZE,
+    photoAccessHelper.PhotoKeys.SIZE,// 图片文件大小
   ]
 
   // 图片权限
@@ -37,19 +38,32 @@ class CleanerManager {
     }
   }
 
-  // 获取图片/视频
+  // 获取所有图片/视频
   async getAssets() {
-
+    // 1. 建立检索条件，用于获取图片资源。
+    const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
+    const predicates = new dataSharePredicates.DataSharePredicates()
+    // 2. 调用 PhotoAccessHelper.getAssets 接口获取目标图片资源。
+    const fetchResult = await phAccessHelper.getAssets({
+      fetchColumns: this.fetchColumns,
+      predicates,
+    })
+    // 3. 调用 FetchResult.getFirstObject 接口获取第一张图片，即要放入回收站的图片对象。
+    const photoAssets = await fetchResult.getAllObjects()
+    // 返回图片资源
+    return photoAssets
   }
 
   // 获取屏幕截图列表
   async getScreenshotList() {
-
+    const list = await this.getAssets()
+    return list.filter(item => item.displayName.includes('screenshot'))
   }
 
   // 获取视频列表
   async getVideoList() {
-
+    const list = await this.getAssets()
+    return list.filter(item => item.photoType === photoAccessHelper.PhotoType.VIDEO)
   }
 
   // 删除图片

@@ -3,7 +3,7 @@ import { statfs } from '@kit.CoreFileKit'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../common/builders'
 import { formatByteLength, GIGA_BYTE } from '../../common/utils'
-import { themeManager } from '../../manager'
+import { cleanerManager, themeManager } from '../../manager'
 
 interface ClearItem {
   icon: ResourceStr
@@ -12,6 +12,7 @@ interface ClearItem {
   size: number
 }
 
+// 手机瘦身主页
 @Entry
 @Component
 struct CleanerScanResultPage {
@@ -43,6 +44,8 @@ struct CleanerScanResultPage {
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
+    // 页面显示，获取屏幕截图
+    this.getScreenshotList()
   }
 
   onPageHide() {
@@ -55,6 +58,19 @@ struct CleanerScanResultPage {
     // 字节数转GB
     this.freeSize = statfs.getFreeSizeSync(context.filesDir)
     this.totalSize = statfs.getTotalSizeSync(context.filesDir)
+  }
+
+  // 获取屏幕截图
+  async getScreenshotList() {
+    // 获取截图列表
+    const list = await cleanerManager.getScreenshotList()
+    // 界面更新
+    this.list[0] = {
+      icon: $r('app.media.ic_clean_pmjt'),
+      name: '屏幕截图',
+      list: list,
+      size: 0
+    }
   }
 
   build() {
