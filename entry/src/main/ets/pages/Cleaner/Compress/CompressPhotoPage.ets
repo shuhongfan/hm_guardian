@@ -7,7 +7,7 @@ import { themeManager } from '../../../manager'
 @Component
 struct CompressPhotoIndexPage {
   @State list: photoAccessHelper.PhotoAsset[] = []
-  @State selectedName: string[] = []
+  @State selectedUris: string[] = []
   @State selectedSize: number = 0
 
   onPageShow() {
@@ -19,7 +19,6 @@ struct CompressPhotoIndexPage {
   }
 
   // TODO：立即瘦身（压缩照片）
-
   build() {
     Navigation() {
       Stack({ alignContent: Alignment.Bottom }) {
@@ -34,7 +33,7 @@ struct CompressPhotoIndexPage {
                 .fontSize(16)
                 .fontColor($r('app.color.white'))
 
-                Text(this.selectedName.length + '张可瘦身照片')
+                Text(this.selectedUris.length + '张可瘦身照片')
                   .fontSize(12)
                   .fontColor($r('app.color.white'))
               }
@@ -55,7 +54,6 @@ struct CompressPhotoIndexPage {
                       ForEach(this.list, (item: photoAccessHelper.PhotoAsset) => {
                         GridCol() {
                           Stack({ alignContent: Alignment.TopStart }) {
-                            // TODO: 共享元素转场
                             Image(item.uri)
                               .width('100%')
                               .height('100%')
@@ -101,19 +99,19 @@ struct CompressPhotoIndexPage {
             CheckboxGroup()
               .selectedColor($r('app.color.brand'))
               .onChange((value) => {
-                this.selectedName = value.name
+                this.selectedUris = value.name
               })
             Text('全选')
               .fontSize(14)
               .fontColor($r('app.color.font2'))
           }
 
-          Button(`立即瘦身(${this.selectedName.length}张）`)
+          Button(`立即瘦身(${this.selectedUris.length}张）`)
             .type(ButtonType.Normal)
             .borderRadius(10)
             .backgroundColor($r('app.color.brand'))
             .layoutWeight(1)
-            .enabled(this.selectedName.length > 0)
+            .enabled(this.selectedUris.length > 0)
             .onClick(() => {
               // TODO：立即瘦身（压缩照片）
             })
