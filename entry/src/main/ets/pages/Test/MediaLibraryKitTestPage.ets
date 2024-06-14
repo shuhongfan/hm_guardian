@@ -2,6 +2,7 @@ import { permissionManager } from '../../manager'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { picker } from '@kit.CoreFileKit'
 import { dataSharePredicates } from '@kit.ArkData'
+import { formatByteLength } from '../../common/utils'
 
 @Entry
 @Component
@@ -14,6 +15,8 @@ struct MediaLibraryKitTestPage {
   @State photoAssetUri: string = ''
   // 图片名称
   @State photoAssetDisplayName: string = ''
+  // 图片文件大小
+  @State photoAssetSize: string = ''
 
   aboutToAppear() {
     // 申请权限
@@ -57,19 +60,24 @@ struct MediaLibraryKitTestPage {
               // 3. 获取图库资源核心 API： getAssets
               // 注意： 调用 getAssets 前，需提前申请 IMAGEVIDEO 的权限，否者调用失败
               const fetchResult = await phAccessHelper.getAssets({
-                fetchColumns: [], // 必传参数：查询列
+                fetchColumns: [photoAccessHelper.PhotoKeys.SIZE], // 必传参数：查询列
                 predicates: predicates  // 必传参数：谓词（查找条件）
               })
               // 获取图片数量
               this.photoCount = fetchResult.getCount()
-              // 获取第一张图片资源对象
+              // 获取第一张图片资源对象（默认按图片创建时间排序）
               const photoAsset = await fetchResult.getFirstObject()
               // 提取图片属性
               this.photoAssetUri = photoAsset.uri // 图片 uri (路径)
               this.photoAssetDisplayName = photoAsset.displayName // 图片名称
+              // 获取图片文件大小
+              // 注意实现：忘记设置 fetchColumns 会报错，容易踩坑
+              const size = photoAsset.get(photoAccessHelper.PhotoKeys.SIZE) as number
+              this.photoAssetSize = formatByteLength(size)
             })
           Text('总图片数量：' + this.photoCount)
           Text('第一张图片名称：' + this.photoAssetDisplayName)
+          Text('第一张图片文件大小：' + this.photoAssetSize)
           Image(this.photoAssetUri)
             .height(200)
         }
