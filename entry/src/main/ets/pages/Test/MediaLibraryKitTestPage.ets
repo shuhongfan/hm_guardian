@@ -4,6 +4,7 @@ import { picker } from '@kit.CoreFileKit'
 import { dataSharePredicates } from '@kit.ArkData'
 import { formatByteLength } from '../../common/utils'
 import dayjs from 'dayjs'
+import { promptAction } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -106,6 +107,24 @@ struct MediaLibraryKitTestPage {
           Text('第一张图片添加时间：' + this.photoAssetDateAdded)
           Image(this.photoAssetUri)
             .height(200)
+
+          Button('删除第一张图片')
+            .onClick(async () => {
+              // 1. 建立检索条件，用于获取图片资源。
+              const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
+              const predicates = new dataSharePredicates.DataSharePredicates()
+              // 2. 调用 PhotoAccessHelper.getAssets 接口获取目标图片资源。
+              const fetchResult = await phAccessHelper.getAssets({
+                fetchColumns: [],
+                // predicates: predicates, 如果对象的 key 和 value 同名，可省略 :value
+                predicates,
+              })
+              // 3. 调用 FetchResult.getFirstObject 接口获取第一张图片，即要放入回收站的图片对象。
+              const photoAsset = await fetchResult.getFirstObject()
+              // 4. 调用 MediaAssetChangeRequest.deleteAssets 接口将文件放入回收站(删除)。
+              await photoAccessHelper.MediaAssetChangeRequest.deleteAssets(getContext(), [photoAsset])
+              promptAction.showToast({ message: '删除成功' })
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
