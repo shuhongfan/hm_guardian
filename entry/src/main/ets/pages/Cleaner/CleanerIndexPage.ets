@@ -32,13 +32,7 @@ struct CleanerScanResultPage {
       name: '视频文件',
       list: [],
       size: 0
-    }, // 1
-    {
-      icon: $r('app.media.ic_clean_dttp'),
-      name: '动态图片',
-      list: [],
-      size: 0
-    },// 2
+    },// 1
   ]
 
   onPageShow() {
