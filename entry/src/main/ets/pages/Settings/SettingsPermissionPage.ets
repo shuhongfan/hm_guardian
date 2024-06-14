@@ -2,6 +2,7 @@ import { Permissions } from '@kit.AbilityKit';
 import { NavigationTitleBuilder } from '../../common/builders';
 import { permissionManager, themeManager } from '../../manager';
 import { promptAction } from '@kit.ArkUI';
+import { notificationManager } from '@kit.NotificationKit';
 
 interface PermissionItem {
   name: string
@@ -74,6 +75,7 @@ struct SettingsPermissionPage {
     themeManager.settingStatusBarWhite()
     // 页面显示，刷新权限列表
     this.updatePermission()
+    this.updateNotification()
   }
 
   onPageHide() {
@@ -108,6 +110,12 @@ struct SettingsPermissionPage {
     }
     // 不管允许，还是拒绝，最终其实都要 刷新权限列表
     this.updatePermission()
+  }
+
+  // 刷新通知权限
+  async updateNotification() {
+    // 查询通知是否授权
+    this.isNotificationEnabled = await notificationManager.isNotificationEnabled()
   }
 
   // 刷新权限列表
@@ -169,18 +177,34 @@ struct SettingsPermissionPage {
             }
             .alignItems(HorizontalAlign.Start)
 
-
-            // 是否已开启权限
-            if (permissionManager.checkPermissions(item.permissions)) {
-              Text('已开启')
-                .fontSize(14)
-                .fontColor($r('app.color.brand'))
+            // 通知
+            if (item.name === 'notification') {
+              // 是否已开启权限
+              if (this.isNotificationEnabled) {
+                Text('已开启')
+                  .fontSize(14)
+                  .fontColor($r('app.color.brand'))
+              } else {
+                Toggle({ type: ToggleType.Switch, isOn: false })
+                  .onChange(async () => {
+                    // TODO：申请通知权限
+                    await notificationManager.requestEnableNotification()
+                    this.updateNotification()
+                  })
+              }
             } else {
-              Toggle({ type: ToggleType.Switch, isOn: false })
-                .onChange(async () => {
-                  // TODO：更新所有权限授权状态
-                  this.requestPermission(item)
-                })
+              // 是否已开启权限
+              if (permissionManager.checkPermissions(item.permissions)) {
+                Text('已开启')
+                  .fontSize(14)
+                  .fontColor($r('app.color.brand'))
+              } else {
+                Toggle({ type: ToggleType.Switch, isOn: false })
+                  .onChange(async () => {
+                    // TODO：更新所有权限授权状态
+                    this.requestPermission(item)
+                  })
+              }
             }
           }
           .width('100%')
