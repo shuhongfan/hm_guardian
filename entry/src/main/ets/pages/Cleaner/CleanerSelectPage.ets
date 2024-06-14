@@ -51,6 +51,16 @@ struct CleanerSelectPage {
     this.selectedSize = selectedList.reduce((acc, v) => v.get(photoAccessHelper.PhotoKeys.SIZE) as number + acc, 0)
   }
 
+  // 删除图片
+  async deletePhotos() {
+    // 删除选中的图片
+    await cleanerManager.deletePhotos(this.selectedNames)
+    // 成功轻提示
+    promptAction.showToast({ message: '删除成功，共节省' + formatByteLength(this.selectedSize) })
+    // 获取获取图片列表，注意 ForEach 更新问题
+    this.getList()
+  }
+
   build() {
     Navigation() {
       Column() {
@@ -96,7 +106,9 @@ struct CleanerSelectPage {
                   .width('100%')
                   .aspectRatio(1)
                 }
-              })
+
+                // JSON.stringify(PhotoAsset) 会得到 {} 空对象，最终导致 ForEach 通过唯一标识更新列表
+              }, (item: photoAccessHelper.PhotoAsset) => item.uri)
             }
 
             Blank()
@@ -129,6 +141,7 @@ struct CleanerSelectPage {
           .backgroundColor($r('app.color.danger'))
           .onClick(() => {
             // TODO：删除选中图片
+            this.deletePhotos()
           })
       }
       .border({ width: { top: 1 }, color: $r('app.color.border') })

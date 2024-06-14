@@ -72,7 +72,11 @@ class CleanerManager {
 
   // 删除图片
   async deletePhotos(uris: string[]) {
-
+    // 获取所有图片/视频
+    const photoAssets = await this.getAssets()
+    const list = photoAssets.filter(item => uris.includes(item.uri))
+    // 删除图片
+    return photoAccessHelper.MediaAssetChangeRequest.deleteAssets(getContext(), list)
   }
 }
 
