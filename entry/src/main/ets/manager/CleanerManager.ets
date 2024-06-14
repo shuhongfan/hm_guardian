@@ -56,14 +56,18 @@ class CleanerManager {
 
   // 获取屏幕截图列表
   async getScreenshotList() {
-    const list = await this.getAssets()
-    return list.filter(item => item.displayName.includes('screenshot'))
+    // 获取所有图片/视频
+    const photoAssets = await this.getAssets()
+    // 截图相册目前不对第三方应用开放，可自己通过 filter 过滤出 screenshot 截图开头的图片资源实现
+    return photoAssets.filter(item => item.displayName.includes('screenshot'))
   }
 
   // 获取视频列表
   async getVideoList() {
-    const list = await this.getAssets()
-    return list.filter(item => item.photoType === photoAccessHelper.PhotoType.VIDEO)
+    // 获取所有图片/视频
+    const photoAssets = await this.getAssets()
+    // 过滤出视频 PhotoType 为 VIDEO
+    return photoAssets.filter(item => item.photoType === photoAccessHelper.PhotoType.VIDEO)
   }
 
   // 删除图片
