@@ -2,7 +2,7 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../common/builders'
 import { formatByteLength } from '../../common/utils'
 import { cleanerManager, themeManager } from '../../manager'
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 
 interface RouterParams {
   name: string
@@ -13,7 +13,7 @@ interface RouterParams {
 struct CleanerSelectPage {
   @State routerParams: RouterParams | null = null
   @State list: photoAccessHelper.PhotoAsset[] = []
-  @State selectedNames: string[] = []
+  @State @Watch('onSelectedChange') selectedNames: string[] = []
   @State selectedSize: number = 0
 
   aboutToAppear() {
@@ -41,6 +41,14 @@ struct CleanerSelectPage {
       // 获取屏幕截图
       this.list = await cleanerManager.getScreenshotList()
     }
+  }
+
+  // 当选择按钮发生变化时，计算节省空间大小
+  onSelectedChange() {
+    // 根据选中的 uri 过滤出选中的图片资源
+    const selectedList = this.list.filter(item => this.selectedNames.includes(item.uri))
+    // 通过 reduce 累加文件大小
+    this.selectedSize = selectedList.reduce((acc, v) => v.get(photoAccessHelper.PhotoKeys.SIZE) as number + acc, 0)
   }
 
   build() {
