@@ -118,6 +118,35 @@ struct SettingsPermissionPage {
     this.isNotificationEnabled = await notificationManager.isNotificationEnabled()
   }
 
+  // 申请通知授权
+  async requestNotification() {
+    try {
+      // 经验：鸿蒙返回值为 Promise<void> 的 API ，一般是通过 try catch 捕获错误，鼠标悬停到 API 上可看到 错误编码 和 错误说明
+      await notificationManager.requestEnableNotification()
+    } catch (error) {
+      //   禁止 -> 引导用户打开设置页开启权限
+      // 如果禁止授权，先弹窗询问，用户点击按钮后打开设置页
+      promptAction.showDialog({
+        alignment: DialogAlignment.Center,
+        title: '温馨提示',
+        message: '建议开启通知权限，以提供更好的体验',
+        buttons: [
+          { text: '取消', color: $r('app.color.font_sub') },
+          { text: '去设置', color: $r('app.color.brand') },
+        ]
+      })
+        .then((res) => {
+          // 用户点击了去设置
+          if (res.index === 1) {
+            // 通过代码打开当前应用的设置页
+            permissionManager.openPermissionSettingsPage()
+          }
+        })
+    }
+    // 更新通知权限
+    this.updateNotification()
+  }
+
   // 刷新权限列表
   updatePermission() {
     // 重新赋值整个数组
@@ -188,8 +217,7 @@ struct SettingsPermissionPage {
                 Toggle({ type: ToggleType.Switch, isOn: false })
                   .onChange(async () => {
                     // TODO：申请通知权限
-                    await notificationManager.requestEnableNotification()
-                    this.updateNotification()
+                    this.requestNotification()
                   })
               }
             } else {
