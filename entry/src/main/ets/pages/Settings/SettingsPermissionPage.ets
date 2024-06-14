@@ -101,18 +101,29 @@ struct SettingsPermissionPage {
             }
             .alignItems(HorizontalAlign.Start)
 
-
-            // 是否已开启权限
             // TODO: 检测权限是否开启
-            if (false) {
-              Text('已开启')
-                .fontSize(14)
-                .fontColor($r('app.color.brand'))
+            if (item.name === 'notification') {
+              if (false) {
+                Text('已开启')
+                  .fontSize(14)
+                  .fontColor($r('app.color.brand'))
+              } else {
+                Toggle({ type: ToggleType.Switch, isOn: false })
+                  .onChange(async () => {
+                    // TODO：点击申请 notification 权限
+                  })
+              }
             } else {
-              Toggle({ type: ToggleType.Switch, isOn: false })
-                .onChange(async () => {
-                  // TODO：点击申请权限
-                })
+              if (false) {
+                Text('已开启')
+                  .fontSize(14)
+                  .fontColor($r('app.color.brand'))
+              } else {
+                Toggle({ type: ToggleType.Switch, isOn: false })
+                  .onChange(async () => {
+                    // TODO：点击申请 user_grant 授权
+                  })
+              }
             }
           }
           .width('100%')
