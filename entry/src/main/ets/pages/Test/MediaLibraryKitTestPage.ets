@@ -1,12 +1,15 @@
 import { permissionManager } from '../../manager'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { picker } from '@kit.CoreFileKit'
+import { dataSharePredicates } from '@kit.ArkData'
 
 @Entry
 @Component
 struct MediaLibraryKitTestPage {
   // 媒体文件(图库) 是否授权
   @State isAuth: boolean = false
+  // 图片数量
+  @State photoCount: number = 0
 
   aboutToAppear() {
     // 申请权限
@@ -40,6 +43,24 @@ struct MediaLibraryKitTestPage {
                   AlertDialog.show({ message: JSON.stringify(photoSelectResult, null, 2) })
                 })
             })
+
+          Button('获取图库资源-图片数量')
+            .onClick(async () => {
+              // 1. 获取图库管理器
+              const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
+              // 2. 准备谓词（查找条件） predicates 是一个类，需要 new 创建类实例
+              const predicates = new dataSharePredicates.DataSharePredicates()
+              // 3. 获取图库资源核心 API： getAssets
+              // 注意： 调用 getAssets 前，需提前申请 IMAGEVIDEO 的权限，否者调用失败
+              const fetchResult = await phAccessHelper.getAssets({
+                fetchColumns: [],
+                // 必传参数：谓词（查找条件）
+                predicates: predicates
+              })
+              // 获取图片数量
+              this.photoCount = fetchResult.getCount()
+            })
+          Text('图片数量：' + this.photoCount)
         }
         .constraintSize({ minHeight: '100%' })
       }
