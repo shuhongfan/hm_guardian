@@ -42,6 +42,10 @@ struct CleanerScanResultPage {
     },// 2
   ]
 
+  aboutToAppear() {
+    cleanerManager.requestPermissions()
+  }
+
   onPageShow() {
     themeManager.settingStatusBarWhite()
     // 页面显示，获取屏幕截图
@@ -64,12 +68,19 @@ struct CleanerScanResultPage {
   async getScreenshotList() {
     // 获取截图列表
     const list = await cleanerManager.getScreenshotList()
+    // 计算节省空间
+    let totalSize = 0
+    list.forEach(item => {
+      // 注意：获取图片尺寸 SIZE ，需要现在 fetchColumns 中添加 SIZE 字段，否者会报错
+      const size = item.get(photoAccessHelper.PhotoKeys.SIZE) as number
+      totalSize += size
+    })
     // 界面更新
     this.list[0] = {
       icon: $r('app.media.ic_clean_pmjt'),
       name: '屏幕截图',
       list: list,
-      size: 0
+      size: totalSize
     }
   }
 
