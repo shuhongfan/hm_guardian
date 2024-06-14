@@ -1,4 +1,5 @@
 import { permissionManager } from '../../manager'
+import { photoAccessHelper } from '@kit.MediaLibraryKit'
 
 @Entry
 @Component
@@ -25,6 +26,17 @@ struct MediaLibraryKitTestPage {
       Scroll() {
         Column({ space: 10 }) {
           Text('媒体文件(图库)读写授权-isAuth：' + this.isAuth)
+
+          Button('使用Picker选择媒体库资源-无需申请权限')
+            .onClick(() => {
+              // 图库 Picker（无需授权）
+              const photoViewPicker = new photoAccessHelper.PhotoViewPicker();
+              // 调用图库选择（原生界面-简单业务场景）
+              photoViewPicker.select()
+                .then((photoSelectResult) => {
+                  AlertDialog.show({ message: JSON.stringify(photoSelectResult, null, 2) })
+                })
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
