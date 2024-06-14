@@ -1,5 +1,6 @@
 import { permissionManager } from '../../manager'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
+import { picker } from '@kit.CoreFileKit'
 
 @Entry
 @Component
@@ -29,8 +30,10 @@ struct MediaLibraryKitTestPage {
 
           Button('使用Picker选择媒体库资源-无需申请权限')
             .onClick(() => {
-              // 图库 Picker（无需授权）
-              const photoViewPicker = new photoAccessHelper.PhotoViewPicker();
+              // 图库 Picker（无需授权），在应用内打开图库，无需跳转到图库应用
+              const photoViewPicker = new photoAccessHelper.PhotoViewPicker()
+              // 另一种 图库 Picker 写法，这种写法会打开新的 图库应用，选择完毕后再返回当前应用
+              // const photoViewPicker = new picker.PhotoViewPicker()
               // 调用图库选择（原生界面-简单业务场景）
               photoViewPicker.select()
                 .then((photoSelectResult) => {
