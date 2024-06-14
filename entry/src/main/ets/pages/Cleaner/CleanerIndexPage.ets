@@ -68,7 +68,7 @@ struct CleanerScanResultPage {
             }
           }
 
-          Text(`已用空间：${Math.round((1 - this.freeSize / this.totalSize) * 100)}%`)
+          Text(`已用空间：${Math.round((1 - this.freeSize / this.totalSize) * 100) || 0}%`)
             .fontSize(14)
             .fontColor($r('app.color.white'))
         }
