@@ -77,16 +77,20 @@ struct MediaLibraryKitTestPage {
               this.photoAssetUri = photoAsset.uri // 图片 uri (路径)
               this.photoAssetDisplayName = photoAsset.displayName // 图片名称
 
-              // 获取图片文件大小
               // 注意事项：若忘记在 fetchColumns 添加查询字段，get 获取时会报错，比较容易踩坑
+              // 获取图片文件大小
+              //  1. 在 fetchColumns 添加 SIZE 字段
+              //  2. 通过 get 获取文件大小
               const size = photoAsset.get(photoAccessHelper.PhotoKeys.SIZE) as number
               // 格式化后展示图片文件大小
               this.photoAssetSize = formatByteLength(size)
 
-              // 获取图片添加日期（添加文件时间距1970年1月1日的秒数值）
-              // 注意事项：ArkTS 中时间戳时毫秒值，秒数值 需要乘 1000 后再用于 dayjs 格式化
+              // 获取图片添加日期
+              //  1. 在 fetchColumns 添加 DATE_ADDED 字段
+              //  2. 通过 get 获取图片添加日期（添加文件时间距1970年1月1日的秒数值）
               const dateAdded = photoAsset.get(photoAccessHelper.PhotoKeys.DATE_ADDED) as number
 
+              // 注意事项：ArkTS 中时间戳时毫秒值，图片添加时间为秒数值，单位存在差异，需要秒数值乘 1000 后，再 dayjs 格式化
               this.photoAssetDateAdded = dayjs(dateAdded * 1000)
                 .format('YYYY-MM-DD HH:mm:ss')
               // AlertDialog.show({
