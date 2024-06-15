@@ -120,6 +120,10 @@ struct HomeEntry {
 struct HomeShortcut {
   // 监听 AppStorage 的数据变化，注意 @Watch 的书写位置
   @StorageLink(PRIVACY_SETTINGS) privacySettings: PrivacySettings = {}
+  // PersistentStorage：持久化存储UI状态
+  // PersistentStorage 将选定的 AppStorage 属性保留在设备磁盘上
+  // PersistentStorage 的持久化变量最好是小于2kb的数据
+  // PersistentStorage 写入磁盘的操作是同步的
   // @StorageLink 双向同步
   @StorageLink('isHidePrivacy') isHidePrivacy: boolean = false
   @State list: IconItem[] = [
@@ -164,9 +168,15 @@ struct HomeShortcut {
     }
   }
 
+  aboutToAppear() {
+    // 页面加载时，基于持久化的 UI 状态更新隐私空间入口
+    this.togglePrivacyEntry()
+  }
+
   // 长按切换隐私空间入口
-  togglePrivacyEntry(item: IconItem) {
-    this.isHidePrivacy = !this.isHidePrivacy
+  togglePrivacyEntry() {
+    // 长按时才切换持久化状态
+    // this.isHidePrivacy = !this.isHidePrivacy
     // 隐私空间
     const privacyItem: IconItem = {
       title: '隐私空间',
@@ -180,7 +190,7 @@ struct HomeShortcut {
       url: '/pages/Calendar/CalendarIndexPage'
     }
     // 长按时切换 隐私空间 和 日历清理
-    if (item.title === '隐私空间') {
+    if (this.isHidePrivacy === true) {
       // 如果是隐私空间，切换成日历清理，反之同理
       this.list[2] = calendarItem
     } else {
@@ -198,7 +208,7 @@ struct HomeShortcut {
               .width(44)
               .aspectRatio(1)
               .draggable(false)
-            Text(item.title + String(this.isHidePrivacy))
+            Text(item.title)
               .fontSize(14)
               .fontWeight(500)
               .fontColor($r('app.color.font'))
@@ -223,7 +233,10 @@ struct HomeShortcut {
               .onAction(() => {
                 // promptAction.showToast({ message: '长按手势触发-直播点赞' })
                 if (index === 2) {
-                  this.togglePrivacyEntry(item)
+                  // 长按时切换隐私空间入口
+                  this.isHidePrivacy = !this.isHidePrivacy
+                  // 更新状态
+                  this.togglePrivacyEntry()
                 }
               })
               .onActionEnd(() => {
