@@ -2,12 +2,13 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../../common/builders'
 import { formatByteLength } from '../../../common/utils'
 import { cleanerManager, themeManager } from '../../../manager'
+import { promptAction } from '@kit.ArkUI'
 
 @Entry
 @Component
 struct CompressPhotoIndexPage {
   @State list: photoAccessHelper.PhotoAsset[] = []
-  @State selectedName: string[] = []
+  @State selectedUris: string[] = []
   @State selectedSize: number = 0
 
   onPageShow() {
@@ -28,9 +29,16 @@ struct CompressPhotoIndexPage {
   }
 
   // 立即瘦身
-  startCompress() {
-    const imageUri = this.list[0].uri
-    cleanerManager.compressImage(imageUri)
+  async startCompress() {
+    // 遍历选中的图片进行压缩
+    this.selectedUris.forEach(item => {
+      cleanerManager.compressImage(item)
+    })
+    promptAction.showToast({ message: this.selectedUris.length + '张图片压缩成功' })
+    // 删除原图
+    await cleanerManager.deletePhotos(this.selectedUris)
+    // 重新获取列表数据，注意修复 ForEach 第三个参数的问题
+    this.getList()
   }
 
   build() {
@@ -47,7 +55,7 @@ struct CompressPhotoIndexPage {
                 .fontSize(16)
                 .fontColor($r('app.color.white'))
 
-                Text(this.selectedName.length + '张可瘦身照片')
+                Text(this.selectedUris.length + '张可瘦身照片')
                   .fontSize(12)
                   .fontColor($r('app.color.white'))
               }
@@ -86,7 +94,7 @@ struct CompressPhotoIndexPage {
                           .borderRadius(6)
                           .clip(true)
                         }
-                      })
+                      }, (item: photoAccessHelper.PhotoAsset) => item.uri)
                     }
                   }
 
@@ -114,19 +122,19 @@ struct CompressPhotoIndexPage {
             CheckboxGroup()
               .selectedColor($r('app.color.brand'))
               .onChange((value) => {
-                this.selectedName = value.name
+                this.selectedUris = value.name
               })
             Text('全选')
               .fontSize(14)
               .fontColor($r('app.color.font2'))
           }
 
-          Button(`立即瘦身(${this.selectedName.length}张）`)
+          Button(`立即瘦身(${this.selectedUris.length}张）`)
             .type(ButtonType.Normal)
             .borderRadius(10)
             .backgroundColor($r('app.color.brand'))
             .layoutWeight(1)
-            .enabled(this.selectedName.length > 0)
+            .enabled(this.selectedUris.length > 0)
             .onClick(() => {
               // TODO：立即瘦身（压缩照片）
               this.startCompress()

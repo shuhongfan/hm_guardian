@@ -92,7 +92,8 @@ class CleanerManager {
   }
 
   // 压缩图片
-  async compressImage(uri: string) {
+  async compressImage(uri: string, quality = 20) {
+    // ---- 压缩图片 ----
     // 创建图片打包器
     const imagePacker = image.createImagePacker()
     // 坑点：createImageSource 不能直接使用 uri，需要先基于 uri 打开文件，再传入文件的 fd
@@ -102,9 +103,11 @@ class CleanerManager {
     // 图片打包(图片重新编码)
     //  参数1: 图片源
     //  参数2: 打包配置：格式、质量 为必传参数
-    const arrayBuffer = await imagePacker.packing(imageSource, { format: 'image/jpeg', quality: 80 })
+    const arrayBuffer = await imagePacker.packing(imageSource, { format: 'image/jpeg', quality: quality })
     // AlertDialog.show({ message: '压缩后文件流大小为：' + formatByteLength(arrayBuffer.byteLength) })
+    // ---- 压缩图片 ----
 
+    // ---- 写入图库 ----
     // 把数据流写入图库中，需要使用到 photoAccessHelper 模块
     const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
     // 创建图片资产，返回 uri 路径
@@ -115,6 +118,7 @@ class CleanerManager {
     fileIo.writeSync(createAssetFile.fd, arrayBuffer)
     // 数据写入完成，关闭文件，释放资源
     fileIo.close(createAssetFile.fd)
+    // ---- 写入图库 ----
   }
 }
 
