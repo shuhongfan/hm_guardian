@@ -24,6 +24,29 @@ struct AuthPatternLockSettingsPage {
   // 控制器
   private patternLockController: PatternLockController = new PatternLockController()
 
+  // TODO：密码输入结束时触发该回调
+  onPatternComplete(input: number[]) {
+    // 保存临时的密码(更新线条颜色用的)
+    this.inputPassword = input
+    // 判断密码长度
+    if (input.length < 4) {
+      // 设置为错误
+      this.errorMessage = '手势密码长度不能小于4位，请重新输入'
+      this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
+    } else {
+      // 设置为正确
+      this.errorMessage = ''
+      this.patternLockController.setChallengeResult(PatternLockChallengeResult.CORRECT)
+    }
+
+    // 输入结束，清空图形界面
+    this.timeoutID = setTimeout(() => {
+      this.patternLockController.reset()
+      // 清空临时密码(更新线条颜色用的)
+      this.inputPassword = []
+    }, 500)
+  }
+
   build() {
     Navigation() {
       // Column() {
@@ -57,19 +80,10 @@ struct AuthPatternLockSettingsPage {
           .pathColor(this.errorMessage && this.inputPassword.length !== 0 ? '#ccff5e5d' : '#cc0a59f7')// 线颜色
           .onDotConnect(() => {
             // 密码输入选中宫格圆点时触发该回调
-            clearInterval(this.timeoutID)
+            clearTimeout(this.timeoutID)
           })
           .onPatternComplete((input: number[]) => {
-            this.inputPassword = input
-            // TODO：密码输入结束时触发该回调
-            if (input.length < 4) {
-              this.errorMessage = '输入错误至少连接4个点'
-              this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
-            }
-
-            this.timeoutID = setTimeout(() => {
-              this.patternLockController.reset()
-            }, 500)
+            this.onPatternComplete(input)
           })
       }
       .padding({ top: 140 })
