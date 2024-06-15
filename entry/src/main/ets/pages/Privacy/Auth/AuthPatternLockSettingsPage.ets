@@ -1,4 +1,3 @@
-import { router } from '@kit.ArkUI'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
 
 interface RouterParams {
@@ -56,7 +55,7 @@ struct AuthPatternLockSettingsPage {
           .pathColor(this.errorMessage && this.inputPassword.length !== 0 ? '#ccff5e5d' : '#cc0a59f7')// 线颜色
           .onDotConnect(() => {
             // 密码输入选中宫格圆点时触发该回调
-            clearInterval(this.timeoutID)
+            clearTimeout(this.timeoutID)
           })
           .onPatternComplete((input: number[]) => {
             // TODO：密码输入结束时触发该回调
