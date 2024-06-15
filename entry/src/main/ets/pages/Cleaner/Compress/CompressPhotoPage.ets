@@ -31,9 +31,12 @@ struct CompressPhotoIndexPage {
   // 立即瘦身
   async startCompress() {
     // 遍历选中的图片进行压缩
-    this.selectedUris.forEach(item => {
-      cleanerManager.compressImage(item)
+    const promiseList = this.selectedUris.map(async (item) => {
+      return await cleanerManager.compressImage(item)
     })
+    // 等待所有任务完成，再让代码往后运行
+    await Promise.all(promiseList)
+    // 成功提示
     promptAction.showToast({ message: this.selectedUris.length + '张图片压缩成功' })
     // 删除原图
     await cleanerManager.deletePhotos(this.selectedUris)
