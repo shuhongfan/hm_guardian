@@ -1,7 +1,7 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { calendarManager } from '@kit.CalendarKit'
 import { NavigationTitleBuilder } from '../../common/builders'
-import { themeManager } from '../../manager'
+import { themeManager, userCalendarManager } from '../../manager'
 
 @Entry
 @Component
@@ -10,6 +10,10 @@ struct CalendarIndexPage {
   @State overdueEvents: calendarManager.Event[] = []
   @State fraudEvents: calendarManager.Event[] = []
   @State isLoading: boolean = false
+
+  aboutToAppear() {
+    userCalendarManager.requestPermissions()
+  }
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
@@ -112,7 +116,17 @@ struct CalendarIndexPage {
             Column({ space: 10 }) {
               Button('添加普通日程')
                 .onClick(async () => {
-                  // 
+                  // 获取默认日历对象
+                  const calendarMgr = calendarManager.getCalendarManager(getContext())
+                  const calendar = await calendarMgr.getCalendar()
+                  // 添加日程
+                  const id = await calendar.addEvent({
+                    type: calendarManager.EventType.NORMAL,
+                    title: '守护助手添加的日程',
+                    startTime: Number(new Date('2024-06-18 12:00:00')),
+                    endTime: Number(new Date('2024-06-18 13:00:00')),
+                  })
+                  promptAction.showToast({ message: '日程添加成功id为：' + id })
                 })
               Button('添加重要日程')
                 .onClick(async () => {

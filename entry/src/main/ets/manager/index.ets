@@ -5,5 +5,7 @@ export * from './PermissionManager'
 
 export * from './CleanerManager'
 
+export * from './UserCalendarManager'
+
 // import { permissionManager } from './PermissionManager'
 // export { permissionManager }
