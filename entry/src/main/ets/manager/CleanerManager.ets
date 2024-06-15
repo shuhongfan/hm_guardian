@@ -3,7 +3,9 @@ import { promptAction } from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { permissionManager } from '.'
 import { dataSharePredicates } from '@kit.ArkData'
-import { KILO_BYTE } from '../common/utils'
+import { formatByteLength, KILO_BYTE } from '../common/utils'
+import { image } from '@kit.ImageKit'
+import { fileIo } from '@kit.CoreFileKit'
 
 class CleanerManager {
   // 权限
@@ -87,6 +89,21 @@ class CleanerManager {
     const list = photoAssets.filter(item => uris.includes(item.uri))
     // 删除图片
     return photoAccessHelper.MediaAssetChangeRequest.deleteAssets(getContext(), list)
+  }
+
+  // 压缩图片
+  async compressImage(uri: string) {
+    // 创建图片打包器
+    const imagePacker = image.createImagePacker()
+    // 坑点：createImageSource 不能直接使用 uri，需要先基于 uri 打开文件，再传入文件的 fd
+    const file = fileIo.openSync(uri)
+    // createImageSource 传入文件标识 fd，获取图片源
+    const imageSource = image.createImageSource(file.fd)
+    // 图片打包
+    //  参数1: 图片源
+    //  参数2: 打包配置：格式、质量 为必传参数
+    const arrayBuffer = await imagePacker.packing(imageSource, { format: 'image/jpeg', quality: 10 })
+    AlertDialog.show({ message: '压缩后文件流大小为：' + formatByteLength(arrayBuffer.byteLength) })
   }
 }
 

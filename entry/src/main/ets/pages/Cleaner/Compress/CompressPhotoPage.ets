@@ -27,6 +27,12 @@ struct CompressPhotoIndexPage {
     this.list = await cleanerManager.getLargeSizeList()
   }
 
+  // 立即瘦身
+  startCompress() {
+    const imageUri = this.list[0].uri
+    cleanerManager.compressImage(imageUri)
+  }
+
   build() {
     Navigation() {
       Stack({ alignContent: Alignment.Bottom }) {
@@ -123,6 +129,7 @@ struct CompressPhotoIndexPage {
             .enabled(this.selectedName.length > 0)
             .onClick(() => {
               // TODO：立即瘦身（压缩照片）
+              this.startCompress()
             })
         }
         .width('100%')
