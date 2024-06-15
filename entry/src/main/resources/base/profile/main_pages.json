@@ -43,6 +43,7 @@
     "pages/Guard/Outdoor/GuardNightPage",
     "pages/Guard/Outdoor/GuardPolicePage",
     "pages/Test/PermissionsTestPage",
-    "pages/Test/MediaLibraryKitTestPage"
+    "pages/Test/MediaLibraryKitTestPage",
+    "pages/Test/PatternTestPage"
   ]
 }
