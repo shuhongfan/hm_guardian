@@ -126,7 +126,8 @@ struct CalendarIndexPage {
                     title: '守护助手添加的重要日程 IMPORTANT',
                     startTime: Number(new Date('2024-06-18 12:00:00')),
                     endTime: Number(new Date('2024-06-18 13:00:00')),
-                    // 日程提醒时间，单位为分钟，0 表示准点提醒，支持显示的时间段，请参考界面截图
+                    // 日程提醒时间，单位为分钟，0 准点提醒，5 提前5分钟提醒
+                    // 支持显示的提醒时间段，请参考原生日程的截图
                     reminderTime: [0, 5]
                   })
                   promptAction.showToast({ message: '日程添加成功id为：' + id })
