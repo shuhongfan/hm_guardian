@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../common/constants'
 import { showDevelopingTips } from '../../common/dev'
 
@@ -162,6 +162,29 @@ struct HomeShortcut {
     }
   }
 
+  // 长按切换隐私空间入口
+  togglePrivacyEntry(item: IconItem) {
+    // 隐私空间
+    const privacyItem: IconItem = {
+      title: '隐私空间',
+      icon: $r('app.media.ic_home_shortcut_yskj'),
+      url: '/pages/Privacy/PrivacyIndexPage'
+    }
+    // 日历清理
+    const calendarItem: IconItem = {
+      title: '日历清理',
+      icon: $r('app.media.ic_home_shortcut_rlql'),
+      url: '/pages/Calendar/CalendarIndexPage'
+    }
+    // 长按时切换 隐私空间 和 日历清理
+    if (item.title === '隐私空间') {
+      // 如果是隐私空间，切换成日历清理，反之同理
+      this.list[2] = calendarItem
+    } else {
+      this.list[2] = privacyItem
+    }
+  }
+
   build() {
     GridRow({ gutter: 10, columns: 3 }) {
       ForEach(this.list, (item: IconItem, index: number) => {
@@ -190,6 +213,20 @@ struct HomeShortcut {
           .onClick(() => {
             this.openShortcutPage(item)
           })
+          // 手势事件
+          .gesture(
+            // 长按手势，可配置 fingers：手指数、duration：长按所需的最短时间、repeat：是否连续触发事件回调
+            LongPressGesture({ fingers: 1, duration: 500, repeat: false })
+              .onAction(() => {
+                // promptAction.showToast({ message: '长按手势触发-直播点赞' })
+                if (index === 2) {
+                  this.togglePrivacyEntry(item)
+                }
+              })
+              .onActionEnd(() => {
+                // promptAction.showToast({ message: '长按结束' })
+              })
+          )
         }
       })
     }
