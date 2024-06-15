@@ -1,7 +1,7 @@
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { NavigationTitleBuilder } from '../../../common/builders'
 import { formatByteLength } from '../../../common/utils'
-import { themeManager } from '../../../manager'
+import { cleanerManager, themeManager } from '../../../manager'
 
 @Entry
 @Component
@@ -18,7 +18,14 @@ struct CompressPhotoIndexPage {
     themeManager.settingStatusBarBlack()
   }
 
+  aboutToAppear() {
+    this.getList()
+  }
+
   // TODO：立即瘦身（压缩照片）
+  async getList() {
+    this.list = await cleanerManager.getLargeSizeList()
+  }
 
   build() {
     Navigation() {

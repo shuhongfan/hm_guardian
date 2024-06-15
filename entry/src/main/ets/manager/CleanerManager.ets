@@ -3,6 +3,7 @@ import { promptAction } from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit'
 import { permissionManager } from '.'
 import { dataSharePredicates } from '@kit.ArkData'
+import { KILO_BYTE } from '../common/utils'
 
 class CleanerManager {
   // 权限
@@ -68,6 +69,15 @@ class CleanerManager {
     const photoAssets = await this.getAssets()
     // 过滤出视频 PhotoType 为 VIDEO
     return photoAssets.filter(item => item.photoType === photoAccessHelper.PhotoType.VIDEO)
+  }
+
+  // 获取大尺寸图片，用于压缩
+  async getLargeSizeList() {
+    // 获取所有图片/视频
+    const photoAssets = await this.getAssets()
+    // 过滤出 超过 200 kb，根据情况进行调整，模拟器只能截图，图片尺寸都比较小，如果是真机，可以设置为超过 2M
+    const largeSize = 200 * KILO_BYTE
+    return photoAssets.filter(item => item.get(photoAccessHelper.PhotoKeys.SIZE) as number > largeSize)
   }
 
   // 删除图片
