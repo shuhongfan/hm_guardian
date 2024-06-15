@@ -5,6 +5,7 @@ interface RouterParams {
   isForgetPassword?: boolean
 }
 
+// 图案密码锁(手势密码) - 密码设置页
 @Entry
 @Component
 struct AuthPatternLockSettingsPage {
@@ -59,7 +60,16 @@ struct AuthPatternLockSettingsPage {
             clearInterval(this.timeoutID)
           })
           .onPatternComplete((input: number[]) => {
+            this.inputPassword = input
             // TODO：密码输入结束时触发该回调
+            if (input.length < 4) {
+              this.errorMessage = '输入错误至少连接4个点'
+              this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
+            }
+
+            this.timeoutID = setTimeout(() => {
+              this.patternLockController.reset()
+            }, 500)
           })
       }
       .padding({ top: 140 })
