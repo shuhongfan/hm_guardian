@@ -33,8 +33,9 @@ struct PatternLockExample {
           // 输入完成触发（手松开）
           promptAction.showToast({ message: '输入完成触发' + input })
           // 输入的密码长度小于5时，提示重新输入
-          if (input === null || input === undefined || input.length < 5) {
+          if (input.length < 5) {
             this.message = 'The password length needs to be greater than 5, please enter again.'
+            this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
             return
           }
           // 判断密码长度是否大于0
@@ -54,14 +55,23 @@ struct PatternLockExample {
             this.message = "Please enter again."
           }
         })
-      Button('Reset PatternLock')
-        .margin(30)
-        .onClick(() => {
-          // 重置密码锁
-          this.patternLockController.reset()
-          this.passwords = []
-          this.message = 'Please input password'
-        })
+      Column({ space: 10 }) {
+        Button('重置组件状态')
+          .onClick(() => {
+            // 重置密码锁
+            this.patternLockController.reset()
+            this.passwords = []
+            this.message = 'Please input password'
+          })
+        Button('设置图案密码正确')
+          .onClick(() => {
+            this.patternLockController.setChallengeResult(PatternLockChallengeResult.CORRECT)
+          })
+        Button('设置图案密码错误')
+          .onClick(() => {
+            this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
+          })
+      }
     }
     .width('100%')
     .height('100%')
