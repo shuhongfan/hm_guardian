@@ -120,6 +120,8 @@ struct HomeEntry {
 struct HomeShortcut {
   // 监听 AppStorage 的数据变化，注意 @Watch 的书写位置
   @StorageLink(PRIVACY_SETTINGS) privacySettings: PrivacySettings = {}
+  // @StorageLink 双向同步
+  @StorageLink('isHidePrivacy') isHidePrivacy: boolean = false
   @State list: IconItem[] = [
     {
       title: '手机瘦身',
@@ -164,6 +166,7 @@ struct HomeShortcut {
 
   // 长按切换隐私空间入口
   togglePrivacyEntry(item: IconItem) {
+    this.isHidePrivacy = !this.isHidePrivacy
     // 隐私空间
     const privacyItem: IconItem = {
       title: '隐私空间',
@@ -195,7 +198,7 @@ struct HomeShortcut {
               .width(44)
               .aspectRatio(1)
               .draggable(false)
-            Text(item.title)
+            Text(item.title + String(this.isHidePrivacy))
               .fontSize(14)
               .fontWeight(500)
               .fontColor($r('app.color.font'))

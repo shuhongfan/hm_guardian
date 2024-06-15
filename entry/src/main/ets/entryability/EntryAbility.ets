@@ -21,6 +21,9 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
+      // 持久化 PersistentStorage 整个项目一个字段只需初始化一次
+      // 温馨提示：PersistentStorage 持久化在 DevEco Studio 5.0.3.400 前有问题，旧版本需写到 pages/Index 页面组件中
+      PersistentStorage.persistProp('isHidePrivacy', false)
     });
   }
 
