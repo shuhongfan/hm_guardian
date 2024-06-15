@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
 
 interface RouterParams {
@@ -37,6 +37,21 @@ struct AuthPatternLockSettingsPage {
       // 设置为正确
       this.errorMessage = ''
       this.patternLockController.setChallengeResult(PatternLockChallengeResult.CORRECT)
+      // 是否为首次输入，firstPassword 数组为空
+      if (this.firstPassword.length === 0) {
+        // 保存首次输入的密码
+        this.firstPassword = input
+      } else {
+        // [] === []  结果为 false，因为对象的对比的是内存地址
+        // [1,2,3] 转换成字符串 => '1,2,3' 后再比较
+        // 对比首次输入的密码 firstPassword 和 当前输入的 input
+        if (this.firstPassword.toString() === input.toString()) {
+          promptAction.showToast({ message: '两次密码相同' })
+        } else {
+          this.errorMessage = '两次输入的密码不相同'
+          this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
+        }
+      }
     }
 
     // 输入结束，清空图形界面
@@ -49,10 +64,11 @@ struct AuthPatternLockSettingsPage {
 
   build() {
     Navigation() {
-      // Column() {
-      //   Text('inputPasswords：' + this.inputPassword)
-      //   Text('firstPasswords：' + this.firstPassword)
-      // }
+      Column() {
+        Text('当前临时输入的密码：' + this.inputPassword)
+        Text('首次输入的密码：' + this.firstPassword)
+      }
+
       Column({ space: 20 }) {
         Column({ space: 10 }) {
           // 请输入密码
