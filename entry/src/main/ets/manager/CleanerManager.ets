@@ -99,11 +99,22 @@ class CleanerManager {
     const file = fileIo.openSync(uri)
     // createImageSource 传入文件标识 fd，获取图片源
     const imageSource = image.createImageSource(file.fd)
-    // 图片打包
+    // 图片打包(图片重新编码)
     //  参数1: 图片源
     //  参数2: 打包配置：格式、质量 为必传参数
-    const arrayBuffer = await imagePacker.packing(imageSource, { format: 'image/jpeg', quality: 10 })
-    AlertDialog.show({ message: '压缩后文件流大小为：' + formatByteLength(arrayBuffer.byteLength) })
+    const arrayBuffer = await imagePacker.packing(imageSource, { format: 'image/jpeg', quality: 80 })
+    // AlertDialog.show({ message: '压缩后文件流大小为：' + formatByteLength(arrayBuffer.byteLength) })
+
+    // 把数据流写入图库中，需要使用到 photoAccessHelper 模块
+    const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(getContext())
+    // 创建图片资产，返回 uri 路径
+    const createAssetUri = await phAccessHelper.createAsset(photoAccessHelper.PhotoType.IMAGE, 'jpg')
+    // 数据写入图库前，需要先打开图库文件 并 设置打开模式为 可写
+    const createAssetFile = fileIo.openSync(createAssetUri, fileIo.OpenMode.READ_WRITE)
+    // writeSync 把压缩后的图片数据流，写入到文件中
+    fileIo.writeSync(createAssetFile.fd, arrayBuffer)
+    // 数据写入完成，关闭文件，释放资源
+    fileIo.close(createAssetFile.fd)
   }
 }
 
