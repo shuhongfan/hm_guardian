@@ -48,6 +48,29 @@ struct UserAuthTestPage {
               // 3. 发起认证
               userAuthInstance.start()
             })
+
+          Button('查询支持的认证能力-检测某一项是否支持即可')
+            .onClick(() => {
+              // 鸿蒙中支持的认证类型
+              const userAuthTypeList: userAuth.UserAuthType[] = [
+                userAuth.UserAuthType.PIN,
+                userAuth.UserAuthType.FINGERPRINT,
+                userAuth.UserAuthType.FACE,
+              ]
+              // map 遍历查询支持的能力，内部返回 true / false
+              const res = userAuthTypeList.map((item) => {
+                try {
+                  userAuth.getAvailableStatus(item, userAuth.AuthTrustLevel.ATL3)
+                  return true
+                } catch {
+                  return false
+                }
+              })
+              // AlertDialog.show({ message: JSON.stringify(res, null, 2) })
+              // some 检查是否有一项支持，有一项支持即返回 true
+              const isSupport = res.some(v => v === true)
+              AlertDialog.show({ message: JSON.stringify(isSupport, null, 2) })
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
