@@ -4,6 +4,10 @@
     "requestPermissions": [
       // 权限等级: normal        对所有应用开放
       // 授权方式: system_grant  系统静默授权，无弹窗
+      // 生物识别和密码(用户认证服务)
+      {
+        "name": "ohos.permission.ACCESS_BIOMETRIC"
+      },
       {
         "name": "ohos.permission.GET_NETWORK_INFO"
       },
