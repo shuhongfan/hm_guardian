@@ -19,14 +19,58 @@ struct AuthPatternLockPage {
   // 图形密码控制器
   private patternLockController: PatternLockController = new PatternLockController()
 
+  // 设置错误信息
+  setErrorMessage(message: string) {
+    // 设置错误提示语
+    this.errorMessage = message
+    // 标记为错误
+    this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
+  }
+
+  // 清空错误信息
+  clearErrorMessage() {
+    // 清空错误提示语
+    this.errorMessage = ''
+    // 标记为正确
+    this.patternLockController.setChallengeResult(PatternLockChallengeResult.CORRECT)
+  }
+
+  // 密码输入结束时触发该回调
+  onPatternComplete(input: number[]) {
+    // 临时密码，用于更新线条颜色用的（用户体验提升）
+    this.inputPasswords = input
+
+    // 1. 判断输入的长度
+    if (input.length < 4) {
+      // 设置错误提示语，更新组件状态为错误
+      this.setErrorMessage('密码长度不小于4位，请重新输入')
+    } else {
+      this.clearErrorMessage()
+      // 2. 对比密码
+      if (this.privacySettings.patternPassword === input.toString()) {
+        router.pushUrl({ url: 'pages/Privacy/PrivacyIndexPage' })
+      } else {
+        this.setErrorMessage('密码错误，请重新输入')
+      }
+    }
+
+    // 输入完成后，清空界面（用户体验提升）
+    this.timeoutID = setTimeout(() => {
+      // 清空图案锁界面
+      this.patternLockController.reset()
+      // 重置临时密码，用于恢复线条颜色
+      this.inputPasswords = []
+    }, 500)
+  }
+
   build() {
     Column() {
       // 标题
       Navigation() {
-        // Column() {
-        //   Text('patternPassword：' + this.privacySettings.patternPassword)
-        //   Text('passwords：' + encryptMD5(this.inputPasswords.toString()))
-        // }
+        Column() {
+          Text('patternPassword：' + this.privacySettings.patternPassword)
+          Text('passwords：' + this.inputPasswords.toString())
+        }
 
         Column({ space: 20 }) {
           Column({ space: 10 }) {
@@ -56,10 +100,11 @@ struct AuthPatternLockPage {
             .enabled(this.isEnable)
             .onDotConnect(() => {
               // 密码输入选中宫格圆点时触发该回调
-              clearInterval(this.timeoutID)
+              clearTimeout(this.timeoutID)
             })
             .onPatternComplete((input: number[]) => {
               // TODO：密码输入结束时触发该回调
+              this.onPatternComplete(input)
             })
 
           Row({ space: 20 }) {
