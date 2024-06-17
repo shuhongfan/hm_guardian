@@ -119,7 +119,7 @@ struct HomeEntry {
 @Component
 struct HomeShortcut {
   // 监听 AppStorage 的数据变化，注意 @Watch 的书写位置
-  @StorageLink(PRIVACY_SETTINGS) privacySettings: PrivacySettings = {}
+  @StorageLink(PRIVACY_SETTINGS) @Watch('onPrivacySettingsChange') privacySettings: PrivacySettings = {}
   // PersistentStorage：持久化存储UI状态
   // PersistentStorage 将选定的 AppStorage 属性保留在设备磁盘上
   // PersistentStorage 的持久化变量最好是小于2kb的数据
@@ -140,7 +140,12 @@ struct HomeShortcut {
     {
       title: '隐私空间',
       icon: $r('app.media.ic_home_shortcut_yskj'),
-      url: '/pages/Privacy/PrivacyIndexPage'
+      // 判断当前有没有设置隐私空间密码
+      //   1. 如果有，就打开校验密码页
+      //   2. 如果没有，就打开设置密码页
+      url: this.privacySettings.patternPassword ?
+        '/pages/Privacy/Auth/AuthPatternLockPage' :
+        '/pages/Privacy/Auth/AuthPatternLockSettingsPage'
     },
     {
       title: '通讯录备份',
@@ -173,6 +178,11 @@ struct HomeShortcut {
     this.togglePrivacyEntry()
   }
 
+  // 当设置发生变化时，也需要更新链接
+  onPrivacySettingsChange() {
+    this.togglePrivacyEntry()
+  }
+
   // 长按切换隐私空间入口
   togglePrivacyEntry() {
     // 长按时才切换持久化状态
@@ -181,7 +191,9 @@ struct HomeShortcut {
     const privacyItem: IconItem = {
       title: '隐私空间',
       icon: $r('app.media.ic_home_shortcut_yskj'),
-      url: '/pages/Privacy/PrivacyIndexPage'
+      url: this.privacySettings.patternPassword ?
+        '/pages/Privacy/Auth/AuthPatternLockPage' :
+        '/pages/Privacy/Auth/AuthPatternLockSettingsPage'
     }
     // 日历清理
     const calendarItem: IconItem = {
