@@ -191,9 +191,12 @@ struct HomeShortcut {
     const privacyItem: IconItem = {
       title: '隐私空间',
       icon: $r('app.media.ic_home_shortcut_yskj'),
-      url: this.privacySettings.patternPassword ?
-        '/pages/Privacy/Auth/AuthPatternLockPage' :
-        '/pages/Privacy/Auth/AuthPatternLockSettingsPage'
+      // 判断当前有没有设置隐私空间密码
+      //   1. 如果有，就打开校验密码页
+      //   2. 如果没有，就打开设置密码页
+      url: this.privacySettings.patternPassword ? // 持久化中是否有密码
+        '/pages/Privacy/Auth/AuthPatternLockPage' : // 校验密码页
+        '/pages/Privacy/Auth/AuthPatternLockSettingsPage' // 设置密码页
     }
     // 日历清理
     const calendarItem: IconItem = {
