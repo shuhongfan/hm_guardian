@@ -1,7 +1,8 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
-import { window } from '@kit.ArkUI';
+import { promptAction, router, window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { PrivacySettings, PRIVACY_SETTINGS } from '../common/constants';
+import { JSON } from '@kit.ArkTS';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -35,13 +36,27 @@ export default class EntryAbility extends UIAbility {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
   }
 
+  // 切前台
   onForeground(): void {
     // Ability has brought to foreground
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onForeground');
+    hilog.info(0x0000, 'testTag', '%{public}s', '---- Ability onForeground');
   }
 
+  // 切后台(回主页/最小化)
   onBackground(): void {
     // Ability has back to background
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
+    hilog.info(0x0000, 'testTag', '%{public}s', '---- Ability onBackground');
+
+    // 如何判断切后台时，时隐私空间的某个页面？
+    // {"index":2,"name":"AuthPatternLockPage","path":"pages/Privacy/Auth/"}
+    const routerState = router.getState()
+    hilog.info(0x0000, 'testTag', '%{public}s', '---- Ability onBackground' + JSON.stringify(routerState));
+    // 判断 path 路径中是否为 隐私空间 的路径
+    if (routerState.path.includes('pages/Privacy')) {
+      // 返回主页，自动销毁中间的页面
+      router.back({
+        url: 'pages/Index'
+      })
+    }
   }
 }
