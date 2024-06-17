@@ -9,7 +9,7 @@ interface RouterParams {
 @Entry
 @Component
 struct AuthPatternLockSettingsPage {
-  // 获取隐私空间设置
+  // 获取隐私空间设置(双向同步,自动更新到磁盘)
   @StorageLink(PRIVACY_SETTINGS) privacySettings: PrivacySettings = {}
   // 正在输入的图形密码
   @State inputPassword: number[] = []
@@ -46,7 +46,12 @@ struct AuthPatternLockSettingsPage {
         // [1,2,3] 转换成字符串 => '1,2,3' 后再比较
         // 对比首次输入的密码 firstPassword 和 当前输入的 input
         if (this.firstPassword.toString() === input.toString()) {
-          promptAction.showToast({ message: '两次密码相同' })
+          // promptAction.showToast({ message: '两次密码相同' })
+          promptAction.showToast({ message: '密码设置成功' })
+          // 保存当前设置密码（持久化）
+          this.privacySettings.patternPassword = input.toString()
+          // 页面跳转
+          router.pushUrl({ url: 'pages/Privacy/PrivacyIndexPage' })
         } else {
           this.errorMessage = '两次输入的密码不相同'
           this.patternLockController.setChallengeResult(PatternLockChallengeResult.WRONG)
@@ -67,6 +72,7 @@ struct AuthPatternLockSettingsPage {
       Column() {
         Text('当前临时输入的密码：' + this.inputPassword)
         Text('首次输入的密码：' + this.firstPassword)
+        Text('持久化存储的密码：' + this.privacySettings.patternPassword)
       }
 
       Column({ space: 20 }) {
