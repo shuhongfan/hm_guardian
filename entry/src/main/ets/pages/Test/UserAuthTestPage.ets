@@ -78,6 +78,16 @@ struct UserAuthTestPage {
               const isSupport = userAuthManager.checkUserAuthSupport()
               AlertDialog.show({ message: JSON.stringify(isSupport, null, 2) })
             })
+
+          Button('发起认证-封装')
+            .onClick(async () => {
+              try {
+                await userAuthManager.startUserAuth()
+                promptAction.showToast({ message: '认证成功，await 后续代码能运行' })
+              } catch (error) {
+                AlertDialog.show({ message: JSON.stringify(error, null, 2) })
+              }
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
