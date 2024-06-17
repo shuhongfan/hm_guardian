@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI'
 import CryptoJS from '@ohos/crypto-js'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
 import { encryptMD5 } from '../../../common/utils'
+import { userAuthManager } from '../../../manager'
 
 @Entry
 @Component
@@ -74,6 +75,21 @@ struct AuthPatternLockPage {
   //   AlertDialog.show({ message: 'hash：' + hash.toString() })
   //   AlertDialog.show({ message: 'hash2：' + hash2.toString() })
   // }
+  aboutToAppear() {
+    // 页面加载完毕，开始生物识别认证
+    this.startUserAuth()
+  }
+
+  // 生物识别认证
+  async startUserAuth() {
+    // 先检查能力
+    if (userAuthManager.checkUserAuthSupport()) {
+      // 开启认证
+      await userAuthManager.startUserAuth()
+      // 认证成功跳转主页
+      router.pushUrl({ url: 'pages/Privacy/PrivacyIndexPage' })
+    }
+  }
 
   build() {
     Column() {
