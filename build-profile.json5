@@ -8,9 +8,9 @@
         "type": "HarmonyOS",
         "material": {
           "certpath": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.cer",
-          "storePassword": "0000001B8EB9C6F5F5D94EB99BDA540048B6896D1B36E6BF50765C7FCBC20AE352BE9597BB54649864EDAE",
+          "storePassword": "0000001B8E0CFFEB3299E13913686828F4CA460ED062DAF6F16DB483046DB7CA051FBD81FFC41C1DD2BE1F",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B84408AC248C2AB7B97C461D2D621941FEA759A1CE59C2CBBE29165DE21EEF0F87B6557080AA3FE",
+          "keyPassword": "0000001BE8F0D115C5BEDD75F7F552C99179D4654F6BD3549B3706BC19A6220E392866A171D8FC488EA8D7",
           "profile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p12"
