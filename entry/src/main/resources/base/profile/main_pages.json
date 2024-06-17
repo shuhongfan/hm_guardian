@@ -45,6 +45,7 @@
     "pages/Test/PermissionsTestPage",
     "pages/Test/MediaLibraryKitTestPage",
     "pages/Test/PatternTestPage",
-    "pages/Test/UserAuthTestPage"
+    "pages/Test/UserAuthTestPage",
+    "pages/Test/DatabaseTestPage"
   ]
 }
