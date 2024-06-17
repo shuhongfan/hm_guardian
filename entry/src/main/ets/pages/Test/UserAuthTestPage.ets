@@ -1,5 +1,6 @@
 import { userAuth } from '@kit.UserAuthenticationKit'
 import { promptAction } from '@kit.ArkUI'
+import { userAuthManager } from '../../manager'
 
 @Entry
 @Component
@@ -69,6 +70,12 @@ struct UserAuthTestPage {
               // AlertDialog.show({ message: JSON.stringify(res, null, 2) })
               // some 检查是否有一项支持，有一项支持即返回 true
               const isSupport = res.some(v => v === true)
+              AlertDialog.show({ message: JSON.stringify(isSupport, null, 2) })
+            })
+
+          Button('查询支持的认证能力-检测某一项是否支持即可-封装')
+            .onClick(() => {
+              const isSupport = userAuthManager.checkUserAuthSupport()
               AlertDialog.show({ message: JSON.stringify(isSupport, null, 2) })
             })
         }
