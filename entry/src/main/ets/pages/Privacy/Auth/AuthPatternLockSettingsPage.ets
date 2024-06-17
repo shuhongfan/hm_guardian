@@ -1,5 +1,6 @@
 import { promptAction, router } from '@kit.ArkUI'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
+import { encryptMD5 } from '../../../common/utils'
 
 interface RouterParams {
   isForgetPassword?: boolean
@@ -49,7 +50,11 @@ struct AuthPatternLockSettingsPage {
           // promptAction.showToast({ message: '两次密码相同' })
           promptAction.showToast({ message: '密码设置成功' })
           // 保存当前设置密码（持久化）
-          this.privacySettings.patternPassword = input.toString()
+          // 持久化存储前先加密，工作中避免存储明文密码
+          //  md5特点：
+          //    1. 不可逆性 --- 根据 MD5 值计算不出原始数据
+          //    2. 唯一性 --- 不同原始数据会有不同的 MD5 值(相同数据得到相同结果)
+          this.privacySettings.patternPassword = encryptMD5(input.toString())
           // 页面跳转
           router.pushUrl({ url: 'pages/Privacy/PrivacyIndexPage' })
         } else {

@@ -1,5 +1,7 @@
 import { router } from '@kit.ArkUI'
+import CryptoJS from '@ohos/crypto-js'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
+import { encryptMD5 } from '../../../common/utils'
 
 @Entry
 @Component
@@ -47,7 +49,8 @@ struct AuthPatternLockPage {
     } else {
       this.clearErrorMessage()
       // 2. 对比密码
-      if (this.privacySettings.patternPassword === input.toString()) {
+      //  由于持久化存储的是加密后的密码，所以当前输入的密码也需要先加密，再进行比较
+      if (this.privacySettings.patternPassword === encryptMD5(input.toString())) {
         router.pushUrl({ url: 'pages/Privacy/PrivacyIndexPage' })
       } else {
         this.setErrorMessage('密码错误，请重新输入')
@@ -62,6 +65,15 @@ struct AuthPatternLockPage {
       this.inputPasswords = []
     }, 500)
   }
+
+  // 测试用的代码
+  // aboutToAppear(): void {
+  //   // 测试
+  //   const hash = CryptoJS.MD5('123456')
+  //   const hash2 = CryptoJS.MD5('123456')
+  //   AlertDialog.show({ message: 'hash：' + hash.toString() })
+  //   AlertDialog.show({ message: 'hash2：' + hash2.toString() })
+  // }
 
   build() {
     Column() {

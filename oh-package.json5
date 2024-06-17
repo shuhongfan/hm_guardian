@@ -7,9 +7,12 @@
   "author": "",
   "license": "",
   "dependencies": {
+    // 格式化日期和时间(鸿蒙和web端都能用)
     "dayjs": "^1.11.7",
+    // 加密库(鸿蒙和web端都能用)
     "@ohos/crypto-js": "2.0.4-rc.1",
     "@wolfx/lodash": "^4.17.21-rc.2",
+    // 网络请求库(鸿蒙和web端都能用)
     "@ohos/axios": "^2.2.0"
   },
   "devDependencies": {
