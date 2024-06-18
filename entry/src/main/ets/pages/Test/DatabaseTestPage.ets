@@ -139,7 +139,7 @@ struct DatabaseTestPage {
               const rowCount = resultSet?.rowCount
               // 踩坑：resultSet?.rowCount 可能会出现 -1，小于 0 时人为修正为 0
               // const rowCount = resultSet?.rowCount as number < 0 ? 0 : resultSet?.rowCount
-              AlertDialog.show({ message: '数据总条数：' + rowCount })
+              // AlertDialog.show({ message: '数据总条数：' + rowCount })
               // 需求2: 查询列表
               const list: privacyNote[] = []
               // resultSet?.goToNextRow() 移动指针到下一行，如果有数据返回 true
@@ -158,6 +158,19 @@ struct DatabaseTestPage {
               }
               // 注意：循环结束后，在 while 结构体外，就能获取到所有数据
               AlertDialog.show({ message: '数据列表：' + JSON.stringify(list, null, 2) })
+            })
+
+          Button('删除数据 - delete')
+            .enabled(this.isDBOpen)
+            .onClick(async () => {
+              // 谓词：查询条件
+              const predicates = new relationalStore.RdbPredicates(this.tableName)
+              // 限定条件
+              predicates.in('id', [15, 16]) // in 查找多项
+              // predicates.equalTo('id', 20) // equalTo 查找一项
+              // 注意：删除数据时，记得配合 predicates 添加限定条件，否则会删除所有数据
+              await this.store?.delete(predicates)
+              promptAction.showToast({ message: '数据删除成功' })
             })
 
           Button('删除数据库文件')
