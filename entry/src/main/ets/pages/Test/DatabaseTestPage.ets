@@ -36,7 +36,9 @@ CREATE TABLE IF NOT EXISTS privacy_note (
 @Entry
 @Component
 struct DatabaseTestPage {
-
+  // 数据库文件是否 创建/打开
+  @State isDBOpen: boolean = false
+  // 数据库对象
   store: relationalStore.RdbStore | null = null
   sql: string = `CREATE TABLE IF NOT EXISTS privacy_note (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,15 +53,18 @@ struct DatabaseTestPage {
         Column({ space: 10 }) {
           Button('创建(打开)数据库文件')
             .onClick(async () => {
-              // 创建数据库文件  getRdbStore
+              // 创建数据库文件(已存在文件则为打开)  getRdbStore
               this.store = await relationalStore.getRdbStore(getContext(), {
                 name: 'heima2.db', // 数据库文件名
                 securityLevel: relationalStore.SecurityLevel.S1 // 数据库安全等级(跨端共享)
               })
-              promptAction.showToast({ message: '数据库文件创建成功' })
+              // 数据库文件是否 创建/打开
+              this.isDBOpen = true
+              promptAction.showToast({ message: '数据库文件创建/打开成功' })
             })
 
           Button('创建表')
+            .enabled(this.isDBOpen)
             .onClick(async () => {
               // 创建表
               await this.store?.executeSql(this.sql)
@@ -67,11 +72,28 @@ struct DatabaseTestPage {
             })
 
           Button('查询表信息')
+            .enabled(this.isDBOpen)
             .onClick(async () => {
               // 查表，谓词传入表名
+              //   this.store      数据库(文件)操作对象
+              //   privacy_note    表名
               const predicates = new relationalStore.RdbPredicates('privacy_note')
               const resultSet = await this.store?.query(predicates)
               promptAction.showToast({ message: '表字段名称' + resultSet?.columnNames })
+            })
+
+          Button('新增数据')
+            .enabled(this.isDBOpen)
+            .onClick(async () => {
+              // insert 新增数据，返回值为新增数据的 id
+              // 注意事项：insert 新增的时候，对象的 key: value 都要符合建表时的 字段和类型
+              const id = await this.store?.insert('privacy_note', {
+                id: null,
+                title: '测试的标题',
+                content: '测试的内容',
+                date_added: Date.now(),
+              })
+              promptAction.showToast({ message: '新增数据成功，id为：' + id })
             })
 
           Button('删除数据库文件')
