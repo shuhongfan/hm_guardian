@@ -60,7 +60,7 @@ struct DatabaseTestPage {
     Navigation() {
       Scroll() {
         Column({ space: 10 }) {
-          Button('创建(打开)数据库文件')
+          Button('创建(打开)数据库文件 - getRdbStore')
             .onClick(async () => {
               // 创建数据库文件(已存在文件则为打开)  getRdbStore
               this.store = await relationalStore.getRdbStore(getContext(), {
@@ -72,7 +72,7 @@ struct DatabaseTestPage {
               promptAction.showToast({ message: '数据库文件创建/打开成功' })
             })
 
-          Button('创建表')
+          Button('创建表 - executeSql')
             .enabled(this.isDBOpen)
             .onClick(async () => {
               // 创建表
@@ -80,7 +80,7 @@ struct DatabaseTestPage {
               promptAction.showToast({ message: '建表成功' })
             })
 
-          Button('查询表信息')
+          Button('查询表信息 - query')
             .enabled(this.isDBOpen)
             .onClick(async () => {
               // 查表，谓词传入表名
@@ -91,7 +91,7 @@ struct DatabaseTestPage {
               promptAction.showToast({ message: '表字段名称' + resultSet?.columnNames })
             })
 
-          Button('新增数据')
+          Button('新增数据 - insert')
             .enabled(this.isDBOpen)
             .onClick(async () => {
               // insert 新增数据，返回值为新增数据的 id
@@ -112,7 +112,7 @@ struct DatabaseTestPage {
               //       3. 点击数据->网格视图  即可查看数据
             })
 
-          Button('查询数据')
+          Button('查询数据 - query')
             .enabled(this.isDBOpen)
             .onClick(async () => {
               // predicates  谓词(查询条件)
