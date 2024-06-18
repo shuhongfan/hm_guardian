@@ -1,6 +1,7 @@
 import { router } from '@kit.ArkUI'
 import dayjs from 'dayjs'
 import { EmptyTipsComp } from '../../../common/components'
+import { privacyNoteDB } from '../../../database'
 
 // 隐私笔记
 interface NoteItem {
@@ -16,6 +17,14 @@ interface NoteItem {
 struct NoteIndexPage {
   // 笔记列表
   @State list: NoteItem[] = []
+
+  onPageShow(): void {
+    this.getList()
+  }
+
+  async getList() {
+    this.list = await privacyNoteDB.query()
+  }
 
   @Builder
   swipeActionEnd(id: number) {

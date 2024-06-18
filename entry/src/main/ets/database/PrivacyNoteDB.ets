@@ -55,6 +55,34 @@ class PrivacyNoteDB {
     // 新增数据(表名, 数据)
     return store.insert(this.tableName, value)
   }
+
+  // 查询数据
+  async query() {
+    // 创建/打开数据库文件
+    const store = await this.getStoreInstance()
+    // 谓词(条件)
+    const predicates = new relationalStore.RdbPredicates(this.tableName)
+    predicates.orderByDesc('id') // 倒序：由大到小
+    // 根据谓词怕洗
+    const resultSet = await store.query(predicates)
+    // 准备对象数组
+    const list: PrivacyNoteDBInfo[] = []
+    // 指针移动到下一行
+    while (resultSet.goToNextRow()) {
+      // 按列提取数据
+      const item: PrivacyNoteDBInfo = {
+        id: resultSet.getLong(0),
+        title: resultSet.getString(1),
+        content: resultSet.getString(2),
+        date_added: resultSet.getLong(3),
+      }
+      // 数据追加
+      list.push(item)
+    }
+    // 循环结束后，返回数组
+    return list
+  }
+
 }
 
 // 通过小写 p 开头的类实例操作数据库，创建数据库，建表，增、删、查、改
