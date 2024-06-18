@@ -173,6 +173,19 @@ struct DatabaseTestPage {
               promptAction.showToast({ message: '数据删除成功' })
             })
 
+          Button('更新数据 - update')
+            .onClick(async () => {
+              // 谓词：查询条件
+              const predicates = new relationalStore.RdbPredicates(this.tableName)
+              predicates.equalTo('id', 21) // 根据 id 查找一项
+              // 注意：更新数据时，记得配合 predicates 添加限定条件，否则会修改所有数据
+              await this.store?.update({
+                title: '修改后的标题',
+                content: '写代码能饱'
+              } as privacyNote, predicates)
+              promptAction.showToast({ message: '数据更新成功' })
+            })
+
           Button('删除数据库文件')
             .enabled(false)
             .onClick(async () => {
