@@ -11,6 +11,10 @@ export interface PrivacyNoteDBInfo extends ValuesBucket {
 
 // 隐私笔记数据库封装
 class PrivacyNoteDB {
+  // public        公开的(外部可访问)
+  // private       私有的(外部不可访问)
+  // constructor() 构造器(new 时候自动运行)
+
   // 操作数据库的实例(数据库文件)
   private store: relationalStore.RdbStore | null = null
   // 数据库表名
@@ -24,7 +28,7 @@ class PrivacyNoteDB {
       )`
 
   // 获取数据库操作的实例(创建/打开数据库文件)
-  async getStoreInstance() {
+  private async getStoreInstance() {
     // 创建/打开数据库文件
     const store = await relationalStore.getRdbStore(getContext(), {
       name: 'guardian.db', // 数据库文件名
