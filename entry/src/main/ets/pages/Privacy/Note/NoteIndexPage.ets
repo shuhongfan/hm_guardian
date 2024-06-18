@@ -10,6 +10,7 @@ interface NoteItem {
   date_added: number
 }
 
+// 隐私笔记主页-负责列表渲染 和 删除
 @Entry
 @Component
 struct NoteIndexPage {

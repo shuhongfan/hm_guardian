@@ -1,8 +1,13 @@
 // 页面参数
+import { privacyNoteDB } from '../../../database'
+import { promptAction, router } from '@kit.ArkUI'
+
 interface RouterParams {
   id?: number
 }
 
+
+// 隐私笔记表单页-负责 新增 和 修改
 @Entry
 @Component
 struct NoteDetailPage {
@@ -13,6 +18,19 @@ struct NoteDetailPage {
   // 页面参数
   @State routerParams: RouterParams = {}
 
+  // 新增/保存
+  async onSubmit() {
+    // 新增
+    const id = await privacyNoteDB.insert({
+      id: null,
+      title: this.title,
+      content: this.content,
+      date_added: Date.now()
+    })
+    promptAction.showToast({ message: '保存成功' + id })
+    router.back()
+  }
+
   @Builder
   NavigationMenus() {
     Row() {
@@ -22,6 +40,7 @@ struct NoteDetailPage {
         .enabled(this.title.trim() !== '')
         .onClick(() => {
           // TODO：保存/新增
+          this.onSubmit()
         })
     }
     .height('100%')
