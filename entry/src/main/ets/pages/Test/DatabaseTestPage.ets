@@ -48,7 +48,8 @@ struct DatabaseTestPage {
   @State isDBOpen: boolean = false
   // 数据库对象
   store: relationalStore.RdbStore | null = null
-  sql: string = `CREATE TABLE IF NOT EXISTS privacy_note (
+  tableName: string = 'privacy_note'
+  sql: string = `CREATE TABLE IF NOT EXISTS ${this.tableName} (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
@@ -85,7 +86,7 @@ struct DatabaseTestPage {
               // 查表，谓词传入表名
               //   this.store      数据库(文件)操作对象
               //   privacy_note    表名
-              const predicates = new relationalStore.RdbPredicates('privacy_note')
+              const predicates = new relationalStore.RdbPredicates(this.tableName)
               const resultSet = await this.store?.query(predicates)
               promptAction.showToast({ message: '表字段名称' + resultSet?.columnNames })
             })
@@ -95,7 +96,7 @@ struct DatabaseTestPage {
             .onClick(async () => {
               // insert 新增数据，返回值为新增数据的 id
               // 注意事项：insert 新增的时候，对象的 key: value 都要符合建表时的 字段和类型
-              const id = await this.store?.insert('privacy_note', {
+              const id = await this.store?.insert(this.tableName, {
                 id: null,
                 title: '测试的标题',
                 content: '测试的内容',
@@ -109,6 +110,22 @@ struct DatabaseTestPage {
               //       1. 双击数据库文件(heima.db)
               //       2. 双击表(privacy_note)
               //       3. 点击数据->网格视图  即可查看数据
+            })
+
+          Button('查询数据')
+            .enabled(this.isDBOpen)
+            .onClick(async () => {
+              // predicates  谓词(查询条件)
+              const predicates = new relationalStore.RdbPredicates(this.tableName)
+              // resultSet   结果集(数据)
+              const resultSet = await this.store?.query(predicates)
+              // 需求1. 查询总数量(行数)
+              // resultSet.rowCount 数据总数量(行数)
+              const rowCount = resultSet?.rowCount
+              // 踩坑：resultSet?.rowCount 可能会出现 -1，小于 0 时人为修正为 0
+              // const rowCount = resultSet?.rowCount as number < 0 ? 0 : resultSet?.rowCount
+              AlertDialog.show({ message: '数据总条数：' + rowCount })
+              // 需求2: 查询列表
             })
 
           Button('删除数据库文件')
