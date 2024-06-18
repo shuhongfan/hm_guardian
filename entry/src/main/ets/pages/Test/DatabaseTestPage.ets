@@ -117,6 +117,21 @@ struct DatabaseTestPage {
             .onClick(async () => {
               // predicates  谓词(查询条件)
               const predicates = new relationalStore.RdbPredicates(this.tableName)
+              // predicates
+              //     .orderByAsc('字段名')  // 正序：按字段从小到大   如：微信聊天消息
+              //     .orderByDesc('字段名') // 倒序：按字段从大到小   如：微信朋友圈
+
+              //     .in('字段名', 数组)      // 查找多条   相当于:  includes()
+              //     .equalTo('字段名', 值)   // 查找单条   相当于:  ===
+
+              //     .offsetAs(3)          // 偏移
+              //     .and()                // &&
+              //     .limitAs(3)           // 提取数量
+
+              predicates.orderByDesc('id') // 根据 id 倒序排列
+
+              // predicates.in('id', [3, 2, 5])
+              // predicates.equalTo('id', 3)
               // resultSet   结果集(数据)
               const resultSet = await this.store?.query(predicates)
               // 需求1. 查询总数量(行数)
