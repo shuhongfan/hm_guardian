@@ -18,6 +18,25 @@ struct NoteDetailPage {
   // 页面参数
   @State routerParams: RouterParams = {}
 
+  aboutToAppear(): void {
+    const params = router.getParams() as RouterParams
+    if (params) {
+      this.routerParams = params
+      // 获取笔记详情
+      this.getDetail()
+    }
+  }
+
+  // 获取笔记详情-回显到页面中
+  async getDetail() {
+    const list = await privacyNoteDB.query(this.routerParams.id)
+    const detail = list[0]
+    if (detail) {
+      this.title = detail.title
+      this.content = detail.content
+    }
+  }
+
   // 新增/保存
   async onSubmit() {
     // 新增
@@ -33,6 +52,8 @@ struct NoteDetailPage {
 
   // 当用户点击返回按钮时触发
   onBackPress(): boolean | void {
+    // 如果有 id 表示修改，修改时使用默认返回逻辑
+    if (this.routerParams.id) { return false }
     // 自己处理返回逻辑
     promptAction.showDialog({
       title: '温馨提示',

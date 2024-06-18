@@ -61,12 +61,16 @@ class PrivacyNoteDB {
   }
 
   // 查询数据
-  async query() {
+  async query(id?: number) {
     // 创建/打开数据库文件
     const store = await this.getStoreInstance()
     // 谓词(条件)
     const predicates = new relationalStore.RdbPredicates(this.tableName)
-    predicates.orderByDesc('id') // 倒序：由大到小
+    if (id) {
+      predicates.equalTo('id', id) // 如果有 id，就根据 id 查找即可
+    } else {
+      predicates.orderByDesc('id') // 倒序：由大到小
+    }
     // 根据谓词排序
     const resultSet = await store.query(predicates)
     // 准备对象数组
