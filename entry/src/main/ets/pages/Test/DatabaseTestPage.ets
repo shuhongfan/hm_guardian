@@ -103,12 +103,12 @@ struct DatabaseTestPage {
               } as privacyNote)
               promptAction.showToast({ message: '新增数据成功，id为：' + id })
               // 如何通过 SQLiteStudio 打开数据库文件
-              //   1. 导出 /data/app/el2/100/database/{包名}/entry/rdb 路径下的数据库文件
+              //   1. 通过 DevEco Studio 导出 /data/app/el2/100/database/{包名}/entry/rdb 路径下的数据库文件夹
               //   2. 通过 SQLiteStudio 添加数据库 heima.db 文件关联
               //   3. 在 SQLiteStudio 软件左侧
               //       1. 双击数据库文件(heima.db)
               //       2. 双击表(privacy_note)
-              //       3. 点击数据-网格视图
+              //       3. 点击数据->网格视图  即可查看数据
             })
 
           Button('删除数据库文件')
