@@ -1,4 +1,4 @@
-import { relationalStore } from '@kit.ArkData'
+import { relationalStore, ValuesBucket } from '@kit.ArkData'
 import { promptAction } from '@kit.ArkUI'
 
 /*
@@ -32,6 +32,14 @@ CREATE TABLE IF NOT EXISTS privacy_note (
     date_added INTEGER NOT NULL
 );
  */
+
+// ValuesBucket 数据库值的类型
+interface privacyNote extends ValuesBucket {
+  id: number | null
+  title: string
+  content: string
+  date_added: number
+}
 
 @Entry
 @Component
@@ -91,9 +99,16 @@ struct DatabaseTestPage {
                 id: null,
                 title: '测试的标题',
                 content: '测试的内容',
-                date_added: Date.now(),
-              })
+                date_added: Date.now()
+              } as privacyNote)
               promptAction.showToast({ message: '新增数据成功，id为：' + id })
+              // 如何通过 SQLiteStudio 打开数据库文件
+              //   1. 导出 /data/app/el2/100/database/{包名}/entry/rdb 路径下的数据库文件
+              //   2. 通过 SQLiteStudio 添加数据库 heima.db 文件关联
+              //   3. 在 SQLiteStudio 软件左侧
+              //       1. 双击数据库文件(heima.db)
+              //       2. 双击表(privacy_note)
+              //       3. 点击数据-网格视图
             })
 
           Button('删除数据库文件')
