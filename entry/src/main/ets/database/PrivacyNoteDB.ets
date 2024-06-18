@@ -67,7 +67,7 @@ class PrivacyNoteDB {
     // 谓词(条件)
     const predicates = new relationalStore.RdbPredicates(this.tableName)
     predicates.orderByDesc('id') // 倒序：由大到小
-    // 根据谓词怕洗
+    // 根据谓词排序
     const resultSet = await store.query(predicates)
     // 准备对象数组
     const list: PrivacyNoteDBInfo[] = []
@@ -89,6 +89,18 @@ class PrivacyNoteDB {
     resultSet.close()
     // 循环结束后，返回数组
     return list
+  }
+
+  // 删除
+  async delete(id: number) {
+    // 创建/打开数据库文件
+    const store = await this.getStoreInstance()
+    // 谓词条件
+    const predicates = new relationalStore.RdbPredicates(this.tableName)
+    // 匹配 id 用于删除
+    predicates.equalTo('id', id)
+    // 删除
+    return store.delete(predicates)
   }
 
 }

@@ -1,29 +1,28 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import dayjs from 'dayjs'
 import { EmptyTipsComp } from '../../../common/components'
-import { privacyNoteDB } from '../../../database'
-
-// 隐私笔记
-interface NoteItem {
-  id: number | null
-  title: string
-  content: string
-  date_added: number
-}
+import { privacyNoteDB, PrivacyNoteDBInfo } from '../../../database'
 
 // 隐私笔记主页-负责列表渲染 和 删除
 @Entry
 @Component
 struct NoteIndexPage {
   // 笔记列表
-  @State list: NoteItem[] = []
+  @State list: PrivacyNoteDBInfo[] = []
 
   onPageShow(): void {
     this.getList()
   }
 
+  // 获取列表
   async getList() {
     this.list = await privacyNoteDB.query()
+  }
+
+  // 删除数据
+  async deleteData(id: number) {
+    await privacyNoteDB.delete(id)
+    this.getList()
   }
 
   @Builder
@@ -36,6 +35,7 @@ struct NoteIndexPage {
         .backgroundColor('#FF5E5D')
         .onClick(() => {
           // TODO：删除
+          this.deleteData(id)
         })
     }
     .height('100%')
@@ -48,7 +48,7 @@ struct NoteIndexPage {
         if (this.list.length) {
           Column() {
             List() {
-              ForEach(this.list, (item: NoteItem) => {
+              ForEach(this.list, (item: PrivacyNoteDBInfo) => {
                 ListItem() {
                   Row() {
                     Column() {
@@ -83,11 +83,14 @@ struct NoteIndexPage {
                 .swipeAction({
                   end: {
                     builder: () => { this.swipeActionEnd(item.id) },
+                    // 侧滑到一定距离会触发 onAction
                     onAction: () => {
                       animateTo({ duration: 1000 }, () => {
                         // TODO：侧滑删除
+                        this.deleteData(item.id)
                       })
                     },
+                    // onAction 侧滑距离
                     actionAreaDistance: 56,
                   },
                   edgeEffect: SwipeEdgeEffect.None
