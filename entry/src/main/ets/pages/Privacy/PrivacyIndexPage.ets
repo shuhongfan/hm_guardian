@@ -35,8 +35,9 @@ struct PrivacyIndexPage {
     .padding({ left: 25 })
   }
 
-  // 修复侧滑返回问题
+  // 当用户点击返回按钮时触发
   onBackPress() {
+    // 销毁隐私空间所有页面，直接返回首页
     router.back({ url: 'pages/Index' })
     return true
   }

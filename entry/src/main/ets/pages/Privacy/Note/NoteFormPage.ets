@@ -31,6 +31,28 @@ struct NoteDetailPage {
     router.back()
   }
 
+  // 当用户点击返回按钮时触发
+  onBackPress(): boolean | void {
+    // 自己处理返回逻辑
+    promptAction.showDialog({
+      title: '温馨提示',
+      message: '您输入的内容还没有保存，是否放弃？',
+      alignment: DialogAlignment.Center,
+      buttons: [
+        { text: '取消', color: $r('app.color.font_sub') },
+        { text: '确定', color: $r('app.color.brand') },
+      ]
+    })
+      .then((res) => {
+        if (res.index === 1) {
+          // 用户点击了确定时，才返回上一页
+          router.back()
+        }
+      })
+    // 阻断默认返回的行为
+    return true
+  }
+
   @Builder
   NavigationMenus() {
     Row() {
