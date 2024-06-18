@@ -39,14 +39,24 @@ struct NoteDetailPage {
 
   // 新增/保存
   async onSubmit() {
-    // 新增
-    const id = await privacyNoteDB.insert({
-      id: null,
-      title: this.title,
-      content: this.content,
-      date_added: Date.now()
-    })
-    promptAction.showToast({ message: '保存成功' + id })
+    if (this.routerParams.id) {
+      // 如果有id就表示修改
+      await privacyNoteDB.update({
+        id: this.routerParams.id,
+        title: this.title,
+        content: this.content,
+        date_added: Date.now()
+      })
+    } else {
+      // 没有 id 才新增
+      await privacyNoteDB.insert({
+        id: null,
+        title: this.title,
+        content: this.content,
+        date_added: Date.now()
+      })
+    }
+    promptAction.showToast({ message: '保存成功' })
     router.back()
   }
 

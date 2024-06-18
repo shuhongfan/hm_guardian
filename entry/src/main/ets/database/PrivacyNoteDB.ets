@@ -107,6 +107,21 @@ class PrivacyNoteDB {
     return store.delete(predicates)
   }
 
+  // 修改
+  async update(value: PrivacyNoteDBInfo) {
+    if (!value.id) {
+      return Promise.reject()
+    }
+    // 创建/打开数据库文件
+    const store = await this.getStoreInstance()
+    // 谓词条件
+    const predicates = new relationalStore.RdbPredicates(this.tableName)
+    // 匹配 id 用于更新
+    predicates.equalTo('id', value.id)
+    // 更新
+    return store.update(value, predicates)
+  }
+
 }
 
 // 通过小写 p 开头的类实例操作数据库，创建数据库，建表，增、删、查、改
