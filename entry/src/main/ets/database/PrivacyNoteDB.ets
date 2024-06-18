@@ -27,8 +27,8 @@ class PrivacyNoteDB {
   async getStoreInstance() {
     // 创建/打开数据库文件
     const store = await relationalStore.getRdbStore(getContext(), {
-      name: 'guardian.db',
-      securityLevel: relationalStore.SecurityLevel.S1
+      name: 'guardian.db', // 数据库文件名
+      securityLevel: relationalStore.SecurityLevel.S1 // 安全等级(跨设备共享等级)
     })
     // return 操作数据库的实例
     return store
@@ -39,7 +39,7 @@ class PrivacyNoteDB {
     // 创建/打开数据库文件
     this.getStoreInstance()
       .then(store => {
-        // 建表
+        // 执行 sql 语句，用于创建数据库的表
         store.executeSql(this.sqlCreate)
       })
   }
@@ -48,7 +48,7 @@ class PrivacyNoteDB {
   async insert(value: PrivacyNoteDBInfo) {
     // 创建/打开数据库文件
     const store = await this.getStoreInstance()
-    // 新增数据
+    // 新增数据(表名, 数据)
     return store.insert(this.tableName, value)
   }
 }
