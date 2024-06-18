@@ -29,13 +29,17 @@ class PrivacyNoteDB {
 
   // 获取数据库操作的实例(创建/打开数据库文件)
   private async getStoreInstance() {
+    // 如果 store 已保存，直接返回即可（性能优化）
+    if (this.store) {
+      return this.store
+    }
     // 创建/打开数据库文件
-    const store = await relationalStore.getRdbStore(getContext(), {
+    this.store = await relationalStore.getRdbStore(getContext(), {
       name: 'guardian.db', // 数据库文件名
       securityLevel: relationalStore.SecurityLevel.S1 // 安全等级(跨设备共享等级)
     })
     // return 操作数据库的实例
-    return store
+    return this.store
   }
 
   // 类的构造器，new 的时候会自动触发
@@ -70,15 +74,19 @@ class PrivacyNoteDB {
     // 指针移动到下一行
     while (resultSet.goToNextRow()) {
       // 按列提取数据
-      const item: PrivacyNoteDBInfo = {
-        id: resultSet.getLong(0),
-        title: resultSet.getString(1),
-        content: resultSet.getString(2),
-        date_added: resultSet.getLong(3),
-      }
+      // const item: PrivacyNoteDBInfo = {
+      //   id: resultSet.getLong(0),
+      //   title: resultSet.getString(1),
+      //   content: resultSet.getString(2),
+      //   date_added: resultSet.getLong(3),
+      // }
+      // API 11 新增：获取当前行的数据，代码化简
+      const item = resultSet.getRow() as PrivacyNoteDBInfo
       // 数据追加
       list.push(item)
     }
+    // 释放结果集，释放资源（性能优化）
+    resultSet.close()
     // 循环结束后，返回数组
     return list
   }
