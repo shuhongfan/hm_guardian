@@ -126,6 +126,23 @@ struct DatabaseTestPage {
               // const rowCount = resultSet?.rowCount as number < 0 ? 0 : resultSet?.rowCount
               AlertDialog.show({ message: '数据总条数：' + rowCount })
               // 需求2: 查询列表
+              const list: privacyNote[] = []
+              // resultSet?.goToNextRow() 移动指针到下一行，如果有数据返回 true
+              while (resultSet?.goToNextRow()) {
+                // 循环时：按列索引提取数据
+                const item: privacyNote = {
+                  // getLong(列索引)      提取整数
+                  // getString(列索引)    提取字符串
+                  id: resultSet.getLong(0),
+                  title: resultSet.getString(1),
+                  content: resultSet.getString(2),
+                  date_added: resultSet.getLong(3),
+                }
+                // 循环时：追加到数组中
+                list.push(item)
+              }
+              // 注意：循环结束后，在 while 结构体外，就能获取到所有数据
+              AlertDialog.show({ message: '数据列表：' + JSON.stringify(list, null, 2) })
             })
 
           Button('删除数据库文件')
