@@ -33,6 +33,24 @@ class PrivacyNoteDB {
     // return 操作数据库的实例
     return store
   }
+
+  // 类的构造器，new 的时候会自动触发
+  constructor() {
+    // 创建/打开数据库文件
+    this.getStoreInstance()
+      .then(store => {
+        // 建表
+        store.executeSql(this.sqlCreate)
+      })
+  }
+
+  // 新增数据
+  async insert(value: PrivacyNoteDBInfo) {
+    // 创建/打开数据库文件
+    const store = await this.getStoreInstance()
+    // 新增数据
+    return store.insert(this.tableName, value)
+  }
 }
 
 // 通过小写 p 开头的类实例操作数据库，创建数据库，建表，增、删、查、改

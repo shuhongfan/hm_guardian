@@ -197,10 +197,20 @@ struct DatabaseTestPage {
             })
           Divider()
             .strokeWidth(1)
-          Button('创建/打开数据库文件-封装')
+          // Button('创建/打开数据库文件-封装')
+          //   .onClick(async () => {
+          //     await privacyNoteDB.getStoreInstance()
+          //     promptAction.showToast({ message: '隐私笔记的数据库创建成功' })
+          //   })
+          Button('新增-封装')
             .onClick(async () => {
-              await privacyNoteDB.getStoreInstance()
-              promptAction.showToast({ message: '隐私笔记的数据库创建成功' })
+              const id = await privacyNoteDB.insert({
+                id: null,
+                title: '测试的标题',
+                content: '测试的内容',
+                date_added: Date.now()
+              })
+              promptAction.showToast({ message: '新增数据成功：' + id })
             })
         }
         .constraintSize({ minHeight: '100%' })
