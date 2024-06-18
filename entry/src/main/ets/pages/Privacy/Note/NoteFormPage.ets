@@ -19,8 +19,10 @@ struct NoteDetailPage {
   @State routerParams: RouterParams = {}
 
   aboutToAppear(): void {
+    // 获取路由参数
     const params = router.getParams() as RouterParams
     if (params) {
+      // 保存路由参数
       this.routerParams = params
       // 获取笔记详情
       this.getDetail()
@@ -29,18 +31,21 @@ struct NoteDetailPage {
 
   // 获取笔记详情-回显到页面中
   async getDetail() {
+    // 根据 id 查找笔记
     const list = await privacyNoteDB.query(this.routerParams.id)
+    // 提取出笔记详情
     const detail = list[0]
+    // 如果有笔记详情，回显到页面中
     if (detail) {
       this.title = detail.title
       this.content = detail.content
     }
   }
 
-  // 新增/保存
+  // 保存(新增/修改)
   async onSubmit() {
     if (this.routerParams.id) {
-      // 如果有id就表示修改
+      // 如果有 id 调用修改 update
       await privacyNoteDB.update({
         id: this.routerParams.id,
         title: this.title,
@@ -48,7 +53,7 @@ struct NoteDetailPage {
         date_added: Date.now()
       })
     } else {
-      // 没有 id 才新增
+      // 没有 id 调用新增 insert
       await privacyNoteDB.insert({
         id: null,
         title: this.title,
@@ -56,6 +61,7 @@ struct NoteDetailPage {
         date_added: Date.now()
       })
     }
+    // 等待 await 保存(新增/修改)完成后，返回列表页
     promptAction.showToast({ message: '保存成功' })
     router.back()
   }
