@@ -1,5 +1,6 @@
 import { relationalStore, ValuesBucket } from '@kit.ArkData'
 import { promptAction } from '@kit.ArkUI'
+import { privacyNoteDB } from '../../database'
 
 /*
 可通过 AI 辅助，基于 ArkTS 的 interface 生成对应的建表语句：
@@ -174,6 +175,7 @@ struct DatabaseTestPage {
             })
 
           Button('更新数据 - update')
+            .enabled(this.isDBOpen)
             .onClick(async () => {
               // 谓词：查询条件
               const predicates = new relationalStore.RdbPredicates(this.tableName)
@@ -192,6 +194,13 @@ struct DatabaseTestPage {
               // 删除数据库文件 deleteRdbStore
               await relationalStore.deleteRdbStore(getContext(), 'heima2.db')
               promptAction.showToast({ message: '数据库文件删除成功' })
+            })
+          Divider()
+            .strokeWidth(1)
+          Button('创建/打开数据库文件-封装')
+            .onClick(async () => {
+              await privacyNoteDB.getStoreInstance()
+              promptAction.showToast({ message: '隐私笔记的数据库创建成功' })
             })
         }
         .constraintSize({ minHeight: '100%' })
