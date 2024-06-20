@@ -65,15 +65,18 @@ struct AudioCapturerTestPage {
                 // 保存起来，方便其他地方使用
                 this.audioCapturer = audioCapturer
                 this.isCreate = true
-                // ------ 文件系统 ------
-                //   1. 创建并打开本地文件
+                // ------ 文件系统 fileIo ------
+                //   1) 创建并打开本地文件
                 const context = getContext()
-                //   通过应用上下文，获取到应用的 files 路径
-                const filePath = context.filesDir + '/' + 'test.wav'
-                fileIo.openSync(filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
+                //   2) 通过应用上下文，获取到应用的 files 路径
+                const filePath = context.filesDir + '/' + Date.now() + '.wav'
+                //   3) 创建并打开文件，注意打开模式选择可读可写 READ_WRITE
+                const file = fileIo.openSync(filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
                 // ------ 文件系统 ------
                 // 2. 订阅音频数据读入
                 audioCapturer.on('readData', (buffer) => {
+                  //  4) 把 buffer 写入到打开的文件中(file.fd为打开文件后标识)
+                  fileIo.writeSync(file.fd, buffer)
                   console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
                 })
                 // // 2.x 订阅采集器状态
