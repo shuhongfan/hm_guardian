@@ -74,6 +74,18 @@ class AudioCapturerManager {
     // 3. 开始
     audioCapturer.start()
   }
+
+  // 结束录音采集
+  async stopRecorder() {
+    // 获取音频采集器
+    const audioCapturer = await this.getAudioCapturer()
+    // 1. 停止录音
+    await audioCapturer.stop()
+    // 2. 释放资源和硬件占用
+    audioCapturer.release()
+    // 3. 释放变量，对象重新赋值为 null，可以被 垃圾回收机制 自动清理
+    this.audioCapturer = null
+  }
 }
 
 export const audioCapturerManager = new AudioCapturerManager()

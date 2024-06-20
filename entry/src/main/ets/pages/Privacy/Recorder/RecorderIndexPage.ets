@@ -24,6 +24,7 @@ struct RecorderIndexPage {
   @State tempInputText: string = ''
   @State onConfirmEnable: boolean = true
   @State activeItem: PrivacyRecorderDBInfo | null = null
+  // 是否正在录音
   @State isRecording: boolean = false
   @State isPlaying: boolean = false
   @State recordingTime: number = 0
@@ -47,6 +48,25 @@ struct RecorderIndexPage {
 
   aboutToAppear() {
     audioCapturerManager.requestPermissions()
+  }
+
+  // 开始录音
+  startRecorder() {
+    // 显示正在录音结构
+    this.isRecording = true
+    // 准备文件路径
+    const context = getContext()
+    const filePath = context.filesDir + '/' + Date.now() + '.wav'
+    // 开启声音采集，写入到指定的文件路径中
+    audioCapturerManager.startRecorder(filePath)
+  }
+
+  // 停止录音
+  stopRecorder() {
+    // 隐藏正在录音结构
+    this.isRecording = false
+    // 停止声音采集
+    audioCapturerManager.stopRecorder()
   }
 
   @Builder
@@ -189,6 +209,7 @@ struct RecorderIndexPage {
             .aspectRatio(1)
             .onClick(() => {
               // TODO：开始录音
+              this.startRecorder()
             })
         }
         .width('100%')
@@ -250,6 +271,7 @@ struct RecorderIndexPage {
               .borderRadius(10)
               .onClick(() => {
                 // TODO：停止录音
+                this.stopRecorder()
               })
           }
           .padding({ left: 15, right: 15 })
