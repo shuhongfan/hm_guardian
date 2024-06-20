@@ -1,6 +1,7 @@
 import { permissionManager } from '../../manager/PermissionManager'
 import { audio } from '@kit.AudioKit'
 import { promptAction } from '@kit.ArkUI'
+import { fileIo } from '@kit.CoreFileKit'
 
 /**
  * 如何选择音频录制开发方式
@@ -36,6 +37,7 @@ struct AudioCapturerTestPage {
           Text('麦克风权限是否开启：' + this.isGrant)
           Text('音频采集器状态：' + this.audioState)
           Button('开始录音-创建音频采集器')
+            .enabled(!this.isCreate)
             .onClick(async () => {
               try {
                 // 音频流信息
@@ -63,6 +65,13 @@ struct AudioCapturerTestPage {
                 // 保存起来，方便其他地方使用
                 this.audioCapturer = audioCapturer
                 this.isCreate = true
+                // ------ 文件系统 ------
+                //   1. 创建并打开本地文件
+                const context = getContext()
+                //   通过应用上下文，获取到应用的 files 路径
+                const filePath = context.filesDir + '/' + 'test.wav'
+                fileIo.openSync(filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
+                // ------ 文件系统 ------
                 // 2. 订阅音频数据读入
                 audioCapturer.on('readData', (buffer) => {
                   console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
@@ -78,7 +87,7 @@ struct AudioCapturerTestPage {
                 // 如果以上步骤出错，就不会运行到这里
                 promptAction.showToast({ message: '音频采集器创建成功' })
               } catch (error) {
-                promptAction.showToast({ message: 'createAudioCapturer error：' + JSON.stringify(error) })
+                promptAction.showToast({ message: 'createAudioCapturer error：' + JSON.stringify(error.message) })
               }
             })
 
@@ -105,6 +114,7 @@ struct AudioCapturerTestPage {
             .onClick(async () => {
               // 释放资源(释放内存和硬件)
               await this.audioCapturer?.release()
+              this.isCreate = false
               promptAction.showToast({ message: '释放资源' })
             })
         }
