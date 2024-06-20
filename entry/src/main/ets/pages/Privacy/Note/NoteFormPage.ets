@@ -101,24 +101,28 @@ struct NoteDetailPage {
 
   // 分享笔记
   shareNote() {
-    // 1. 构建分享数据
-    const shareData = new systemShare.SharedData({
-      utd: uniformTypeDescriptor.UniformDataType.PLAIN_TEXT, // 指定分享的数据类型
-      title: this.title,
-      content: this.content
-    })
-    // 2. 构建分享控制器(显示分享面板，注册分享关闭事件)
-    const shareController = new systemShare.ShareController(shareData)
-    const context = getContext() as common.UIAbilityContext
-    // 显示分享面板
-    shareController.show(context, {
-      previewMode: systemShare.SharePreviewMode.DETAIL,
-      selectionMode: systemShare.SelectionMode.SINGLE
-    })
-    // 监听分享关闭事件
-    shareController.on('dismiss', () => {
-      promptAction.showToast({ message: '分享成功，可领取奖励' })
-    })
+    try {
+      // 1. 构建分享数据
+      const shareData = new systemShare.SharedData({
+        utd: uniformTypeDescriptor.UniformDataType.PLAIN_TEXT, // 指定分享的数据类型
+        title: this.title,
+        content: this.content
+      })
+      // 2. 构建分享控制器(显示分享面板，注册分享关闭事件)
+      const shareController = new systemShare.ShareController(shareData)
+      const context = getContext() as common.UIAbilityContext
+      // 显示分享面板
+      shareController.show(context, {
+        previewMode: systemShare.SharePreviewMode.DETAIL,
+        selectionMode: systemShare.SelectionMode.SINGLE
+      })
+      // 监听分享关闭事件
+      shareController.on('dismiss', () => {
+        console.log('分享成功，可领取奖励')
+      })
+    } catch {
+      promptAction.showToast({ message: '当前设备不支持分享' })
+    }
   }
 
   @Builder
