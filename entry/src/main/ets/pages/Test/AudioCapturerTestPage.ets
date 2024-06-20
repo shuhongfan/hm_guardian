@@ -20,6 +20,8 @@ struct AudioCapturerTestPage {
   audioCapturer?: audio.AudioCapturer
   // 音频采集器状态
   @State audioState: audio.AudioState = -1
+  // 音频文件路径
+  @State filePath: string = ''
 
   aboutToAppear() {
     this.requestPermissions()
@@ -36,6 +38,7 @@ struct AudioCapturerTestPage {
         Column({ space: 10 }) {
           Text('麦克风权限是否开启：' + this.isGrant)
           Text('音频采集器状态：' + this.audioState)
+          Text('音频文件路径：' + this.filePath)
           Button('开始录音-创建音频采集器')
             .enabled(!this.isCreate)
             .onClick(async () => {
@@ -69,9 +72,9 @@ struct AudioCapturerTestPage {
                 //   1) 创建并打开本地文件
                 const context = getContext()
                 //   2) 通过应用上下文，获取到应用的 files 路径
-                const filePath = context.filesDir + '/' + Date.now() + '.wav'
+                this.filePath = context.filesDir + '/' + Date.now() + '.wav'
                 //   3) 创建并打开文件，注意打开模式选择可读可写 READ_WRITE
-                const file = fileIo.openSync(filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
+                const file = fileIo.openSync(this.filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
                 // ------ 文件系统 ------
                 // 2. 订阅音频数据读入
                 audioCapturer.on('readData', (buffer) => {
@@ -125,6 +128,7 @@ struct AudioCapturerTestPage {
             .strokeWidth(1)
 
           Button('创建音频渲染器-播放音频')
+            .enabled(this.filePath !== '')
             .onClick(async () => {
               try {
                 // 音频流信息
@@ -147,8 +151,18 @@ struct AudioCapturerTestPage {
                   rendererInfo: audioRendererInfo  // 音频渲染器信息
                 };
 
-                // 创建音频渲染器
+                // 1. 创建音频渲染器
                 const audioRenderer = await audio.createAudioRenderer(audioRendererOptions);
+                // 根据路径打开文件
+                const file = fileIo.openSync(this.filePath)
+                // 2. 订阅(buffer写入数据到音频渲染器中，就能发出声音)
+                audioRenderer.on('writeData', (buffer) => {
+                  // 读取打开文件的 buffer，写入到渲染器中，就能发出声音
+                  fileIo.readSync(file.fd, buffer)
+                  console.log('音频渲染器 buffer', buffer.byteLength)
+                })
+                // 3. 开始渲染
+                audioRenderer.start()
 
                 promptAction.showToast({ message: '音频渲染器正常' })
               } catch (error) {
