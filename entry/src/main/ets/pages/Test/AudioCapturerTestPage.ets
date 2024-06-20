@@ -17,6 +17,8 @@ struct AudioCapturerTestPage {
   @State isCreate: boolean = false
   // 音频采集器
   audioCapturer?: audio.AudioCapturer
+  // 音频采集器状态
+  @State audioState: audio.AudioState = -1
 
   aboutToAppear() {
     this.requestPermissions()
@@ -32,6 +34,7 @@ struct AudioCapturerTestPage {
       Scroll() {
         Column({ space: 10 }) {
           Text('麦克风权限是否开启：' + this.isGrant)
+          Text('音频采集器状态：' + this.audioState)
           Button('开始录音-创建音频采集器')
             .onClick(async () => {
               try {
@@ -64,6 +67,10 @@ struct AudioCapturerTestPage {
                 audioCapturer.on('readData', (buffer) => {
                   console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
                 })
+                // // 2.x 订阅采集器状态
+                // audioCapturer.on('stateChange', (state) => {
+                //   this.audioState = state
+                // })
                 // 3. 开始录制音频
                 await audioCapturer.start()
 
@@ -78,9 +85,12 @@ struct AudioCapturerTestPage {
           Button('停止采集')
             .enabled(this.isCreate)
             .onClick(async () => {
-              // 停止采集
-              await this.audioCapturer?.stop()
-              promptAction.showToast({ message: '停止成功' })
+              // 采集器处于播放状态，才调用停止采集
+              if (this.audioCapturer?.state === audio.AudioState.STATE_RUNNING) {
+                // 停止采集
+                await this.audioCapturer?.stop()
+                promptAction.showToast({ message: '停止成功' })
+              }
             })
           Button('继续采集')
             .enabled(this.isCreate)
