@@ -18,6 +18,8 @@ struct AudioCapturerTestPage {
   @State isCreate: boolean = false
   // 音频采集器
   audioCapturer?: audio.AudioCapturer
+  // 音频渲染器
+  audioRenderer?: audio.AudioRenderer
   // 音频采集器状态
   @State audioState: audio.AudioState = -1
   // 音频文件路径
@@ -153,13 +155,26 @@ struct AudioCapturerTestPage {
 
                 // 1. 创建音频渲染器
                 const audioRenderer = await audio.createAudioRenderer(audioRendererOptions);
+                // 保存起来
+                this.audioRenderer = audioRenderer
                 // 根据路径打开文件
                 const file = fileIo.openSync(this.filePath)
+                // 获取文件信息(大小，创建时间等)
+                const fileStat = fileIo.statSync(file.fd)
+                // 准备一个累加值，用于自动停止渲染
+                let bufferSize = 0
                 // 2. 订阅(buffer写入数据到音频渲染器中，就能发出声音)
                 audioRenderer.on('writeData', (buffer) => {
                   // 读取打开文件的 buffer，写入到渲染器中，就能发出声音
                   fileIo.readSync(file.fd, buffer)
-                  console.log('音频渲染器 buffer', buffer.byteLength)
+                  // buffer 大小累加，用于自动停止
+                  bufferSize += buffer.byteLength
+                  // 累加的结果，是否已超过文件大小
+                  if (bufferSize >= fileStat.size) {
+                    // 自动停止渲染
+                    audioRenderer.stop()
+                  }
+                  console.log('音频渲染器 buffer 累加结果', bufferSize)
                 })
                 // 3. 开始渲染
                 audioRenderer.start()
@@ -168,6 +183,17 @@ struct AudioCapturerTestPage {
               } catch (error) {
                 promptAction.showToast({ message: '音频渲染器错误：' + JSON.stringify(error) })
               }
+            })
+
+          Button('停止渲染')
+            .onClick(async () => {
+              await this.audioRenderer?.stop()
+              promptAction.showToast({ message: '停止成功' })
+            })
+          Button('销毁实例，释放资源')
+            .onClick(async () => {
+              await this.audioRenderer?.release()
+              promptAction.showToast({ message: '销毁实例，释放资源成功' })
             })
         }
         .constraintSize({ minHeight: '100%' })
