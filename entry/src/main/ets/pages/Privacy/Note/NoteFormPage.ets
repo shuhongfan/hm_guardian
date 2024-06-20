@@ -1,6 +1,9 @@
 // 页面参数
 import { privacyNoteDB } from '../../../database'
 import { promptAction, router } from '@kit.ArkUI'
+import { systemShare } from '@kit.ShareKit'
+import { uniformTypeDescriptor } from '@kit.ArkData'
+import { common } from '@kit.AbilityKit'
 
 interface RouterParams {
   id?: number
@@ -90,6 +93,34 @@ struct NoteDetailPage {
     return true
   }
 
+  /**
+   *  华为系统级别分享 systemShare
+   *    1. 华为分享没有开源，只能在 HarmonyOS 文档中查看，在 OpenHarmony 文档中没有。
+   *    2. 华为分享需要通过真机测试，模拟器不支持分享(模拟器会闪退)。
+   */
+
+  // 分享笔记
+  shareNote() {
+    // 1. 构建分享数据
+    const shareData = new systemShare.SharedData({
+      utd: uniformTypeDescriptor.UniformDataType.PLAIN_TEXT, // 指定分享的数据类型
+      title: this.title,
+      content: this.content
+    })
+    // 2. 构建分享控制器(显示分享面板，注册分享关闭事件)
+    const shareController = new systemShare.ShareController(shareData)
+    const context = getContext() as common.UIAbilityContext
+    // 显示分享面板
+    shareController.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    })
+    // 监听分享关闭事件
+    shareController.on('dismiss', () => {
+      promptAction.showToast({ message: '分享成功，可领取奖励' })
+    })
+  }
+
   @Builder
   NavigationMenus() {
     Row() {
@@ -157,6 +188,7 @@ struct NoteDetailPage {
               .layoutWeight(1)
               .onClick(() => {
                 // TODO：分享
+                this.shareNote()
               })
           }
           .padding({ bottom: 80 })
