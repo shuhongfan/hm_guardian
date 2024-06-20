@@ -161,6 +161,7 @@ struct AudioCapturerTestPage {
                 const file = fileIo.openSync(this.filePath)
                 // 获取文件信息(大小，创建时间等)
                 const fileStat = fileIo.statSync(file.fd)
+                console.log('音频渲染器 buffer 当前文件大小为(单位B)', fileStat.size)
                 // 准备一个累加值，用于自动停止渲染
                 let bufferSize = 0
                 // 2. 订阅(buffer写入数据到音频渲染器中，就能发出声音)
@@ -174,7 +175,7 @@ struct AudioCapturerTestPage {
                     // 自动停止渲染
                     audioRenderer.stop()
                   }
-                  console.log('音频渲染器 buffer 累加结果', bufferSize)
+                  console.log('音频渲染器 buffer 累加结果(单位B)', bufferSize)
                 })
                 // 3. 开始渲染
                 audioRenderer.start()
@@ -186,11 +187,13 @@ struct AudioCapturerTestPage {
             })
 
           Button('停止渲染')
+            .enabled(this.filePath !== '')
             .onClick(async () => {
               await this.audioRenderer?.stop()
               promptAction.showToast({ message: '停止成功' })
             })
           Button('销毁实例，释放资源')
+            .enabled(this.filePath !== '')
             .onClick(async () => {
               await this.audioRenderer?.release()
               promptAction.showToast({ message: '销毁实例，释放资源成功' })
