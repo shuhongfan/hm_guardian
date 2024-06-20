@@ -54,6 +54,15 @@ struct AudioCapturerTestPage {
 
                 // 1. 创建音频采集器
                 const audioCapturer = await audio.createAudioCapturer(audioCapturerOptions);
+                // 2. 订阅音频数据读入
+                audioCapturer.on('readData', (buffer) => {
+                  console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
+                })
+                // 3. 开始录制音频
+                await audioCapturer.start()
+
+
+                // 如果以上步骤出错，就不会运行到这里
                 promptAction.showToast({ message: '音频采集器创建成功' })
               } catch (error) {
                 promptAction.showToast({ message: 'createAudioCapturer error：' + JSON.stringify(error) })
