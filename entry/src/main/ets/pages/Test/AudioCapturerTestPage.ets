@@ -80,9 +80,9 @@ struct AudioCapturerTestPage {
                   console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
                 })
                 // // 2.x 订阅采集器状态
-                // audioCapturer.on('stateChange', (state) => {
-                //   this.audioState = state
-                // })
+                audioCapturer.on('stateChange', (state) => {
+                  this.audioState = state
+                })
                 // 3. 开始录制音频
                 await audioCapturer.start()
 
@@ -119,6 +119,41 @@ struct AudioCapturerTestPage {
               await this.audioCapturer?.release()
               this.isCreate = false
               promptAction.showToast({ message: '释放资源' })
+            })
+
+          Divider()
+            .strokeWidth(1)
+
+          Button('创建音频渲染器-播放音频')
+            .onClick(async () => {
+              try {
+                // 音频流信息
+                const audioStreamInfo: audio.AudioStreamInfo = {
+                  samplingRate: audio.AudioSamplingRate.SAMPLE_RATE_48000, // 采样率
+                  channels: audio.AudioChannel.CHANNEL_2, // 通道
+                  sampleFormat: audio.AudioSampleFormat.SAMPLE_FORMAT_S16LE, // 采样格式
+                  encodingType: audio.AudioEncodingType.ENCODING_TYPE_RAW // 编码格式
+                };
+
+                // 音频渲染器信息
+                const audioRendererInfo: audio.AudioRendererInfo = {
+                  usage: audio.StreamUsage.STREAM_USAGE_VOICE_COMMUNICATION,
+                  rendererFlags: 0
+                };
+
+                // 音频渲染器配置
+                const audioRendererOptions: audio.AudioRendererOptions = {
+                  streamInfo: audioStreamInfo, // 音频流信息
+                  rendererInfo: audioRendererInfo  // 音频渲染器信息
+                };
+
+                // 创建音频渲染器
+                const audioRenderer = await audio.createAudioRenderer(audioRendererOptions);
+
+                promptAction.showToast({ message: '音频渲染器正常' })
+              } catch (error) {
+                promptAction.showToast({ message: '音频渲染器错误：' + JSON.stringify(error) })
+              }
             })
         }
         .constraintSize({ minHeight: '100%' })
