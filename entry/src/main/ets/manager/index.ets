@@ -9,5 +9,7 @@ export * from './UserCalendarManager'
 
 export * from './UserAuthManager'
 
+export * from './AudioCapturerManager'
+
 // import { permissionManager } from './PermissionManager'
 // export { permissionManager }

@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { EmptyTipsComp } from '../../../common/components'
 import { CustomInputDialog } from '../../../common/dialog'
+import { audioCapturerManager } from '../../../manager'
 
 // 用于把毫秒格式化成 mm:ss 的相对时间插件
 dayjs.extend(duration)
@@ -43,6 +44,10 @@ struct RecorderIndexPage {
   })
   private playingTimerId: number = -1
   private recordingTimerId: number = -1
+
+  aboutToAppear() {
+    audioCapturerManager.requestPermissions()
+  }
 
   @Builder
   NavigationMenus() {
