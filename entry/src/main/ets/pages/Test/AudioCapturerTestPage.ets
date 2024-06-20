@@ -14,6 +14,9 @@ import { promptAction } from '@kit.ArkUI'
 @Component
 struct AudioCapturerTestPage {
   @State isGrant: boolean = false
+  @State isCreate: boolean = false
+  // 音频采集器
+  audioCapturer?: audio.AudioCapturer
 
   aboutToAppear() {
     this.requestPermissions()
@@ -29,7 +32,7 @@ struct AudioCapturerTestPage {
       Scroll() {
         Column({ space: 10 }) {
           Text('麦克风权限是否开启：' + this.isGrant)
-          Button('1. 创建AudioCapturer实例-配置音频采集参数')
+          Button('开始录音-创建音频采集器')
             .onClick(async () => {
               try {
                 // 音频流信息
@@ -54,6 +57,9 @@ struct AudioCapturerTestPage {
 
                 // 1. 创建音频采集器
                 const audioCapturer = await audio.createAudioCapturer(audioCapturerOptions);
+                // 保存起来，方便其他地方使用
+                this.audioCapturer = audioCapturer
+                this.isCreate = true
                 // 2. 订阅音频数据读入
                 audioCapturer.on('readData', (buffer) => {
                   console.log('读取采集器的音频流大小(单位B)', buffer.byteLength);
@@ -67,6 +73,29 @@ struct AudioCapturerTestPage {
               } catch (error) {
                 promptAction.showToast({ message: 'createAudioCapturer error：' + JSON.stringify(error) })
               }
+            })
+
+          Button('停止采集')
+            .enabled(this.isCreate)
+            .onClick(async () => {
+              // 停止采集
+              await this.audioCapturer?.stop()
+              promptAction.showToast({ message: '停止成功' })
+            })
+          Button('继续采集')
+            .enabled(this.isCreate)
+            .onClick(async () => {
+              // 开始(继续)采集
+              await this.audioCapturer?.start()
+              promptAction.showToast({ message: '继续开始' })
+            })
+
+          Button('释放资源')
+            .enabled(this.isCreate)
+            .onClick(async () => {
+              // 释放资源(释放内存和硬件)
+              await this.audioCapturer?.release()
+              promptAction.showToast({ message: '释放资源' })
             })
         }
         .constraintSize({ minHeight: '100%' })
