@@ -4,6 +4,7 @@ import duration from 'dayjs/plugin/duration'
 import { EmptyTipsComp } from '../../../common/components'
 import { CustomInputDialog } from '../../../common/dialog'
 import { audioCapturerManager } from '../../../manager'
+import { fileIo } from '@kit.CoreFileKit'
 
 // 用于把毫秒格式化成 mm:ss 的相对时间插件
 dayjs.extend(duration)
@@ -48,6 +49,20 @@ struct RecorderIndexPage {
 
   aboutToAppear() {
     audioCapturerManager.requestPermissions()
+    // 创建新的目录(文件夹)，用于存放隐私录音
+    this.initDir()
+  }
+
+  // 创建新的目录(文件夹)，用于存放隐私录音
+  initDir() {
+    // 拼接路径
+    const context = getContext()
+    const dirPath = context.filesDir + '/' + 'privacy_recorder'
+    // fileIo.accessSync()     检测文件或目录是否已存在
+    if (fileIo.accessSync(dirPath) === false) {
+      // fileIo.mkdirSync()    创建目录(文件夹)
+      fileIo.mkdirSync(dirPath)
+    }
   }
 
   // 开始录音
@@ -56,7 +71,8 @@ struct RecorderIndexPage {
     this.isRecording = true
     // 准备文件路径
     const context = getContext()
-    const filePath = context.filesDir + '/' + Date.now() + '.wav'
+    // 把隐私录音写入到指定目录(文件夹)中
+    const filePath = context.filesDir + '/' + 'privacy_recorder' + '/' + Date.now() + '.wav'
     // 开启声音采集，写入到指定的文件路径中
     audioCapturerManager.startRecorder(filePath)
   }
