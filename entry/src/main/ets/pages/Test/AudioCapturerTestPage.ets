@@ -24,6 +24,36 @@ struct AudioCapturerTestPage {
   @State audioState: audio.AudioState = -1
   // 音频文件路径
   @State filePath: string = ''
+  // 音频流信息
+  audioStreamInfo: audio.AudioStreamInfo = {
+    samplingRate: audio.AudioSamplingRate.SAMPLE_RATE_48000, // 采样率
+    channels: audio.AudioChannel.CHANNEL_2, // 通道
+    sampleFormat: audio.AudioSampleFormat.SAMPLE_FORMAT_S16LE, // 采样格式
+    encodingType: audio.AudioEncodingType.ENCODING_TYPE_RAW // 编码格式
+  };
+  // 音频采集器信息
+  audioCapturerInfo: audio.AudioCapturerInfo = {
+    source: audio.SourceType.SOURCE_TYPE_MIC, // 声音来源
+    capturerFlags: 0, // 0 代表普通音频采集器，1 代表低时延音频采集器 (ArkTS接口暂不支持低时延音频采集器)
+  };
+  // createAudioCapturer 创建音频采集器时的必传参数
+  audioCapturerOptions: audio.AudioCapturerOptions = {
+    streamInfo: this.audioStreamInfo, // 音频流信息
+    capturerInfo: this.audioCapturerInfo, // 音频采集器信息
+  };
+  // 音频渲染器信息
+  audioRendererInfo: audio.AudioRendererInfo = {
+    // usage: audio.StreamUsage.STREAM_USAGE_VOICE_COMMUNICATION,  // 用听筒播放
+    usage: audio.StreamUsage.STREAM_USAGE_MOVIE, // 用外放喇叭播放
+    // usage: audio.StreamUsage.STREAM_USAGE_MUSIC, // 用外放喇叭播放
+    // usage: audio.StreamUsage.STREAM_USAGE_GAME, // 用外放喇叭播放
+    rendererFlags: 0
+  };
+  // 音频渲染器配置
+  audioRendererOptions: audio.AudioRendererOptions = {
+    streamInfo: this.audioStreamInfo, // 音频流信息
+    rendererInfo: this.audioRendererInfo  // 音频渲染器信息
+  };
 
   aboutToAppear() {
     this.requestPermissions()
@@ -45,28 +75,8 @@ struct AudioCapturerTestPage {
             .enabled(!this.isCreate)
             .onClick(async () => {
               try {
-                // 音频流信息
-                const audioStreamInfo: audio.AudioStreamInfo = {
-                  samplingRate: audio.AudioSamplingRate.SAMPLE_RATE_48000, // 采样率
-                  channels: audio.AudioChannel.CHANNEL_2, // 通道
-                  sampleFormat: audio.AudioSampleFormat.SAMPLE_FORMAT_S16LE, // 采样格式
-                  encodingType: audio.AudioEncodingType.ENCODING_TYPE_RAW // 编码格式
-                };
-
-                // 音频采集器信息
-                const audioCapturerInfo: audio.AudioCapturerInfo = {
-                  source: audio.SourceType.SOURCE_TYPE_MIC, // 声音来源
-                  capturerFlags: 0, // 0 代表普通音频采集器，1 代表低时延音频采集器 (ArkTS接口暂不支持低时延音频采集器)
-                };
-
-                // createAudioCapturer 创建音频采集器时的必传参数
-                const audioCapturerOptions: audio.AudioCapturerOptions = {
-                  streamInfo: audioStreamInfo, // 音频流信息
-                  capturerInfo: audioCapturerInfo, // 音频采集器信息
-                };
-
                 // 1. 创建音频采集器
-                const audioCapturer = await audio.createAudioCapturer(audioCapturerOptions);
+                const audioCapturer = await audio.createAudioCapturer(this.audioCapturerOptions);
                 // 保存起来，方便其他地方使用
                 this.audioCapturer = audioCapturer
                 this.isCreate = true
@@ -133,28 +143,8 @@ struct AudioCapturerTestPage {
             .enabled(this.filePath !== '')
             .onClick(async () => {
               try {
-                // 音频流信息
-                const audioStreamInfo: audio.AudioStreamInfo = {
-                  samplingRate: audio.AudioSamplingRate.SAMPLE_RATE_48000, // 采样率
-                  channels: audio.AudioChannel.CHANNEL_2, // 通道
-                  sampleFormat: audio.AudioSampleFormat.SAMPLE_FORMAT_S16LE, // 采样格式
-                  encodingType: audio.AudioEncodingType.ENCODING_TYPE_RAW // 编码格式
-                };
-
-                // 音频渲染器信息
-                const audioRendererInfo: audio.AudioRendererInfo = {
-                  usage: audio.StreamUsage.STREAM_USAGE_VOICE_COMMUNICATION,
-                  rendererFlags: 0
-                };
-
-                // 音频渲染器配置
-                const audioRendererOptions: audio.AudioRendererOptions = {
-                  streamInfo: audioStreamInfo, // 音频流信息
-                  rendererInfo: audioRendererInfo  // 音频渲染器信息
-                };
-
                 // 1. 创建音频渲染器
-                const audioRenderer = await audio.createAudioRenderer(audioRendererOptions);
+                const audioRenderer = await audio.createAudioRenderer(this.audioRendererOptions);
                 // 保存起来
                 this.audioRenderer = audioRenderer
                 // 根据路径打开文件
