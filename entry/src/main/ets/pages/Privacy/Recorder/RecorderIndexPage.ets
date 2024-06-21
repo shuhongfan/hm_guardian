@@ -99,13 +99,13 @@ struct RecorderIndexPage {
     // 把采集的录音信息写入到数据库中
     await privacyRecorderDB.insert({
       id: null, // 新增时自动生成
-      filePath: audioInfo.filePath,
+      filePath: audioInfo.filePath, // 录音文件路径
       title: dayjs(audioInfo.date_added)
-        .format('录音 YYYY-MM-DD HH:mm:ss'),
-      date_added: audioInfo.date_added,
-      duration: audioInfo.duration
+        .format('录音 YYYY-MM-DD HH:mm:ss'), // 录音标题
+      date_added: audioInfo.date_added, // 录音创建时间
+      duration: audioInfo.duration // 录音持续时长
     })
-    // 新增成功后，也要获取列表
+    // 新增成功后，也要获取列表，注意 await 等待 insert 新增成功后，再查询列表
     this.getList()
   }
 
