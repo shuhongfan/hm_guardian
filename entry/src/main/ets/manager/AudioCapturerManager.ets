@@ -32,6 +32,13 @@ class AudioCapturerManager {
   private filePath: string = ''
   // 添加时间戳
   private date_added: number = 0
+  // 音频渲染器配置
+  private audioRendererInfo: audio.AudioRendererInfo = {
+    usage: audio.StreamUsage.STREAM_USAGE_MOVIE, // 播放类型，MOVIE 表示用喇叭播放
+    rendererFlags: 0
+  };
+  // 音频渲染器实例
+  private audioRenderer: audio.AudioRenderer | null = null
 
   // 初始化权限
   async requestPermissions() {
@@ -107,6 +114,54 @@ class AudioCapturerManager {
     }
   }
 
+  // 获取音频渲染器（播放器）
+  async getAudioRenderer() {
+    if (this.audioRenderer) {
+      return this.audioRenderer
+    }
+    this.audioRenderer = await audio.createAudioRenderer({
+      streamInfo: this.audioStreamInfo,
+      rendererInfo: this.audioRendererInfo
+    })
+    return this.audioRenderer
+  }
+
+  // 播放录音
+  async startRenderer(filePath: string) {
+    //  1) 根据路径打开文件，获取文件信息
+    const file = fileIo.openSync(filePath)
+    const stat = fileIo.statSync(file.fd)
+    // 1. 获取音频渲染器（播放器）
+    const audioRenderer = await this.getAudioRenderer()
+    //  2) 准备累加值，用于自动停止
+    let bufferSize: number = 0
+    // 2. 调用on('writeData')方法，订阅监听音频数据写入回调
+    audioRenderer.on('writeData', async (buffer) => {
+      // 3) 把 buffer 信息写入到音频渲染器中
+      fileIo.readSync(file.fd, buffer)
+      // 获取文件信息，如果读取时已经超出文件大小，自动停止
+      bufferSize += buffer.byteLength
+      if (bufferSize >= stat.size) {
+        await audioRenderer.stop() // 停止渲染器(播放器)
+        audioRenderer.release() // 释放资源(硬件)
+        this.audioRenderer = null // 释放变量
+      }
+    })
+    // 3. 启动音频渲染器（播放器）
+    audioRenderer.start()
+  }
+
+  // 停止播放录音
+  async stopRenderer() {
+    // 获取音频渲染器（播放器）
+    const audioRenderer = await this.getAudioRenderer()
+    // RUNNING 和 PAUSED 状态下才能 stop，stop 后自动 release 释放资源(硬件)
+    if ([audio.AudioState.STATE_RUNNING, audio.AudioState.STATE_PAUSED].includes(this.audioRenderer!.state)) {
+      await audioRenderer.stop() // 停止渲染(播放)
+      audioRenderer.release() // 释放资源(硬件)
+      this.audioRenderer = null // 释放变量
+    }
+  }
 }
 
 export const audioCapturerManager = new AudioCapturerManager()

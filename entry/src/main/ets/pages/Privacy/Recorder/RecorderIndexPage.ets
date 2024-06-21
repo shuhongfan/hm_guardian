@@ -122,8 +122,14 @@ struct RecorderIndexPage {
   playAudio(item: PrivacyRecorderDBInfo) {
     // 保存 activeItem，用于视图更新
     this.activeItem = item
-    // 更新播放状态
-    this.isPlaying = !this.isPlaying
+    // 更新播放状态，判断是否正在播放中
+    if (this.isPlaying) {
+      this.isPlaying = false
+      audioCapturerManager.stopRenderer()
+    } else {
+      this.isPlaying = true
+      audioCapturerManager.startRenderer(item.filePath)
+    }
   }
 
   @Builder
