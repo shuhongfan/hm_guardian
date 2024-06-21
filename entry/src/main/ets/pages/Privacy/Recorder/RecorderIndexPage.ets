@@ -123,13 +123,46 @@ struct RecorderIndexPage {
     // 保存 activeItem，用于视图更新
     this.activeItem = item
     // 更新播放状态，判断是否正在播放中
-    if (this.isPlaying) {
-      this.isPlaying = false
-      audioCapturerManager.stopRenderer()
-    } else {
+    if (this.isPlaying === false) {
+      // 更新播放状态
       this.isPlaying = true
+      // 开始渲染录音
       audioCapturerManager.startRenderer(item.filePath)
+      // 开始播放进度条
+      this.startPlayingCount(item.duration)
+    } else {
+      // 更新播放状态
+      this.isPlaying = false
+      // 停止渲染录音
+      audioCapturerManager.stopRenderer()
+      // 停止播放进度条
+      this.stopPlayingCount()
     }
+  }
+
+  // 播放时间计时开始
+  startPlayingCount(duration: number) {
+    this.isPlaying = true
+    // 定义变量来保存当前的时间
+    this.playingTime = 0
+    // 定义更新间隔，单位为毫秒
+    const interval = 200;
+    clearInterval(this.playingTimerId)
+    this.playingTimerId = setInterval(() => {
+      // 获取当前时间
+      this.playingTime += interval
+      if (this.playingTime > duration) {
+        this.stopPlayingCount()
+      }
+    }, interval)
+  }
+
+  // 播放时间计时停止
+  stopPlayingCount() {
+    // 更新播放状态
+    this.isPlaying = false
+    // 停止计时器
+    clearInterval(this.playingTimerId)
   }
 
   @Builder
@@ -192,8 +225,8 @@ struct RecorderIndexPage {
                               .fontSize(12)
                               .fontColor($r('app.color.font_sub'))
                             Progress({
-                              value: this.playingTime,
-                              total: item.duration,
+                              value: this.playingTime, // 播放时间(单位:毫秒)
+                              total: item.duration, // 总持续时间(单位:毫秒)
                             })
                           }
                           .padding({ right: 20 })
