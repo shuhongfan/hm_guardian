@@ -4,6 +4,13 @@ import { permissionManager } from '.'
 import { audio } from '@kit.AudioKit'
 import { fileIo } from '@kit.CoreFileKit'
 
+// 停止录音采集时，返回录音文件关键信息
+interface AudioInfo {
+  filePath: string // 文件路径
+  date_added: number // 创建时间
+  duration: number // 持续时长
+}
+
 class AudioCapturerManager {
   // 权限
   private permissions: Permissions[] = ["ohos.permission.MICROPHONE"]
@@ -21,6 +28,10 @@ class AudioCapturerManager {
   };
   // 音频采集器实例
   private audioCapturer: audio.AudioCapturer | null = null
+  // 采集录音的文件路径
+  private filePath: string = ''
+  // 添加时间戳
+  private date_added: number = 0
 
   // 初始化权限
   async requestPermissions() {
@@ -62,6 +73,9 @@ class AudioCapturerManager {
 
   // 开始录音采集
   async startRecorder(filePath: string) {
+    // 保存 文件路径 和 时间戳
+    this.filePath = filePath
+    this.date_added = Date.now()
     //  1) 打开文件，注意设置模式
     const file = fileIo.openSync(filePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE)
     // 1. 创建音频采集器
@@ -76,7 +90,7 @@ class AudioCapturerManager {
   }
 
   // 结束录音采集
-  async stopRecorder() {
+  async stopRecorder(): Promise<AudioInfo> {
     // 获取音频采集器
     const audioCapturer = await this.getAudioCapturer()
     // 1. 停止录音
@@ -85,7 +99,14 @@ class AudioCapturerManager {
     audioCapturer.release()
     // 3. 释放变量，对象重新赋值为 null，可以被 垃圾回收机制 自动清理
     this.audioCapturer = null
+    // 停止录音采集时，返回录音文件关键信息
+    return {
+      filePath: this.filePath,
+      date_added: this.date_added,
+      duration: Date.now() - this.date_added
+    }
   }
+
 }
 
 export const audioCapturerManager = new AudioCapturerManager()

@@ -78,11 +78,12 @@ struct RecorderIndexPage {
   }
 
   // 停止录音
-  stopRecorder() {
+  async stopRecorder() {
     // 隐藏正在录音结构
     this.isRecording = false
     // 停止声音采集
-    audioCapturerManager.stopRecorder()
+    const audioInfo = await audioCapturerManager.stopRecorder()
+    AlertDialog.show({ message: JSON.stringify(audioInfo, null, 2) })
   }
 
   @Builder
