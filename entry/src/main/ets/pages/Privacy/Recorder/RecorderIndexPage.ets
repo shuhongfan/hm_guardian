@@ -28,6 +28,7 @@ struct RecorderIndexPage {
   // 是否正在录音
   @State isRecording: boolean = false
   @State isPlaying: boolean = false
+  // 录音采集时的计时秒数
   @State recordingTime: number = 0
   @State playingTime: number = 0
   // 自定义弹窗层
@@ -67,6 +68,8 @@ struct RecorderIndexPage {
 
   // 开始录音
   startRecorder() {
+    // 开始计时效果
+    this.startCounter()
     // 显示正在录音结构
     this.isRecording = true
     // 准备文件路径
@@ -79,11 +82,31 @@ struct RecorderIndexPage {
 
   // 停止录音
   async stopRecorder() {
+    // 停止计时效果
+    this.stopCounter()
     // 隐藏正在录音结构
     this.isRecording = false
     // 停止声音采集
     const audioInfo = await audioCapturerManager.stopRecorder()
     AlertDialog.show({ message: JSON.stringify(audioInfo, null, 2) })
+  }
+
+  // 开启计时效果
+  startCounter() {
+    // 初始化秒数
+    this.recordingTime = 0
+    // 清除以前的定时器，确保只启用一个
+    clearInterval(this.recordingTimerId)
+    // 开启定时器
+    this.recordingTimerId = setInterval(() => {
+      // 秒数累加
+      this.recordingTime++
+    }, 1000)
+  }
+
+  // 结束计时效果
+  stopCounter() {
+    clearInterval(this.recordingTimerId)
   }
 
   @Builder
@@ -271,7 +294,7 @@ struct RecorderIndexPage {
           .margin({ top: 40 })
 
           Text(
-            dayjs(this.recordingTime)
+            dayjs(this.recordingTime * 1000)
               .format(this.recordingTime > 1000 * 60 * 60 ? 'HH:mm:ss' : 'mm:ss')
           )
             .fontSize(18)
