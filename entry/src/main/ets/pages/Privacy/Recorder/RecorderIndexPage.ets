@@ -5,19 +5,10 @@ import { EmptyTipsComp } from '../../../common/components'
 import { CustomInputDialog } from '../../../common/dialog'
 import { audioCapturerManager } from '../../../manager'
 import { fileIo } from '@kit.CoreFileKit'
-import { privacyRecorderDB } from '../../../database'
+import { privacyRecorderDB, PrivacyRecorderDBInfo } from '../../../database'
 
 // 用于把毫秒格式化成 mm:ss 的相对时间插件
 dayjs.extend(duration)
-
-// 注意：隐私录音的数据库准备完毕后，请删除这个类型，否者类型可能会冲突
-export interface PrivacyRecorderDBInfo extends ValuesBucket {
-  id: number | null // 新增时 id 为 null ，自动生成自增 id
-  filePath: string
-  title: string
-  date_added: number
-  duration: number
-}
 
 @Entry
 @Component
@@ -127,6 +118,14 @@ struct RecorderIndexPage {
     clearInterval(this.recordingTimerId)
   }
 
+  // 播放音频
+  playAudio(item: PrivacyRecorderDBInfo) {
+    // 保存 activeItem，用于视图更新
+    this.activeItem = item
+    // 更新播放状态
+    this.isPlaying = !this.isPlaying
+  }
+
   @Builder
   NavigationMenus() {
     Row() {
@@ -221,6 +220,7 @@ struct RecorderIndexPage {
                       .height('100%')
                       .onClick(() => {
                         // TODO：播放音频
+                        this.playAudio(item)
                       })
                     }
                     .width('100%')
