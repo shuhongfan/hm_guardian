@@ -5,6 +5,7 @@ import { EmptyTipsComp } from '../../../common/components'
 import { CustomInputDialog } from '../../../common/dialog'
 import { audioCapturerManager } from '../../../manager'
 import { fileIo } from '@kit.CoreFileKit'
+import { privacyRecorderDB } from '../../../database'
 
 // 用于把毫秒格式化成 mm:ss 的相对时间插件
 dayjs.extend(duration)
@@ -52,6 +53,13 @@ struct RecorderIndexPage {
     audioCapturerManager.requestPermissions()
     // 创建新的目录(文件夹)，用于存放隐私录音
     this.initDir()
+    // 页面加载时获取录音列表
+    this.getList()
+  }
+
+  // 获取录音列表
+  async getList() {
+    this.list = await privacyRecorderDB.query()
   }
 
   // 创建新的目录(文件夹)，用于存放隐私录音
@@ -88,7 +96,17 @@ struct RecorderIndexPage {
     this.isRecording = false
     // 停止声音采集
     const audioInfo = await audioCapturerManager.stopRecorder()
-    AlertDialog.show({ message: JSON.stringify(audioInfo, null, 2) })
+    // 把采集的录音信息写入到数据库中
+    await privacyRecorderDB.insert({
+      id: null, // 新增时自动生成
+      filePath: audioInfo.filePath,
+      title: dayjs(audioInfo.date_added)
+        .format('录音 YYYY-MM-DD HH:mm:ss'),
+      date_added: audioInfo.date_added,
+      duration: audioInfo.duration
+    })
+    // 新增成功后，也要获取列表
+    this.getList()
   }
 
   // 开启计时效果
