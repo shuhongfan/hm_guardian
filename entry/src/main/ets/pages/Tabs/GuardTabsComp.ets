@@ -358,7 +358,7 @@ export struct GuardTabsComp {
         .edgeEffect(EdgeEffect.Spring)
         .width('100%')
         .height('100%')
-        .onScroll(() => {
+        .onWillScroll(() => {
           // 获取当前的滚动偏移量
           const scrollTop = this.scroller.currentOffset()
             .yOffset
