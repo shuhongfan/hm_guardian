@@ -110,11 +110,11 @@ struct CalendarIndexPage {
             .backgroundColor($r('app.color.white'))
 
             Column({ space: 10 }) {
-              Button('添加普通日程')
+              Button('添加日程')
                 .onClick(async () => {
                   // 
                 })
-              Button('添加重要日程')
+              Button('查询日程')
                 .onClick(async () => {
                   //
                 })

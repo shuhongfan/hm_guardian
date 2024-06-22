@@ -21,7 +21,7 @@ struct NoteDetailPage {
         .fontColor(this.title.trim() !== '' ? $r('app.color.font') : $r('app.color.font_sub'))
         .enabled(this.title.trim() !== '')
         .onClick(() => {
-          // TODO：保存/新增
+          // TODO：保存(新增/修改)
         })
     }
     .height('100%')
@@ -44,7 +44,7 @@ struct NoteDetailPage {
               this.title = text
             })
             .onSubmit(() => {
-              // TODO：提交表单(保存/新增)
+              // TODO：提交表单(新增/修改)
             })
           Text('内容')
             .fontSize(14)
