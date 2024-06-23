@@ -3,6 +3,7 @@ import { BASE_URL, LoginInfoResponse, LOGIN_INFO } from '../../common/constants'
 import { promptAction } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
 import { axiosInstance } from '../../common/utils';
+import { postUserLoginPasswdAPI } from '../../api/userAPI';
 
 // 温馨提示：网络请求接口的类型，可通过 Apifox 工具生成 CV 过来
 /** 账号密码登录模型 */
@@ -167,6 +168,18 @@ struct AxiosTestPage {
           Button('请求工具-测试错误url路径')
             .onClick(async () => {
               await axiosInstance.get('/user/abc')
+            })
+
+          Divider()
+            .strokeWidth(1)
+          Button('密码登录')
+            .onClick(async () => {
+              //
+              const res = await postUserLoginPasswdAPI({
+                phone: '120666666666',
+                passwd: '888itcast.CN764%...'
+              })
+              this.avatar = res.data.result.avatar as string
             })
         }
         .constraintSize({ minHeight: '100%' })
