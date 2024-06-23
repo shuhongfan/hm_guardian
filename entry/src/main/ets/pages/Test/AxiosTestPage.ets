@@ -12,12 +12,12 @@ export interface PostUserLoginPasswdData {
   phone?: string;
 }
 
-/** 数据响应模型 */
-export interface ServiceResponse {
+/** 后端数据响应模型<R> */
+export interface ServiceResponse<R> {
   code: number;
   msg?: string;
   resTime?: Date;
-  result?: Result;
+  result?: R;
   tips?: string;
 }
 
@@ -47,17 +47,22 @@ struct AxiosTestPage {
                *     第三个范型参数： 约束请求体(data)参数的类型 - 重点学习
                */
               const res =
-                await axios.post<null, AxiosResponse<ServiceResponse, null>, PostUserLoginPasswdData>(BASE_URL +
-                  '/user/login/passwd',
+                await axios.post<null, AxiosResponse<ServiceResponse<Result>, null>, PostUserLoginPasswdData>(
+                  BASE_URL + '/user/login/passwd',
                   {
                     phone: '120666666666',
                     passwd: '888itcast.CN764%...'
                   }
                 )
               // promptAction.showToast({ message: '登录请求发送成功' })
-              AlertDialog.show({ message: JSON.stringify(res, null, 2) })
-              // 保存头像
-              this.avatar = res.data.result?.avatar as string
+              // AlertDialog.show({ message: JSON.stringify(res, null, 2) })
+              if (res.data.code === 200) {
+                // 保存头像
+                this.avatar = res.data.result?.avatar as string
+              } else {
+                // 显示后端错误信息
+                promptAction.showToast({ message: res.data.msg })
+              }
             })
           Image(this.avatar)
             .width(200)
