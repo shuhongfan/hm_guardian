@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from '@ohos/axios'
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios'
 import { BASE_URL } from '../../common/constants'
 import { promptAction } from '@kit.ArkUI';
+import { JSON } from '@kit.ArkTS';
 
 // 温馨提示：网络请求接口的类型，可通过 Apifox 工具生成 CV 过来
 /** 账号密码登录模型 */
@@ -58,6 +59,7 @@ struct AxiosTestPage {
                 await axios.post<null, AxiosResponseData<LoginInfoResult>, PostUserLoginPasswdData>(
                   BASE_URL + '/user/login/passwd',
                   {
+                    // 注意手机号和密码的字段容易写反了，可能返回 手机号/密码错误
                     phone: '120666666666',
                     passwd: '888itcast.CN764%...'
                   }
@@ -74,6 +76,59 @@ struct AxiosTestPage {
             })
           Image(this.avatar)
             .width(200)
+          Divider()
+            .strokeWidth(1)
+
+          Button('创建 axios 实例-并添加拦截器')
+            .onClick(async () => {
+              // 0. 创建 axios 实例
+              const axiosInstance = axios.create({
+                baseURL: BASE_URL,
+                timeout: 20 * 1000
+              })
+
+              // 注意：文档中 CV 过来拦截器的结构即可，CV 后记得把 axios 替换成 axiosInstance 实例！！！
+              // 1. 添加请求拦截器
+              axiosInstance.interceptors.request.use(
+                (config: InternalAxiosRequestConfig) => {
+                  // 统一添加 token
+                  config.headers.Authorization = 'token_xxxx'
+                  console.log('interceptors request', JSON.stringify(config))
+                  // 对请求数据做点什么
+                  return config;
+                }, (error: AxiosError) => {
+                // 对请求错误做些什么
+                return Promise.reject(error);
+              });
+
+              // 2. 添加响应拦截器
+              axiosInstance.interceptors.response.use((response: AxiosResponse) => {
+                // 对响应数据做点什么
+                return response;
+              }, (error: AxiosError) => {
+                // 对响应错误做点什么
+                return Promise.reject(error);
+              });
+
+              //----------------
+              const res = await axiosInstance.post<null, AxiosResponseData<LoginInfoResult>, PostUserLoginPasswdData>
+              (
+                '/user/login/passwd',
+                {
+                  phone: '120666666666',
+                  passwd: '888itcast.CN764%...'
+                }
+              )
+
+              if (res.data.code === 200) {
+                // 保存头像
+                this.avatar = res.data.result?.avatar as string
+              } else {
+                // 显示后端错误信息
+                promptAction.showToast({ message: res.data.msg })
+              }
+
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
