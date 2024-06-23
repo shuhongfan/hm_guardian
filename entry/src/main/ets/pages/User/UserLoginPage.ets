@@ -43,11 +43,13 @@ struct UserLoginPage {
             .onSubmit(() => {
               // TODO:提交图形验证码
             })
+          // 图形验证码图片
           Image(`${BASE_URL}/code/graphic?phone=${this.phoneNumber}&bizType=${1}&timestamp=${this.timestamp}`)
             .width(108)
             .height(42)
             .objectFit(ImageFit.Contain)
             .onClick(() => {
+              // 更新图片路径中的 State，让 Image 组件刷新，Image 组件刷新时就会自动往服务器发送新的图片请求，从而实现刷新图形验证码
               this.timestamp = Date.now()
             })
         }

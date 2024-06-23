@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { CellRowArrowComp, DividerComp } from '../../common/components'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 
@@ -9,6 +9,16 @@ struct SettingsIndexPage {
   @StorageLink(LOGIN_INFO) loginInfo: LoginInfoResponse = {}
   @State isWifiNotification: boolean = true
   @State userExperienceImprovementPlan: boolean = true
+
+  // 退出登录
+  userLogout() {
+    // 清空用户信息
+    this.loginInfo = {}
+    // 轻提示
+    promptAction.showToast({ message: '退出成功' })
+    // 返回上一页
+    router.back()
+  }
 
   build() {
     Navigation() {
@@ -34,6 +44,7 @@ struct SettingsIndexPage {
             .width('100%')
             .onClick(() => {
               // TODO: 退出登录
+              this.userLogout()
             })
           Button('测试页面入口')
             .type(ButtonType.Normal)
