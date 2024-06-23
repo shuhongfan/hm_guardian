@@ -43,8 +43,13 @@ struct AxiosTestPage {
             .onClick(async () => {
               /**
                *  axios 范型参数：
+               *     第一个范型参数： 类型会被第二个范型参数覆盖掉，所以没啥用
                *     第二个范型参数： 约束后端返回数据的类型 - 重点学习
                *     第三个范型参数： 约束请求体(data)参数的类型 - 重点学习
+               *
+               *  温馨提示：
+               *    第三方库使用 TS 语法封装，比 ArkTS 语法松散，三方库中可能会出现 any 类型
+               *    但是在 ArkTS 不允许出现 any 类型，使用三方库时需要把 any 类型覆盖成明确的类型
                */
               const res =
                 await axios.post<null, AxiosResponse<ServiceResponse<Result>, null>, PostUserLoginPasswdData>(
@@ -55,7 +60,7 @@ struct AxiosTestPage {
                   }
                 )
               // promptAction.showToast({ message: '登录请求发送成功' })
-              // AlertDialog.show({ message: JSON.stringify(res, null, 2) })
+              AlertDialog.show({ message: JSON.stringify(res, null, 2) })
               if (res.data.code === 200) {
                 // 保存头像
                 this.avatar = res.data.result?.avatar as string
