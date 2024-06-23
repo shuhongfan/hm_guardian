@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios'
-import { BASE_URL } from '../../common/constants'
+import { BASE_URL, LoginInfoResponse, LOGIN_INFO } from '../../common/constants'
 import { promptAction } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
 import { axiosInstance } from '../../common/utils';
@@ -39,6 +39,8 @@ type AxiosResponseData<T = null> = AxiosResponse<ServiceResponse<T>, null>
 struct AxiosTestPage {
   // 定义头像数据
   @State avatar: string = ''
+  // 持久化
+  @StorageLink(LOGIN_INFO) loginInfo: LoginInfoResponse = {}
 
   build() {
     Navigation() {
@@ -135,14 +137,19 @@ struct AxiosTestPage {
 
           Button('请求工具-发送登录请求')
             .onClick(async () => {
-              const res = await axiosInstance.post<null, AxiosResponseData<LoginInfoResult>, PostUserLoginPasswdData>
+              const res = await axiosInstance.post<null, AxiosResponseData<LoginInfoResponse>, PostUserLoginPasswdData>
               (
                 '/user/login/passwd',
-                { phone: '111', passwd: '222' }
+                { phone: '120666666666', passwd: '888itcast.CN764%...' }
               )
               // 直接书写参数正确时的逻辑即可，错误由拦截器统一处理
               this.avatar = res.data.result?.avatar as string
+              if (res.data.result) {
+                this.loginInfo = res.data.result
+              }
             })
+          // 测试用的
+          Text(JSON.stringify(this.loginInfo, null, 2))
           Button('请求工具-发送获取我的用户信息')
             .onClick(async () => {
               /** 获取用户信息 */
@@ -151,8 +158,15 @@ struct AxiosTestPage {
                 nickname?: string;
               }
 
+              // 获取我的用户信息-需要在请求头中携带 Authorization: token 后才能访问
               const res = await axiosInstance.get<null, AxiosResponseData<GetUserMeResponse>>('/user/me')
               this.avatar = res.data.result?.avatar as string
+            })
+
+          // 测试用的
+          Button('请求工具-测试错误url路径')
+            .onClick(async () => {
+              await axiosInstance.get('/user/abc')
             })
         }
         .constraintSize({ minHeight: '100%' })
