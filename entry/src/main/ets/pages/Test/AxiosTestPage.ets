@@ -143,6 +143,17 @@ struct AxiosTestPage {
               // 直接书写参数正确时的逻辑即可，错误由拦截器统一处理
               this.avatar = res.data.result?.avatar as string
             })
+          Button('请求工具-发送获取我的用户信息')
+            .onClick(async () => {
+              /** 获取用户信息 */
+              interface GetUserMeResponse {
+                avatar?: string;
+                nickname?: string;
+              }
+
+              const res = await axiosInstance.get<null, AxiosResponseData<GetUserMeResponse>>('/user/me')
+              this.avatar = res.data.result?.avatar as string
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
