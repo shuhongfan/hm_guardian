@@ -1,5 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
 import { BASE_URL } from '../constants';
+import { JSON } from '@kit.ArkTS';
+import { promptAction } from '@kit.ArkUI';
 
 /**
  * 后端响应基本类型
@@ -33,9 +35,17 @@ axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 // 添加响应拦截器
-axiosInstance.interceptors.response.use((response: AxiosResponse) => {
+axiosInstance.interceptors.response.use((response: AxiosResponseData) => {
+  console.log('interceptors.response', JSON.stringify(response))
   // 对响应数据做点什么
-  return response;
+  if (response.data.code === 200) {
+    return response;
+  } else {
+    // 错误轻提示
+    promptAction.showToast({ message: response.data.msg })
+    // 返回 Promise.reject() 能主动中断 await 后续代码的执行
+    return Promise.reject(response.data.msg)
+  }
 }, (error: AxiosError) => {
   // 对响应错误做点什么
   return Promise.reject(error);

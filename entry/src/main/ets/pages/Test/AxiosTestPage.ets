@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@o
 import { BASE_URL } from '../../common/constants'
 import { promptAction } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
+import { axiosInstance } from '../../common/utils';
 
 // 温馨提示：网络请求接口的类型，可通过 Apifox 工具生成 CV 过来
 /** 账号密码登录模型 */
@@ -128,6 +129,19 @@ struct AxiosTestPage {
                 promptAction.showToast({ message: res.data.msg })
               }
 
+            })
+          Divider()
+            .strokeWidth(1)
+
+          Button('请求工具-发送登录请求')
+            .onClick(async () => {
+              const res = await axiosInstance.post<null, AxiosResponseData<LoginInfoResult>, PostUserLoginPasswdData>
+              (
+                '/user/login/passwd',
+                { phone: '111', passwd: '222' }
+              )
+              // 直接书写参数正确时的逻辑即可，错误由拦截器统一处理
+              this.avatar = res.data.result?.avatar as string
             })
         }
         .constraintSize({ minHeight: '100%' })
