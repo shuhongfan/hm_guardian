@@ -47,6 +47,7 @@
     "pages/Test/PatternTestPage",
     "pages/Test/UserAuthTestPage",
     "pages/Test/DatabaseTestPage",
-    "pages/Test/AudioCapturerTestPage"
+    "pages/Test/AudioCapturerTestPage",
+    "pages/Test/CameraPickerTestPage"
   ]
 }
