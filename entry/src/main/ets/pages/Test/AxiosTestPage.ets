@@ -22,12 +22,15 @@ export interface ServiceResponse<R> {
 }
 
 /** 登录 Result */
-export interface Result {
+export interface LoginInfoResult {
   accessToken?: string;
   avatar?: string;
   nickname?: string;
   renewalToken?: string;
 }
+
+// type 类型别名，把 axios 范型参数二的类型保存起来
+type AxiosResponseData<T = null> = AxiosResponse<ServiceResponse<T>, null>
 
 @Entry
 @Component
@@ -52,7 +55,7 @@ struct AxiosTestPage {
                *    但是在 ArkTS 不允许出现 any 类型，使用三方库时需要把 any 类型覆盖成明确的类型
                */
               const res =
-                await axios.post<null, AxiosResponse<ServiceResponse<Result>, null>, PostUserLoginPasswdData>(
+                await axios.post<null, AxiosResponseData<LoginInfoResult>, PostUserLoginPasswdData>(
                   BASE_URL + '/user/login/passwd',
                   {
                     phone: '120666666666',
