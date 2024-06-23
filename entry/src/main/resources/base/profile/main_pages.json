@@ -49,6 +49,7 @@
     "pages/Test/DatabaseTestPage",
     "pages/Test/AudioCapturerTestPage",
     "pages/Test/CameraPickerTestPage",
-    "pages/Test/FaultLoggerTestPage"
+    "pages/Test/FaultLoggerTestPage",
+    "pages/Test/AxiosTestPage"
   ]
 }
