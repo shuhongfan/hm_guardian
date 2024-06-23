@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
-import { BASE_URL } from '../constants';
+import { BASE_URL, LoginInfoResponse, LOGIN_INFO } from '../constants';
 import { JSON } from '@kit.ArkTS';
 import { promptAction, router } from '@kit.ArkUI';
 
@@ -27,6 +27,11 @@ export const axiosInstance = axios.create({
 
 // 添加请求拦截器
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // 每次发请求前，判断是否有 token，如果有 token 就自动添加到请求头 (headers) 中
+  const loginInfo = AppStorage.get<LoginInfoResponse>(LOGIN_INFO)
+  if (loginInfo?.accessToken) {
+    config.headers.Authorization = loginInfo?.accessToken
+  }
   // 对请求数据做点什么
   return config;
 }, (error: AxiosError) => {
@@ -55,6 +60,11 @@ axiosInstance.interceptors.response.use((response: AxiosResponseData) => {
     // 跳转登录页
     router.pushUrl({ url: 'pages/User/UserLoginPage' })
     // 清空无效的用户信息
+  } else if (error.message.includes('404')) {
+    // 轻提示
+    promptAction.showToast({ message: '请求地址无效' })
+  } else {
+    promptAction.showToast({ message: '未知网络错误' })
   }
   // 对响应错误做点什么
   return Promise.reject(error);

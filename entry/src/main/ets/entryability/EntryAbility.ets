@@ -1,7 +1,7 @@
 import { AbilityConstant, errorManager, UIAbility, Want } from '@kit.AbilityKit';
 import { promptAction, router, window } from '@kit.ArkUI';
 import { FaultLogger, hilog } from '@kit.PerformanceAnalysisKit';
-import { PrivacySettings, PRIVACY_SETTINGS } from '../common/constants';
+import { LoginInfoResponse, LOGIN_INFO, PrivacySettings, PRIVACY_SETTINGS } from '../common/constants';
 import { JSON } from '@kit.ArkTS';
 import axios from '@ohos/axios';
 
@@ -53,6 +53,8 @@ export default class EntryAbility extends UIAbility {
       PersistentStorage.persistProp('isHidePrivacy', false)
       // 隐私空间持久化UI状态
       PersistentStorage.persistProp<PrivacySettings>(PRIVACY_SETTINGS, {})
+      // 登录后的用户信息
+      PersistentStorage.persistProp<LoginInfoResponse>(LOGIN_INFO, {})
     });
   }
 
