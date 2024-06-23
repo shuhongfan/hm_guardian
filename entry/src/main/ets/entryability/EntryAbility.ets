@@ -3,6 +3,7 @@ import { promptAction, router, window } from '@kit.ArkUI';
 import { FaultLogger, hilog } from '@kit.PerformanceAnalysisKit';
 import { PrivacySettings, PRIVACY_SETTINGS } from '../common/constants';
 import { JSON } from '@kit.ArkTS';
+import axios from '@ohos/axios';
 
 // 错误管理器的 id 标识
 let observerId = -1
@@ -15,9 +16,17 @@ export default class EntryAbility extends UIAbility {
     observerId = errorManager.on('error', {
       // 应用注册后，当应用产生未捕获 catch 的异常时的回调，做统一的错误管理
       async onUnhandledException() {
+        // 获取所有故障日志，FaultLogger 的故障日志会更加全面
         const logs = await FaultLogger.query(FaultLogger.FaultType.JS_CRASH)
+        // 提取当前的错误日志详情
         const currentFaultLog = logs[0]
         console.log('errorManager', JSON.stringify(currentFaultLog))
+        // 上报到服务器
+        await axios.post('https://guardian-api.itheima.net/log/fault/report/single', currentFaultLog)
+        // 轻提示
+        promptAction.showToast({
+          message: '出现未知错误，已自动上报'
+        })
       },
     })
   }
