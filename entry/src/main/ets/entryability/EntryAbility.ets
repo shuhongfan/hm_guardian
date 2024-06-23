@@ -1,16 +1,32 @@
-import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
+import { AbilityConstant, errorManager, UIAbility, Want } from '@kit.AbilityKit';
 import { promptAction, router, window } from '@kit.ArkUI';
-import { hilog } from '@kit.PerformanceAnalysisKit';
+import { FaultLogger, hilog } from '@kit.PerformanceAnalysisKit';
 import { PrivacySettings, PRIVACY_SETTINGS } from '../common/constants';
 import { JSON } from '@kit.ArkTS';
 
+// 错误管理器的 id 标识
+let observerId = -1
+
 export default class EntryAbility extends UIAbility {
+  // Ability 创建时
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    // 注册错误管理器，返回 id 标识
+    observerId = errorManager.on('error', {
+      // 应用注册后，当应用产生未捕获 catch 的异常时的回调，做统一的错误管理
+      async onUnhandledException() {
+        const logs = await FaultLogger.query(FaultLogger.FaultType.JS_CRASH)
+        const currentFaultLog = logs[0]
+        console.log('errorManager', JSON.stringify(currentFaultLog))
+      },
+    })
   }
 
+  // Ability 销毁时
   onDestroy(): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
+    // 根据 id 标识，解除错误管理器注册
+    errorManager.off('error', observerId)
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
