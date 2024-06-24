@@ -1,4 +1,6 @@
+import { BizType, postCodeGraphicCheckAPI } from '../../api'
 import { BASE_URL, LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
+import { promptAction } from '@kit.ArkUI'
 
 
 @Entry
@@ -6,8 +8,8 @@ import { BASE_URL, LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 struct UserLoginPage {
   // 用户信息持久化
   @StorageLink(LOGIN_INFO) loginInfo: LoginInfoResponse = {}
-  // 手机号
-  @State phoneNumber: string = '131234567890'
+  // 手机号 (练习时换成自己的手机号，补充够12位)
+  @State phoneNumber: string = '135353333335'
   // 短信验证码
   @State verifyCode: string = ''
   // 显示半模态转场结构
@@ -21,6 +23,23 @@ struct UserLoginPage {
   // 倒计时定时器
   private intervalID: number = -1
 
+  // 提交图形验证码
+  async onGraphicCodeSubmit() {
+    try {
+      await postCodeGraphicCheckAPI({
+        bizType: BizType.PhoneLogin,
+        phone: this.phoneNumber,
+        verifyCode: this.graphicCode
+      })
+      promptAction.showToast({ message: '图形验证码正确' })
+      // 关闭半模态弹窗
+      this.isShowSheet = false
+    } catch (error) {
+      // 刷新图形验证码
+      this.timestamp = Date.now()
+    }
+  }
+
   // 半模态转场
   @Builder
   SheetBuilder() {
@@ -32,7 +51,7 @@ struct UserLoginPage {
 
       Column({ space: 20 }) {
         Row({ space: 10 }) {
-          TextInput({ placeholder: '图形验证码' })
+          TextInput({ placeholder: '图形验证码', text: this.graphicCode })
             .fontSize(14)
             .height(42)
             .layoutWeight(1)
@@ -42,6 +61,7 @@ struct UserLoginPage {
             })
             .onSubmit(() => {
               // TODO:提交图形验证码
+              this.onGraphicCodeSubmit()
             })
           // 图形验证码图片
           Image(`${BASE_URL}/code/graphic?phone=${this.phoneNumber}&bizType=${1}&timestamp=${this.timestamp}`)
@@ -61,6 +81,7 @@ struct UserLoginPage {
           .enabled(this.graphicCode.length > 0)
           .onClick(() => {
             // TODO:提交图形验证码
+            this.onGraphicCodeSubmit()
           })
       }
     }
