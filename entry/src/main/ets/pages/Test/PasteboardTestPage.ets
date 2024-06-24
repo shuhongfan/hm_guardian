@@ -4,6 +4,8 @@ import { promptAction } from '@kit.ArkUI'
 @Entry
 @Component
 struct PasteboardTestPage {
+  @State pasteText: string = ''
+
   build() {
     Navigation() {
       Scroll() {
@@ -19,6 +21,19 @@ struct PasteboardTestPage {
 
               promptAction.showToast({ message: 'ok' })
             })
+          Button('读取剪贴板-拼多多、淘宝等')
+            .onClick(() => {
+              // 1. 获取系统剪贴板
+              const systemPasteboard = pasteboard.getSystemPasteboard()
+              // 2. 读取剪贴板的数据(但是还不知道格式)
+              //  踩坑：getDataSync 如果剪贴板为空，返回值为 undefined，undefined 不能提取内容会导致出错
+              //  API 12: 需要配置 ohos.permission.READ_PASTEBOARD 权限后才能读取
+              const pasteData = systemPasteboard.getDataSync()
+              // 3. 提取内容(提取文本)
+              this.pasteText = pasteData?.getPrimaryText() || ''
+            })
+
+          Text('剪贴板的文本:' + this.pasteText)
         }
         .constraintSize({ minHeight: '100%' })
       }
