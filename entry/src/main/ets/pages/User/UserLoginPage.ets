@@ -1,4 +1,4 @@
-import { BizType, postCodeGraphicCheckAPI } from '../../api'
+import { BizType, postCodeGraphicCheckAPI, postCodeSmsSendAPI } from '../../api'
 import { BASE_URL, LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 import { promptAction } from '@kit.ArkUI'
 
@@ -26,18 +26,59 @@ struct UserLoginPage {
   // 提交图形验证码
   async onGraphicCodeSubmit() {
     try {
+      // 1. 后端校验图形验证码
       await postCodeGraphicCheckAPI({
         bizType: BizType.PhoneLogin,
         phone: this.phoneNumber,
         verifyCode: this.graphicCode
       })
-      promptAction.showToast({ message: '图形验证码正确' })
-      // 关闭半模态弹窗
+      // 2. 关闭半模态弹窗
       this.isShowSheet = false
+      // 3. 清空输入框，方便下次输入
+      this.graphicCode = ''
+      // 4. 刷新图形验证码
+      this.timestamp = Date.now()
+      // 5. 发送短信验证码
+      this.onSendSmsCode()
     } catch (error) {
       // 刷新图形验证码
       this.timestamp = Date.now()
     }
+  }
+
+  // 发送短信验证码
+  async onSendSmsCode() {
+    // 1. 调用接口让后端发送短信到手机上
+    await postCodeSmsSendAPI({
+      bizType: BizType.PhoneLogin,
+      phone: this.phoneNumber
+    })
+    // 2. 更新界面倒计时
+    this.startCountDown()
+    // 3. 用户轻提示
+    promptAction.showToast({ message: `短信已发送到${this.phoneNumber}上，请注意查收` })
+  }
+
+  // 界面倒计时
+  startCountDown() {
+    // 初始化倒计时的秒数
+    this.count = 120
+    // 清理旧的定时器，并启动新的定时器
+    clearInterval(this.intervalID)
+    this.intervalID = setInterval(() => {
+      // 每隔一秒自减 1
+      this.count--
+      // 如果数值小于 0，清理定时器
+      if (this.count <= 0) {
+        clearInterval(this.intervalID)
+      }
+    }, 1000)
+  }
+
+  // 页面销毁
+  aboutToDisappear() {
+    // 清理定时器
+    clearInterval(this.intervalID)
   }
 
   // 半模态转场
