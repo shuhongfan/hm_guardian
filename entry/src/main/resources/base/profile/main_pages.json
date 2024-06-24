@@ -52,6 +52,7 @@
     "pages/Test/FaultLoggerTestPage",
     "pages/Test/AxiosTestPage",
     "pages/Test/ContactsTestPage",
-    "pages/Test/PasteboardTestPage"
+    "pages/Test/PasteboardTestPage",
+    "pages/Test/SensorTestPage"
   ]
 }

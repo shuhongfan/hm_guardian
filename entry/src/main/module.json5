@@ -4,6 +4,9 @@
     "requestPermissions": [
       // 权限等级: normal        对所有应用开放
       // 授权方式: system_grant  系统静默授权，无弹窗
+      {
+        "name": "ohos.permission.ACCELEROMETER"
+      },
       // 网络请求
       {
         "name": "ohos.permission.INTERNET"
