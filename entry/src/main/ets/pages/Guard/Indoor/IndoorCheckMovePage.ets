@@ -34,16 +34,27 @@ struct IndoorCheckMovePage {
   // 订阅传感器
   startSensor() {
     sensor.on(sensor.SensorId.ACCELEROMETER, (response) => {
-      // 先保存第一次传感器的数据
+      // 1. 先保存第一次传感器的数据
       if (this.sensorResponse === null) {
         this.sensorResponse = response
         return
       }
-      // 对比两次传感器的值，如果在误差范围内则为静止
+      // 2. 对比两次传感器的值，如果在误差范围内则为静止
       //   response               当前传感器的数据
       //   this.sensorResponse    上次保存的传感器数据
-      this.isStatic = this.checkStatic(response, this.sensorResponse)
-      // 保存传感器数据，用于下次比较
+      // this.isStatic = this.checkStatic(response, this.sensorResponse)
+      if (this.checkStatic(response, this.sensorResponse)) {
+        // 静止状态
+        this.isStatic = true
+      } else {
+        // 在赋值前判断，其实时判断上一个状态
+        if (this.isStatic === true) {
+          router.replaceUrl({ url: 'pages/Guard/Alarm/GuardAlarmPage' })
+        }
+        // 移动状态
+        this.isStatic = this.checkStatic(response, this.sensorResponse)
+      }
+      // 3. 保存传感器数据，用于下次比较
       this.sensorResponse = response
     }, { interval: 'game' })
   }
