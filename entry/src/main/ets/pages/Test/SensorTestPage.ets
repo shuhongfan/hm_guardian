@@ -30,6 +30,7 @@ struct SensorTestPage {
                 this.response = response
               }, { interval: 'normal' })
               // interval  采样频率  单位：纳秒  1000000000纳秒 = 1秒， game(0.02s) > ui(0.06s) > normal(0.2s)
+              // 补充：1000000000纳秒 === 1e9 === 1s，  0.3s === 0.3 * 1e9
             })
 
           Button('取消订阅')
