@@ -51,6 +51,7 @@
     "pages/Test/CameraPickerTestPage",
     "pages/Test/FaultLoggerTestPage",
     "pages/Test/AxiosTestPage",
-    "pages/Test/ContactsTestPage"
+    "pages/Test/ContactsTestPage",
+    "pages/Test/PasteboardTestPage"
   ]
 }
