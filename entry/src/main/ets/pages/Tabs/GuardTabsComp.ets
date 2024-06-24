@@ -358,13 +358,14 @@ export struct GuardTabsComp {
         .edgeEffect(EdgeEffect.Spring)
         .width('100%')
         .height('100%')
-        .onWillScroll(() => {
-          // 获取当前的滚动偏移量
-          const scrollTop = this.scroller.currentOffset()
-            .yOffset
-          // 0 和 1 是透明度的临界点
-          this.navigationOpacity = Math.max(0, Math.min(1, scrollTop / 100))
-        })
+
+        // .onWillScroll(() => {
+        //   // 获取当前的滚动偏移量
+        //   const scrollTop = this.scroller.currentOffset()
+        //     .yOffset
+        //   // 0 和 1 是透明度的临界点
+        //   this.navigationOpacity = Math.max(0, Math.min(1, scrollTop / 100))
+        // })
 
         // 紧急联系人
         Image($r('app.media.ic_guard_contact'))
