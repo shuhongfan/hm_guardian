@@ -37,6 +37,13 @@ struct CheckCameraPage {
     try {
       sensor.on(sensor.SensorId.MAGNETIC_FIELD, (response) => {
         this.sensorResponse = response
+        // Math.abs()   绝对值
+        // Math.max()   最大值
+        this.maxData = Math.max(Math.abs(response.x), Math.abs(response.y), Math.abs(response.z))
+        // 追加到数组中，ForEach 成波形图
+        this.dataList.push(this.maxData)
+        // 自动滚动到容器边缘
+        this.scroller.scrollEdge(Edge.End)
       }, { interval: 'ui' })
     } catch (error) {
       promptAction.showToast({ message: '当前设备硬件不支持' })
