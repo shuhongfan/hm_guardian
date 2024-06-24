@@ -3,7 +3,7 @@ import { sensor } from '@kit.SensorServiceKit'
 @Entry
 @Component
 struct SensorTestPage {
-
+  // 传感器数据
   @State response: sensor.AccelerometerResponse | null = null
 
   build() {
@@ -13,13 +13,14 @@ struct SensorTestPage {
 
           Button('获取传感器列表')
             .onClick(async () => {
+              // 获取设备上的所有传感器信息(传感器名称、供应商、功耗、硬件版本、最小/最大采样周期 等)
               const list = await sensor.getSensorList()
               AlertDialog.show({ message: JSON.stringify(list, null, 2) })
             })
 
           Button('订阅加速度传感器(摇一摇)')
             .onClick(() => {
-              // ACCELEROMETER 加速度（模拟器也支持测试）
+              // ACCELEROMETER 加速度（模拟器支持测试加速度传感器-摇一摇）
               sensor.on(sensor.SensorId.ACCELEROMETER, (response) => {
                 this.response = response
               })
@@ -27,6 +28,7 @@ struct SensorTestPage {
 
           Button('取消订阅')
             .onClick(() => {
+              // 取消订阅，页面销毁时，释放资源
               sensor.off(sensor.SensorId.ACCELEROMETER)
             })
 
