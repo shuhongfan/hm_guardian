@@ -1,7 +1,9 @@
 import { sensor } from '@kit.SensorServiceKit'
 import { NavigationTitleBuilder } from '../../../common/builders/index'
 import { themeManager } from '../../../manager/index'
+import { promptAction } from '@kit.ArkUI'
 
+// 利用磁场传感器检测电磁信号(用于排查隐秘摄像头)
 @Entry
 @Component
 struct CheckCameraPage {
@@ -22,6 +24,32 @@ struct CheckCameraPage {
     themeManager.settingStatusBarBlack()
   }
 
+  aboutToAppear() {
+    this.startSensor()
+  }
+
+  aboutToDisappear() {
+    this.stopSensor()
+  }
+
+  // 订阅传感器
+  startSensor() {
+    try {
+      sensor.on(sensor.SensorId.MAGNETIC_FIELD, (response) => {
+        this.sensorResponse = response
+      }, { interval: 'ui' })
+    } catch (error) {
+      promptAction.showToast({ message: '当前设备硬件不支持' })
+    }
+  }
+
+  // 取消传感器订阅
+  stopSensor() {
+    try {
+      sensor.off(sensor.SensorId.MAGNETIC_FIELD)
+    } catch { }
+  }
+
   build() {
     Navigation() {
       Column({ space: 20 }) {
@@ -34,6 +62,8 @@ struct CheckCameraPage {
         Text(this.maxData >= this.alarmValue ? '检测到较强信号波动，请留意附近可疑位置' : '未发现异常信号')
           .fontSize(14)
           .fontColor(this.maxData >= this.alarmValue ? $r('app.color.danger') : $r('app.color.white'))
+        Text('传感器数据：' + JSON.stringify(this.sensorResponse, null, 2))
+          .fontColor('#fff')
       }
       .padding({ top: 50 })
 
