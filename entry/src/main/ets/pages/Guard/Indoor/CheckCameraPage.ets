@@ -50,8 +50,12 @@ struct CheckCameraPage {
     } catch { }
   }
 
+  // 5.0.3.403 版本的 Navigation 有 BUG，不添加无法给 Navigation 设置标题和返回箭头
+  pathInfos: NavPathStack = new NavPathStack()
+
   build() {
-    Navigation() {
+    // 修复 5.0.3.403 版本的 Navigation 的 BUG
+    Navigation(this.pathInfos) {
       Column({ space: 20 }) {
         Text('环境磁场强度')
           .fontSize(14)
