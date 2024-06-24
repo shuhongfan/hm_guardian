@@ -27,6 +27,7 @@ export const axiosInstance = axios.create({
 
 // 添加请求拦截器
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // 登录成功后-自动携带 token 信息到请求头中
   // 每次发请求前，判断是否有 token，如果有 token 就自动添加到请求头 (headers) 中
   const loginInfo = AppStorage.get<LoginInfoResponse>(LOGIN_INFO)
   if (loginInfo?.accessToken) {

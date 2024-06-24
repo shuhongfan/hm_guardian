@@ -53,7 +53,7 @@ export default class EntryAbility extends UIAbility {
       PersistentStorage.persistProp('isHidePrivacy', false)
       // 隐私空间持久化UI状态
       PersistentStorage.persistProp<PrivacySettings>(PRIVACY_SETTINGS, {})
-      // 登录后的用户信息
+      // 登录后的用户信息-登录完成后持久化存储
       PersistentStorage.persistProp<LoginInfoResponse>(LOGIN_INFO, {})
     });
   }
