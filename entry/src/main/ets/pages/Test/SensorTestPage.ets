@@ -6,6 +6,11 @@ struct SensorTestPage {
   // 传感器数据
   @State response: sensor.AccelerometerResponse | null = null
 
+  aboutToDisappear() {
+    // 页面销毁时，取消订阅，释放资源
+    sensor.off(sensor.SensorId.ACCELEROMETER)
+  }
+
   build() {
     Navigation() {
       Scroll() {
@@ -23,7 +28,8 @@ struct SensorTestPage {
               // ACCELEROMETER 加速度（模拟器支持测试加速度传感器-摇一摇）
               sensor.on(sensor.SensorId.ACCELEROMETER, (response) => {
                 this.response = response
-              })
+              }, { interval: 'normal' })
+              // interval  采样频率  单位：纳秒  1000000000纳秒 = 1秒， game(0.02s) > ui(0.06s) > normal(0.2s)
             })
 
           Button('取消订阅')
