@@ -1,4 +1,4 @@
-import { sensor } from '@kit.SensorServiceKit'
+import { sensor, vibrator } from '@kit.SensorServiceKit'
 import { NavigationTitleBuilder } from '../../../common/builders/index'
 import { themeManager } from '../../../manager/index'
 import { promptAction } from '@kit.ArkUI'
@@ -44,6 +44,14 @@ struct CheckCameraPage {
         this.dataList.push(this.maxData)
         // 自动滚动到容器边缘
         this.scroller.scrollEdge(Edge.End)
+        // 通过马达振动，添加触感反馈
+        if (this.maxData >= this.alarmValue) {
+          // time 持续振动
+          vibrator.startVibration({ type: 'time', duration: 500 }, { usage: 'alarm' })
+        } else {
+          // 停止振动
+          vibrator.stopVibration(vibrator.VibratorStopMode.VIBRATOR_STOP_MODE_TIME)
+        }
       }, { interval: 'ui' })
     } catch (error) {
       promptAction.showToast({ message: '当前设备硬件不支持' })

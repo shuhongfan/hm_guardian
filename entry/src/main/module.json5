@@ -4,6 +4,11 @@
     "requestPermissions": [
       // 权限等级: normal        对所有应用开放
       // 授权方式: system_grant  系统静默授权，无弹窗
+      // 马达振动
+      {
+        "name": "ohos.permission.VIBRATE"
+      },
+      // 加速度传感器
       {
         "name": "ohos.permission.ACCELEROMETER"
       },
