@@ -1,6 +1,7 @@
 import { router } from '@kit.ArkUI'
 import { sensor } from '@kit.SensorServiceKit'
 
+// 检测手机移动
 @Entry
 @Component
 struct IndoorCheckMovePage {
@@ -10,6 +11,47 @@ struct IndoorCheckMovePage {
   @State isStatic: boolean = false
   // 传感器数据
   @State sensorResponse: sensor.AccelerometerResponse | null = null
+
+  aboutToAppear() {
+    this.startSensor()
+  }
+
+  // 页面卸载，取消传感器订阅，释放资源
+  aboutToDisappear() {
+    this.stopSensor()
+  }
+
+  // 检测手机是否静止
+  checkStatic(value: sensor.AccelerometerResponse, oldValue: sensor.AccelerometerResponse) {
+    // Math.abs  计算绝对值，用于判断误差范围，只要误差范围小于等于 1 都认为设备静止
+    return (
+      Math.abs(value.x - oldValue.x) <= 1 &&
+        Math.abs(value.y - oldValue.y) <= 1 &&
+        Math.abs(value.z - oldValue.z) <= 1
+    )
+  }
+
+  // 订阅传感器
+  startSensor() {
+    sensor.on(sensor.SensorId.ACCELEROMETER, (response) => {
+      // 先保存第一次传感器的数据
+      if (this.sensorResponse === null) {
+        this.sensorResponse = response
+        return
+      }
+      // 对比两次传感器的值，如果在误差范围内则为静止
+      //   response               当前传感器的数据
+      //   this.sensorResponse    上次保存的传感器数据
+      this.isStatic = this.checkStatic(response, this.sensorResponse)
+      // 保存传感器数据，用于下次比较
+      this.sensorResponse = response
+    }, { interval: 'game' })
+  }
+
+  // 取消传感器订阅
+  stopSensor() {
+    sensor.off(sensor.SensorId.ACCELEROMETER)
+  }
 
   @Styles
   circleSize(){
@@ -68,8 +110,8 @@ struct IndoorCheckMovePage {
             .fontColor($r('app.color.brand'))
           Text('保持手机静止，以激活防移动模式')
             .fontSize(14)
-          // Text('是否静止：' + this.isStatic)
-          // Text('传感器数据：' + JSON.stringify(this.sensorResponse))
+          Text('是否静止：' + this.isStatic)
+          Text('传感器数据：' + JSON.stringify(this.sensorResponse))
         }
         .justifyContent(FlexAlign.Center)
         .height('100%')
