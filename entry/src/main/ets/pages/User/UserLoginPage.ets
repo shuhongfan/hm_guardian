@@ -1,6 +1,6 @@
-import { BizType, postCodeGraphicCheckAPI, postCodeSmsSendAPI } from '../../api'
+import { BizType, postCodeGraphicCheckAPI, postCodeSmsSendAPI, postUserLoginVerifyCodeAPI } from '../../api'
 import { BASE_URL, LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
-import { promptAction } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 
 
 @Entry
@@ -79,6 +79,21 @@ struct UserLoginPage {
   aboutToDisappear() {
     // 清理定时器
     clearInterval(this.intervalID)
+  }
+
+  // 用户登录表单提交
+  async onLoginSubmit() {
+    // 1. 手机号+短信验证码登录
+    const res = await postUserLoginVerifyCodeAPI({
+      phone: this.phoneNumber,
+      verifyCode: this.verifyCode,
+    })
+    // 2. 持久化存储
+    this.loginInfo = res.data.result
+    // 3. 返回上一页
+    router.back()
+    // 轻提示
+    promptAction.showToast({ message: '登录成功' })
   }
 
   // 半模态转场
@@ -167,6 +182,9 @@ struct UserLoginPage {
               .onChange((value) => {
                 this.verifyCode = value
               })
+              .onSubmit(() => {
+                this.onLoginSubmit()
+              })
             if (this.count > 0) {
               Text(this.count + '秒后重发')
                 .fontSize(14)
@@ -192,6 +210,7 @@ struct UserLoginPage {
             .enabled(this.phoneNumber.length > 0 && this.verifyCode.length > 0)
             .onClick(() => {
               // TODO:登录表单提交
+              this.onLoginSubmit()
             })
 
           Text('仅用于IT培训教学使用，为保障您的个人信息安全请勿向平台录入任何个人敏感信息（如手机号、身份证号等）！')

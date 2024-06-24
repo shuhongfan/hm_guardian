@@ -1,24 +1,10 @@
+import { LoginInfoResponse } from '../common/constants'
 import { axiosInstance, AxiosResponseData } from '../common/utils/http'
 
 interface postUserRegisterData {
   passwd: string
   phone: string
   smsCode: string
-}
-
-/** 登录响应 */
-export interface LoginInfoResponse {
-  /** 访问token */
-  accessToken?: string;
-
-  /** 头像 */
-  avatar?: string;
-
-  /** 昵称 */
-  nickname?: string;
-
-  /** 续期token */
-  renewalToken?: string;
 }
 
 /* 注册用户 */
