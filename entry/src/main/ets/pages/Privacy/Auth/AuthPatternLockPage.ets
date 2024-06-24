@@ -3,6 +3,7 @@ import CryptoJS from '@ohos/crypto-js'
 import { PRIVACY_SETTINGS, PrivacySettings } from '../../../common/constants'
 import { encryptMD5 } from '../../../common/utils'
 import { userAuthManager } from '../../../manager'
+import { vibrator } from '@kit.SensorServiceKit'
 
 @Entry
 @Component
@@ -127,6 +128,11 @@ struct AuthPatternLockPage {
             .pathColor(this.errorMessage && this.inputPasswords.length !== 0 ? '#ccff5e5d' : '#cc0a59f7')// 线颜色
             .enabled(this.isEnable)
             .onDotConnect(() => {
+              // 使用预置的振动效果增强触摸反馈
+              vibrator.startVibration(
+                { type: 'preset', effectId: vibrator.EffectId.EFFECT_CLOCK_TIMER, count: 1 },
+                { usage: 'touch' }
+              )
               // 密码输入选中宫格圆点时触发该回调
               clearTimeout(this.timeoutID)
             })
