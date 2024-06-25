@@ -1,13 +1,16 @@
 import { calendarManager } from '@kit.CalendarKit';
+import _ from '@wolfx/lodash';
 import dayjs from 'dayjs';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
+import { userCalendarManager } from '../../manager';
 
 // 日程信息
 interface GroupItem {
-  date: string
+  year: string
   list: calendarManager.Event[]
 }
 
+// 过期日程
 @Entry
 @Component
 struct CalendarOverduePage {
@@ -17,6 +20,26 @@ struct CalendarOverduePage {
   @State isEditing: boolean = false
   @State isShowSheet: boolean = false
   @State selectedNames: string[] = []
+
+  onPageShow() {
+    this.getData()
+  }
+
+  async getData() {
+    this.list = await userCalendarManager.getOverdueEvents()
+    // 通过 lodash 的 _.groupBy 方法，把日程列表按年份编组
+    //   返回值为对象  { "2024": [日程列表], "2023": [日程列表] }
+    const groupedData = _.groupBy(this.list, item => dayjs(item.endTime)
+      .format('YYYY年'))
+    // 通过 lodash 的 _.map 方法，把对象映射成数组
+    // 对象： { "2024": [日程列表], "2023": [日程列表] }
+    //  _.map 映射后
+    // 数组：[{ year: "2024", list: [日程列表] },{ year: "2023", list: [日程列表] }]
+    this.groupList = _.map(groupedData, (item, index): GroupItem => ({
+      year: index, // 年份
+      list: item, // 日程列表
+    }));
+  }
 
   @Builder
   NavigationMenus() {
@@ -92,7 +115,7 @@ struct CalendarOverduePage {
       Column() {
         List() {
           ForEach(this.groupList, (item: GroupItem) => {
-            ListItemGroup({ header: this.ListHeader(item.date) }) {
+            ListItemGroup({ header: this.ListHeader(item.year) }) {
               ForEach(item.list, (event: calendarManager.Event) => {
                 ListItem() {
                   Row() {
@@ -168,7 +191,7 @@ struct CalendarOverduePage {
         .visibility(this.isEditing ? Visibility.Visible : Visibility.None)
       }
     }
-    .title('过期日历')
+    .title('过期日程')
     .titleMode(NavigationTitleMode.Mini)
     .mode(NavigationMode.Stack)
     .menus(this.NavigationMenus())
