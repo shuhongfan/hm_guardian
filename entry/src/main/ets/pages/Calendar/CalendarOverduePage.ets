@@ -3,6 +3,7 @@ import _ from '@wolfx/lodash';
 import dayjs from 'dayjs';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
 import { userCalendarManager } from '../../manager';
+import { promptAction } from '@kit.ArkUI';
 
 // 日程信息
 interface GroupItem {
@@ -25,6 +26,7 @@ struct CalendarOverduePage {
     this.getData()
   }
 
+  // 查询过期日程，并按年份编组
   async getData() {
     this.list = await userCalendarManager.getOverdueEvents()
     // 通过 lodash 的 _.groupBy 方法，把日程列表按年份编组
@@ -39,6 +41,16 @@ struct CalendarOverduePage {
       year: index, // 年份
       list: item, // 日程列表
     }));
+  }
+
+  // 删除日程
+  async deleteEvent(id: number) {
+    // 删除日程
+    await userCalendarManager.deleteEvent(id)
+    // 重新获取日程
+    await this.getData()
+    // 删除提示，比较删除前后的数量
+    promptAction.showToast({ message: '删除成功' })
   }
 
   @Builder
@@ -70,6 +82,7 @@ struct CalendarOverduePage {
         .backgroundColor($r('app.color.danger'))
         .onClick(() => {
           // TODO：删除
+          this.deleteEvent(id)
         })
     }
     .height('100%')
