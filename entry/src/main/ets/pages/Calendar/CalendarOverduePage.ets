@@ -45,6 +45,7 @@ struct CalendarOverduePage {
 
   // 侧滑删除日程
   async deleteEvent(id: number) {
+    promptAction.showToast({ message: '正在删除中，请稍等...', duration: 10000 })
     // 删除日程
     await userCalendarManager.deleteEvent(id)
     // 重新获取日程
@@ -55,6 +56,7 @@ struct CalendarOverduePage {
 
   // 批量删除选中的日程
   async deleteSelectedEvents() {
+    promptAction.showToast({ message: '正在清理中，请稍等...', duration: 10000 })
     // 批量删除日程
     await userCalendarManager.deleteEvents(this.selectedNames.map(v => Number(v)))
     // 重新获取日程
