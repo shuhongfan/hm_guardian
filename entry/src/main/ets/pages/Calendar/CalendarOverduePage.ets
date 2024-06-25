@@ -43,7 +43,7 @@ struct CalendarOverduePage {
     }));
   }
 
-  // 删除日程
+  // 侧滑删除日程
   async deleteEvent(id: number) {
     // 删除日程
     await userCalendarManager.deleteEvent(id)
@@ -51,6 +51,18 @@ struct CalendarOverduePage {
     await this.getData()
     // 删除提示，比较删除前后的数量
     promptAction.showToast({ message: '删除成功' })
+  }
+
+  // 批量删除选中的日程
+  async deleteSelectedEvents() {
+    // 批量删除日程
+    await userCalendarManager.deleteEvents(this.selectedNames.map(v => Number(v)))
+    // 重新获取日程
+    await this.getData()
+    // 关闭编辑状态
+    this.isEditing = false
+    // 删除提示，比较删除前后的数量
+    promptAction.showToast({ message: '批量删除成功' })
   }
 
   @Builder
@@ -194,6 +206,7 @@ struct CalendarOverduePage {
             .enabled(this.selectedNames.length > 0)
             .onClick(() => {
               // TODO：批量删除
+              this.deleteSelectedEvents()
             })
         }
         .height(76)
