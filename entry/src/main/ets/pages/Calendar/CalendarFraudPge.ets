@@ -1,6 +1,8 @@
 import { calendarManager } from '@kit.CalendarKit';
 import dayjs from 'dayjs';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
+import { userCalendarManager } from '../../manager';
+import { promptAction, router } from '@kit.ArkUI';
 
 
 @Entry
@@ -10,6 +12,25 @@ struct CalendarFraudPage {
   @State list: calendarManager.Event[] = []
   // 选中项
   @State selectedName: string[] = []
+
+  aboutToAppear() {
+    this.getData()
+  }
+
+  async getData() {
+    this.list = await userCalendarManager.getFraudEvents()
+    this.selectedName = this.list.map(v => String(v.id))
+  }
+
+  // 清理选中日程
+  async deleteSelectedEvents() {
+    promptAction.showToast({ message: '正在清理中，请稍等...', duration: 10000 })
+    await userCalendarManager.deleteEvents(this.selectedName.map(v => Number(v)))
+    promptAction.showToast({ message: '清理成功' })
+    setTimeout(() => {
+      router.back()
+    }, 1000)
+  }
 
   build() {
     Navigation() {
@@ -72,6 +93,7 @@ struct CalendarFraudPage {
             .enabled(this.selectedName.length > 0)
             .onClick(() => {
               // TODO：批量删除
+              this.deleteSelectedEvents()
             })
         }
         .height(76)
