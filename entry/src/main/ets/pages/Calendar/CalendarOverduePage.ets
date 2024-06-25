@@ -168,7 +168,7 @@ struct CalendarOverduePage {
         .visibility(this.isEditing ? Visibility.Visible : Visibility.None)
       }
     }
-    .title('过期日历')
+    .title('过期日程')
     .titleMode(NavigationTitleMode.Mini)
     .mode(NavigationMode.Stack)
     .menus(this.NavigationMenus())
