@@ -45,20 +45,6 @@ struct RecorderIndexPage {
   private recordingTimerId: number = -1
 
   @Builder
-  NavigationMenus() {
-    Row() {
-      Text('编辑')
-        .fontSize(16)
-        .fontColor($r('app.color.font'))
-        .onClick(() => {
-
-        })
-    }
-    .height('100%')
-    .padding({ right: 25 })
-  }
-
-  @Builder
   ListItemSwipeActionEnd() {
     Row() {
       Button("重命名")
@@ -260,7 +246,6 @@ struct RecorderIndexPage {
     .title('录音')
     .titleMode(NavigationTitleMode.Mini)
     .mode(NavigationMode.Stack)
-    .menus(this.NavigationMenus)
     .linearGradient({
       angle: 180,
       colors: this.isRecording ? [[$r('app.color.white'), 0.95], [$r('app.color.brand'), 0.95]] :
