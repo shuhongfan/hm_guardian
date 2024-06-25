@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { NavigationTitleBuilder } from '../../common/builders';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
 import { themeManager, userCalendarManager } from '../../manager';
+import { promptAction } from '@kit.ArkUI';
 
 
 @Entry
@@ -26,6 +27,18 @@ struct CalendarSearchPage {
   // 日程搜索
   async onSearch() {
     this.list = await userCalendarManager.searchEvents(this.searchText)
+  }
+
+  // 批量删除选中的日程
+  async deleteSelectedEvents() {
+    // 批量删除日程
+    await userCalendarManager.deleteEvents(this.selectedNames.map(v => Number(v)))
+    // 重新获取日程
+    await this.onSearch()
+    // 关闭编辑状态
+    this.isEditing = false
+    // 删除提示，比较删除前后的数量
+    promptAction.showToast({ message: '清理成功' })
   }
 
   @Builder
@@ -172,6 +185,7 @@ struct CalendarSearchPage {
             .enabled(this.selectedNames.length > 0)
             .onClick(() => {
               // TODO：批量删除
+              this.deleteSelectedEvents()
             })
         }
         .height(76)
