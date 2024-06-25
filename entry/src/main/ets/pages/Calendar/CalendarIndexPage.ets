@@ -12,7 +12,18 @@ struct CalendarIndexPage {
   @State isLoading: boolean = false
 
   aboutToAppear() {
-    userCalendarManager.requestPermissions()
+    this.requestPermission()
+  }
+
+  // 申请权限
+  async requestPermission() {
+    await userCalendarManager.requestPermissions()
+    this.getData()
+  }
+
+  // 获取数据
+  async getData() {
+    this.overdueEvents = await userCalendarManager.getOverdueEvents()
   }
 
   onPageShow() {
@@ -124,14 +135,30 @@ struct CalendarIndexPage {
                     // 日程类型，NORMAL 普通日程，IMPORTANT	重要日程。支持倒计时。
                     type: calendarManager.EventType.IMPORTANT,
                     title: '守护助手添加的重要日程 IMPORTANT',
-                    startTime: Number(new Date('2024-06-18 12:00:00')),
-                    endTime: Number(new Date('2024-06-18 13:00:00')),
+                    startTime: Number(new Date()) + 1000 * 60, // 加 1 分钟
+                    endTime: Number(new Date()) + 1000 * 60 * 60, // 加 1 小时
                     // 日程提醒时间，单位为分钟，0 准点提醒，5 提前5分钟提醒
                     // 支持显示的提醒时间段，请参考原生日程的截图
                     reminderTime: [0, 5]
                   })
                   promptAction.showToast({ message: '日程添加成功id为：' + id })
                 })
+              Button('添加过期日程')
+                .onClick(async () => {
+                  // 获取默认日历对象
+                  const calendarMgr = calendarManager.getCalendarManager(getContext())
+                  const calendar = await calendarMgr.getCalendar()
+                  // 添加过期日程
+                  const id = await calendar.addEvent({
+                    type: calendarManager.EventType.NORMAL,
+                    title: '守护助手添加的过期',
+                    startTime: Number(new Date('2022-06-18 12:00:00')),
+                    endTime: Number(new Date('2022-06-18 13:00:00')),
+                    reminderTime: [0, 5]
+                  })
+                  promptAction.showToast({ message: '过期日程添加成功，id为：' + id })
+                })
+
               Button('查询日程')
                 .onClick(async () => {
                   // 获取默认日历对象
@@ -140,10 +167,6 @@ struct CalendarIndexPage {
                   // 查询所有日程（当前应用添加的日程）
                   const list = await calendar.getEvents()
                   AlertDialog.show({ message: JSON.stringify(list, null, 2) })
-                })
-              Button('添加过期日程')
-                .onClick(async () => {
-                  //
                 })
             }
           }
