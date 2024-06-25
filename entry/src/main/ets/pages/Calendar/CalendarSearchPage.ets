@@ -2,7 +2,7 @@ import { calendarManager } from '@kit.CalendarKit';
 import dayjs from 'dayjs';
 import { NavigationTitleBuilder } from '../../common/builders';
 import { TitleDividerComp } from '../../common/components/TitleDividerComp';
-import { themeManager } from '../../manager';
+import { themeManager, userCalendarManager } from '../../manager';
 
 
 @Entry
@@ -21,6 +21,11 @@ struct CalendarSearchPage {
 
   onPageHide() {
     themeManager.settingStatusBarBlack()
+  }
+
+  // 日程搜索
+  async onSearch() {
+    this.list = await userCalendarManager.searchEvents(this.searchText)
   }
 
   @Builder
@@ -91,6 +96,7 @@ struct CalendarSearchPage {
             })
             .onSubmit(() => {
               // TODO：搜索日程
+              this.onSearch()
             })
         }
         .padding({
