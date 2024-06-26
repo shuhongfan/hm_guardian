@@ -55,6 +55,7 @@
     "pages/Test/PasteboardTestPage",
     "pages/Test/SensorTestPage",
     "pages/Test/TorchTestPage",
-    "pages/Test/AVPlayerTestPage"
+    "pages/Test/AVPlayerTestPage",
+    "pages/Test/LocationKitTestPage"
   ]
 }

@@ -61,11 +61,13 @@
       },
       // 位置信息
       {
+        // 模糊定位
         "name": "ohos.permission.APPROXIMATELY_LOCATION",
         "reason": '$string:permission_reason_location',
         "usedScene": {}
       },
       {
+        // 精准定位
         "name": "ohos.permission.LOCATION",
         "reason": '$string:permission_reason_location',
         "usedScene": {}
