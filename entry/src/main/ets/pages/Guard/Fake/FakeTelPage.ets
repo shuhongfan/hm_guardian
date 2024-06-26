@@ -1,12 +1,13 @@
 import { router } from '@kit.ArkUI'
 import dayjs from 'dayjs'
-import { themeManager } from '../../../manager'
+import { avPlayerManager, backgroundRunningManager, themeManager } from '../../../manager'
 
 interface ButtonItem {
   name: string
   icon: Resource
 }
 
+// 伪装来电
 @Entry
 @Component
 struct FakeTelPage {
@@ -21,6 +22,40 @@ struct FakeTelPage {
     { name: '通讯录', icon: $r('app.media.ic_fake_tel_txl') },
   ]
   private intervalID: number = -1
+
+  // 页面加载
+  aboutToAppear() {
+    // 播放来电音频
+    this.playCallRing()
+  }
+
+  // 页面卸载
+  aboutToDisappear() {
+    // 停止音频播放
+    avPlayerManager.stop()
+    // 关闭后台任务，释放资源
+    backgroundRunningManager.stopBackgroundRunning()
+  }
+
+  // 播放来电音频
+  playCallRing() {
+    // 播放本地音频
+    avPlayerManager.playByRawSrc('lab_call_ring.mp3')
+    // 循环播放
+    avPlayerManager.setLoop(true)
+    // 开启后台播放(熄屏播放)
+    backgroundRunningManager.startBackgroundRunning()
+  }
+
+  // 模拟接听电话
+  onAnswering() {
+    // 显示接听界面
+    this.isAnswering = true
+    // 播放预先录制好的声音
+    avPlayerManager.playByRawSrc('lab_voice_trick_7.m4a')
+    // 取消循环播放
+    avPlayerManager.setLoop(false)
+  }
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
@@ -119,6 +154,7 @@ struct FakeTelPage {
               }
               .onClick(() => {
                 // TODO: 接听
+                this.onAnswering()
               })
             }
             .width('100%')
