@@ -54,6 +54,7 @@
     "pages/Test/ContactsTestPage",
     "pages/Test/PasteboardTestPage",
     "pages/Test/SensorTestPage",
-    "pages/Test/TorchTestPage"
+    "pages/Test/TorchTestPage",
+    "pages/Test/AVPlayerTestPage"
   ]
 }

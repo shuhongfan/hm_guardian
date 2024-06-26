@@ -11,5 +11,7 @@ export * from './UserAuthManager'
 
 export * from './AudioCapturerManager'
 
+export * from './AVPlayerManager'
+
 // import { permissionManager } from './PermissionManager'
 // export { permissionManager }
