@@ -1,6 +1,7 @@
 {
   "app": {
-    "bundleName": "com.itheima.hm_guardian",
+    // 注意：AGC 平台中应用包名要确保唯一性，需每个同学都设置不一样
+    "bundleName": "com.itheima.hm_guardian_jiehaosu",
     "vendor": "itheima.com",
     "versionCode": 1000000,
     "versionName": "1.0.0",
