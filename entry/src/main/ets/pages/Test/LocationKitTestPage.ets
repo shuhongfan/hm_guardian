@@ -63,6 +63,32 @@ struct LocationKitTestPage {
               // 关闭位置变化订阅(释放资源)
               geoLocationManager.off('locationChange')
             })
+
+          Button('判断地理编码与逆地理编码服务是否可用')
+            .onClick(() => {
+              const isAvailable = geoLocationManager.isGeocoderAvailable()
+              AlertDialog.show({ message: '是否支持：' + isAvailable })
+            })
+
+          Button('逆地理编码(逆解析)-坐标转位置')
+            .onClick(async () => {
+              const addresses = await geoLocationManager.getAddressesFromLocation({
+                locale: 'zh',
+                latitude: 23.125178,
+                longitude: 113.280637,
+                maxItems: 1
+              })
+              AlertDialog.show({ message: JSON.stringify(addresses, null, 2) })
+            })
+
+          Button('地理编码-位置转坐标')
+            .onClick(async () => {
+              const location = await geoLocationManager.getAddressesFromLocationName({
+                description: '北京市昌平区传智教育黑马程序员',
+                maxItems: 1
+              })
+              AlertDialog.show({ message: JSON.stringify(location, null, 2) })
+            })
         }
         .constraintSize({ minHeight: '100%' })
       }
