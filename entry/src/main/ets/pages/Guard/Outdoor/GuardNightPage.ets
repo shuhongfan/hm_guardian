@@ -1,10 +1,14 @@
 import { Permissions } from '@kit.AbilityKit'
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import { AsyncCallback } from '@kit.BasicServicesKit'
 import { map, mapCommon, MapComponent } from '@kit.MapKit'
 import { webSocket } from '@kit.NetworkKit'
 import { themeManager } from '../../../manager'
+import { call } from '@kit.TelephonyKit'
+import { getEmergencyContactAPI } from '../../../api'
+import { isEmulator } from '../../../common/dev'
 
+// 夜路守护
 @Entry
 @Component
 struct GuardNightPage {
@@ -33,6 +37,35 @@ struct GuardNightPage {
   onPageHide() {
     // 关闭沉浸式
     themeManager.disableFullScreen()
+  }
+
+  // 拨打电话
+  markCall(phoneNumber: string) {
+    // 查询当前设备是否具有语音功能，手机/平板/桌面系统PC，不是所有设备能拨打电话
+    if (call.hasVoiceCapability() === true) {
+      // 三方应用只能：转到拨号屏幕，显示被叫号码
+      call.makeCall(phoneNumber)
+    } else {
+      promptAction.showToast({ message: '当前设备不支持拨号' })
+    }
+    // 模拟器 BUG：模拟器不支持语音通话功能，但是 hasVoiceCapability 能力查询结果为 true
+    if (isEmulator() === true) {
+      promptAction.showToast({ message: '模拟跳转拨号界面：' + phoneNumber })
+    }
+  }
+
+  // 页面加载
+  aboutToAppear() {
+    // 获取并回显紧急联系人
+    this.getDetail()
+  }
+
+  // 获取紧急联系人详情
+  async getDetail() {
+    const res = await getEmergencyContactAPI()
+    if (res.data.result) {
+      this.emergencyPhone = res.data.result.phone
+    }
   }
 
   build() {
@@ -159,6 +192,7 @@ struct GuardNightPage {
                 HelpButton({ icon: $r('app.media.ic_guard_help_hjjjlxr'), text: '呼叫紧急联系人' })
                   .onClick(() => {
                     // TODO：呼叫紧急联系人
+                    this.markCall(this.emergencyPhone)
                   })
               }
 
@@ -173,6 +207,7 @@ struct GuardNightPage {
                 HelpButton({ icon: $r('app.media.ic_guard_help_110bj'), text: '110报警' })
                   .onClick(() => {
                     // TODO：拨打报警电话
+                    this.markCall('10010')
                   })
               }
             }
