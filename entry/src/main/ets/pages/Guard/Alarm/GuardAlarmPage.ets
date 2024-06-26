@@ -1,4 +1,5 @@
-import { themeManager } from '../../../manager'
+import { avPlayerManager, backgroundRunningManager, themeManager } from '../../../manager'
+import { router } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -7,6 +8,24 @@ struct GuardAlarmPage {
   @State circleHeight: number = 100
   @State currentVolume: number = 5
   private intervalID: number = -1
+
+  // 页面加载
+  aboutToAppear() {
+    // 播放警报声音
+    avPlayerManager.playByRawSrc('lab_alarm.wav')
+    // 循环播放
+    avPlayerManager.setLoop(true)
+    // 开启后台播放(熄屏播放)
+    backgroundRunningManager.startBackgroundRunning()
+  }
+
+  // 页面销毁
+  aboutToDisappear() {
+    // 停止播放
+    avPlayerManager.stop()
+    // 停止后台任务
+    backgroundRunningManager.stopBackgroundRunning()
+  }
 
   onPageShow() {
     themeManager.settingStatusBarWhite()
@@ -59,6 +78,7 @@ struct GuardAlarmPage {
             .backgroundColor('#fff')
             .onClick(() => {
               // TODO: 结束警报
+              router.back()
             })
         }
         .padding({ left: 20, right: 20, bottom: 30 })
