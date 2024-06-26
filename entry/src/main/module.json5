@@ -1,5 +1,13 @@
 {
   "module": {
+    // 地图服务所需的配置如下：CV 后改 value 即可
+    "metadata": [
+      {
+        "name": "client_id",
+        // 注意：从 AGC 平台中复制过来，每个应用都不一样
+        "value": "111356149"
+      }
+    ],
     // main 权限
     "requestPermissions": [
       // 权限等级: normal        对所有应用开放
