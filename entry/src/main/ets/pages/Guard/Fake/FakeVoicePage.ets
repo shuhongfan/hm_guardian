@@ -1,4 +1,5 @@
 import { showDevelopingTips } from '../../../common/dev'
+import { avPlayerManager } from '../../../manager'
 
 interface Item {
   text: string
@@ -9,7 +10,7 @@ interface Item {
 @Entry
 @Component
 struct FakeVoiceIndexPage {
-  @State playingSrc: string = ''
+  @State activeSrc: string = ''
   @State isRecording: boolean = false
   @State list: Item[] = [
     { text: '把那个快递给我放门口吧，我一会再拿，谢谢啊', src: 'lab_voice_trick_1.m4a', time: 7 },
@@ -20,6 +21,22 @@ struct FakeVoiceIndexPage {
     { text: '你在原地等我一会，我马上就到', src: 'lab_voice_trick_6.m4a', time: 5 },
     { text: '还有多长时间呀？我来接你吧', src: 'lab_voice_trick_7.m4a', time: 4 },
   ]
+
+  // 页面销毁
+  aboutToDisappear() {
+    // 停止音频播放
+    avPlayerManager.stop()
+  }
+
+  // 播放点击的音频
+  playVoice(item: Item) {
+    // 播放点击的音频
+    avPlayerManager.playByRawSrc(item.src)
+    // 无需循环播放
+    avPlayerManager.setLoop(false)
+    // 设置 ImageAnimator 的语音播放状态
+    this.activeSrc = item.src
+  }
 
   @Builder
   TitleBuilder(title: string, description: string) {
@@ -66,7 +83,7 @@ struct FakeVoiceIndexPage {
                 Column() {
                   Stack() {
                     Row({ space: 5 }) {
-                      if (this.playingSrc === item.src) {
+                      if (this.activeSrc === item.src) {
                         ImageAnimator()
                           .images([
                             { src: $r('app.media.ic_public_voice1') },
@@ -80,7 +97,7 @@ struct FakeVoiceIndexPage {
                           .height(18)
                           .width(18)
                           .onFinish(() => {
-                            this.playingSrc = ''
+                            this.activeSrc = ''
                           })
                       } else {
                         Image($r("app.media.ic_public_voice"))
@@ -106,6 +123,7 @@ struct FakeVoiceIndexPage {
                   .margin({ left: 5 })
                   .onClick(() => {
                     // TODO: 点击播放声音 - 单次
+                    this.playVoice(item)
                   })
 
                   Text(item.text)
