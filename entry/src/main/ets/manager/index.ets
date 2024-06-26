@@ -13,5 +13,7 @@ export * from './AudioCapturerManager'
 
 export * from './AVPlayerManager'
 
+export * from './BackgroundRunningManager'
+
 // import { permissionManager } from './PermissionManager'
 // export { permissionManager }
