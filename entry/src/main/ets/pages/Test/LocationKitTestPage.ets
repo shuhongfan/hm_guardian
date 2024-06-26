@@ -45,10 +45,17 @@ struct LocationKitTestPage {
           Button('开启位置变化订阅')
             .onClick(() => {
               // 开启位置变化订阅(实时定位)
-              geoLocationManager.on('locationChange', {}, (location) => {
-                // 保存位置信息
-                this.location = location
-              })
+              geoLocationManager.on(
+                'locationChange', // location 位置 Change 变化
+                {
+                  priority: geoLocationManager.LocationRequestPriority.ACCURACY, // 根据精度选择，高精度(卫星定位，高功耗)
+                  // scenario: geoLocationManager.LocationRequestScenario.NAVIGATION, // 根据场景选择，导航场景(卫星定位，高功耗)
+                  timeInterval: 3, // 上报间隔，单位: 秒，默认值为 1
+                },
+                (location) => {
+                  // 保存位置信息
+                  this.location = location
+                })
             })
 
           Button('关闭位置变化订阅')
