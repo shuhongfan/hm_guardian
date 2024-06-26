@@ -1,8 +1,41 @@
+// 紧急联系人
+import { getEmergencyContactAPI, postEmergencyContactAPI } from '../../api'
+import { promptAction, router } from '@kit.ArkUI'
+
 @Entry
 @Component
 struct EmergencyContactPage {
-  @State name: string = ''
+  @State name: string = '孙悟空'
   @State phone: string = ''
+
+  // 保存
+  async onSubmit() {
+    // 提交表单
+    await postEmergencyContactAPI({
+      name: this.name,
+      phone: this.phone
+    })
+    // 成功提示
+    promptAction.showToast({ message: '保存成功' })
+    // 返回上一页
+    router.back()
+  }
+
+  // 页面加载
+  aboutToAppear() {
+    // 获取并回显紧急联系人
+    this.getDetail()
+  }
+
+  // 获取紧急联系人详情
+  async getDetail() {
+    const res = await getEmergencyContactAPI()
+    if (res.data.result) {
+      // 填充(回显)到表单中
+      this.phone = res.data.result.phone
+      this.name = res.data.result.name
+    }
+  }
 
   @Builder
   NavigationMenus() {
@@ -12,6 +45,7 @@ struct EmergencyContactPage {
         .fontColor(this.phone && this.name.length > 0 ? $r('app.color.font') : $r('app.color.font_sub'))
         .onClick(() => {
           // TODO：保存提交
+          this.onSubmit()
         })
     }
     .height('100%')
@@ -86,6 +120,7 @@ struct EmergencyContactPage {
             })
             .onSubmit(() => {
               // TODO：提交
+              this.onSubmit()
             })
         }
         .border({ width: { bottom: 1 }, color: $r('app.color.border') })
