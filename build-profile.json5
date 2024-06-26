@@ -7,13 +7,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.cer",
-          "storePassword": "0000001B8E0CFFEB3299E13913686828F4CA460ED062DAF6F16DB483046DB7CA051FBD81FFC41C1DD2BE1F",
+          "storePassword": "00000019E618AD10A3C5944BA41627AF15FC08AD4C41E232802A3DAA2ACCCB2F6D0FD8BEF45A2F6F48",
+          "certpath": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/守护助手BJ02.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BE8F0D115C5BEDD75F7F552C99179D4654F6BD3549B3706BC19A6220E392866A171D8FC488EA8D7",
-          "profile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p7b",
+          "keyPassword": "00000019084702BD1108C746FB1C6483D597ED3370D212287E2865DD96191F320405B61D79A77731A0",
+          "profile": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/守护助手Debug.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/megasu/.ohos/config/default_hm_guardian_b3FaOmAIMkduD4HS0YALwwK1RYko88BWynEKFGfKTmo=.p12"
+          "storeFile": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/hm_guardian.p12"
         }
       }
     ],

@@ -79,27 +79,27 @@
       //   1. 开发阶段，可通过 DevEco Studio 快速生成签名证书
       //   2. 项目上线，需要到应用市场（AGC）生成证书
       // 通讯录(权限组-读写)
-      {
-        "name": "ohos.permission.READ_CONTACTS",
-        "reason": '$string:permission_reason_contact',
-        "usedScene": {}
-      },
-      {
-        "name": "ohos.permission.WRITE_CONTACTS",
-        "reason": '$string:permission_reason_contact',
-        "usedScene": {}
-      },
-      // 照片(权限组-读写)
-      {
-        "name": "ohos.permission.READ_IMAGEVIDEO",
-        "reason": "$string:permission_reason_imageVideo",
-        "usedScene": {}
-      },
-      {
-        "name": "ohos.permission.WRITE_IMAGEVIDEO",
-        "reason": "$string:permission_reason_imageVideo",
-        "usedScene": {}
-      },
+//      {
+//        "name": "ohos.permission.READ_CONTACTS",
+//        "reason": '$string:permission_reason_contact',
+//        "usedScene": {}
+//      },
+//      {
+//        "name": "ohos.permission.WRITE_CONTACTS",
+//        "reason": '$string:permission_reason_contact',
+//        "usedScene": {}
+//      },
+//      // 照片(权限组-读写)
+//      {
+//        "name": "ohos.permission.READ_IMAGEVIDEO",
+//        "reason": "$string:permission_reason_imageVideo",
+//        "usedScene": {}
+//      },
+//      {
+//        "name": "ohos.permission.WRITE_IMAGEVIDEO",
+//        "reason": "$string:permission_reason_imageVideo",
+//        "usedScene": {}
+//      },
       // -------------------- system_basic + user_grant --------------------
     ],
     "name": "entry",
