@@ -15,5 +15,7 @@ export * from './AVPlayerManager'
 
 export * from './BackgroundRunningManager'
 
+export * from './LocationManager'
+
 // import { permissionManager } from './PermissionManager'
 // export { permissionManager }

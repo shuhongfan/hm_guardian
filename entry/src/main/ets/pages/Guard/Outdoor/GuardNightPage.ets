@@ -3,10 +3,11 @@ import { promptAction, router } from '@kit.ArkUI'
 import { AsyncCallback } from '@kit.BasicServicesKit'
 import { map, mapCommon, MapComponent } from '@kit.MapKit'
 import { webSocket } from '@kit.NetworkKit'
-import { themeManager } from '../../../manager'
+import { locationManager, themeManager } from '../../../manager'
 import { call } from '@kit.TelephonyKit'
 import { getEmergencyContactAPI } from '../../../api'
 import { isEmulator } from '../../../common/dev'
+import { geoLocationManager } from '@kit.LocationKit'
 
 // 夜路守护
 @Entry
@@ -15,6 +16,7 @@ struct GuardNightPage {
   @StorageLink('topHeight') topHeight: number = 0
   @StorageLink('bottomHeight') bottomHeight: number = 0
   @State isShowMap: boolean = false
+  // 定位地址(通过定位 + 逆地理编码得到)
   @State placeName: string = ''
   @State emergencyPhone: string = ''
   private permissions: Permissions[] = [
@@ -55,9 +57,19 @@ struct GuardNightPage {
   }
 
   // 页面加载
-  aboutToAppear() {
+  async aboutToAppear() {
     // 获取并回显紧急联系人
     this.getDetail()
+    // 申请权限
+    await locationManager.requestPermissions()
+    // 订阅位置变化（实时定位）
+    this.onLocationChange()
+  }
+
+  // 页面卸载
+  aboutToDisappear() {
+    // 关闭位置变化订阅，释放资源
+    this.offLocationChange()
   }
 
   // 获取紧急联系人详情
@@ -69,6 +81,38 @@ struct GuardNightPage {
       this.emergencyPhone = res.data.result.phone
     }
   }
+
+  // -------------- 位置服务 --------------
+  // 开启订阅位置信息(实时定位)
+  onLocationChange() {
+    // 订阅位置变化
+    geoLocationManager.on('locationChange',
+      {
+        scenario: geoLocationManager.LocationRequestScenario.NAVIGATION, // 导航场景，卫星定位，高精度
+        interval: 3, // 上报时间间隔，单位：秒
+      },
+      async (location) => {
+        // 逆地理编码，把坐标转成地址
+        const addresses = await geoLocationManager.getAddressesFromLocation({
+          locale: 'zh',
+          latitude: location.latitude,
+          longitude: location.longitude,
+          maxItems: 1
+        })
+        // 展示地址信息
+        if (addresses.length > 0) {
+          this.placeName = addresses[0]?.placeName || ''
+        }
+      }
+    )
+  }
+
+  // 关闭订阅
+  offLocationChange() {
+    geoLocationManager.off('locationChange')
+  }
+
+  // -------------- 位置服务 --------------
 
   build() {
     Column() {
