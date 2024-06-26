@@ -1,4 +1,10 @@
-import { BizType, postCodeGraphicCheckAPI, postCodeSmsSendAPI, postUserLoginVerifyCodeAPI } from '../../api'
+import {
+  BizType,
+  postCodeGraphicCheckAPI,
+  postCodeSmsSendAPI,
+  postUserLoginPasswdAPI,
+  postUserLoginVerifyCodeAPI
+} from '../../api'
 import { BASE_URL, LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
 import { promptAction, router } from '@kit.ArkUI'
 
@@ -211,6 +217,21 @@ struct UserLoginPage {
             .onClick(() => {
               // TODO:登录表单提交
               this.onLoginSubmit()
+            })
+
+          Button('帐号密码快速登录-测试用')
+            .backgroundColor($r('app.color.brand'))
+            .height(42)
+            .width('100%')
+            .onClick(async () => {
+              const res = await postUserLoginPasswdAPI({
+                phone: '120666666673',
+                passwd: '888itcast.CN764%...'
+              })
+              // 2. 持久化存储
+              this.loginInfo = res.data.result
+              // 3. 返回上一页
+              router.back()
             })
 
           Text('仅用于IT培训教学使用，为保障您的个人信息安全请勿向平台录入任何个人敏感信息（如手机号、身份证号等）！')
