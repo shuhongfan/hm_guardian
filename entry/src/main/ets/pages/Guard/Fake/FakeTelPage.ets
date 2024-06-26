@@ -55,6 +55,22 @@ struct FakeTelPage {
     avPlayerManager.playByRawSrc('lab_voice_trick_7.m4a')
     // 取消循环播放
     avPlayerManager.setLoop(false)
+    // 开启计时
+    this.startCounter()
+  }
+
+  // 开始计时
+  startCounter() {
+    this.count = 0
+    clearInterval(this.intervalID)
+    this.intervalID = setInterval(() => {
+      this.count++
+    }, 1000)
+  }
+
+  // 结束计时
+  stopCounter() {
+    clearInterval(this.intervalID)
   }
 
   onPageShow() {
