@@ -62,8 +62,10 @@ struct GuardNightPage {
 
   // 获取紧急联系人详情
   async getDetail() {
+    // 获取紧急联系人信息（用真机测试需 联网 ）
     const res = await getEmergencyContactAPI()
     if (res.data.result) {
+      // 存储紧急联系人电话
       this.emergencyPhone = res.data.result.phone
     }
   }
