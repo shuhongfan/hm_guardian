@@ -1,5 +1,6 @@
 import { AsyncCallback } from '@kit.BasicServicesKit';
 import { map, mapCommon, MapComponent } from '@kit.MapKit';
+import { geoLocationManager } from '@kit.LocationKit';
 
 @Entry
 @Component
@@ -33,7 +34,7 @@ struct HuaweiMapDemo {
         // 获取地图的控制器类，用来操作地图（操作地图核心控制器，可用于注册地图回调，事件，在地图上绘制东西，相机移动等）
         this.mapController = mapController;
         // 地图加载完毕
-        this.mapController.on("mapLoad", () => {
+        this.mapController.on("mapLoad", async () => {
           console.info(this.TAG, `on-mapLoad`);
           // 真正有功能的定位按钮
           this.mapController?.setMyLocationEnabled(true)
@@ -42,6 +43,30 @@ struct HuaweiMapDemo {
           // this.mapController?.on('myLocationButtonClick', () => {
           //   AlertDialog.show({ message: '你点击了定位按钮' })
           // })
+
+          // 获取我的位置 (获取 WGS84/GPS 卫星坐标系)
+          const location = await geoLocationManager.getCurrentLocation()
+
+          // 转换成国内坐标系
+          // 温馨提示：在国内站点，中国大陆、中国香港和中国澳门使用GCJ02坐标系，中国台湾和海外使用WGS84坐标系。
+          const gcjLocation = await map.convertCoordinate(
+            mapCommon.CoordinateType.WGS84, // GPS 坐标系
+            mapCommon.CoordinateType.GCJ02, // GCJ 国内坐标系(国测局)
+            location
+          )
+          //----- 地图相机 -----
+          // 创建CameraUpdate对象
+          const cameraUpdate = map.newCameraPosition({
+            target: {
+              // 华为地图的坐标系用的时 GCJ02（国测局坐标系）
+              latitude: gcjLocation.latitude,
+              longitude: gcjLocation.longitude
+            },
+            zoom: 15,
+          });
+          // 以动画方式移动地图相机
+          this.mapController?.animateCamera(cameraUpdate);
+
         });
       }
     };
