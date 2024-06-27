@@ -15,7 +15,7 @@ struct UserLoginPage {
   // 用户信息持久化
   @StorageLink(LOGIN_INFO) loginInfo: LoginInfoResponse = {}
   // 手机号 (练习时换成自己的手机号，补充够12位)
-  @State phoneNumber: string = '135353333335'
+  @State phoneNumber: string = '135353330333'
   // 短信验证码
   @State verifyCode: string = ''
   // 显示半模态转场结构

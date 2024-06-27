@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>守护助手-位置共享</title>
+    <style>
+        body {
+          margin: 0;
+        }
+        h3 {
+         height: 20px;
+        }
+        #map {
+          height: calc(100% - 20px);
+          width: 100%;
+          margin: 0 auto;
+          position: absolute;
+        }
+    </style>
+    <script src="https://mapapi.cloud.huawei.com/mapjs/v1/api/js?callback=initMap&key=DAEDAK5THVtbY3dxll0oQ3UTsXXMKQl0wmOuSJSjQUXabmCOF2lWjalRWW4Ctu9say7XKLhic9KOW5aYbSKzbmNaiXFulYSEZMnoEw=="></script>
+</head>
+<body>
+<h3>地址参数格式：?shareId=1796478621932150785&shareType=1&userType=receiver</h3>
+<div id="map"></div>
+<script>
+    let mMarker;
+    function initMap() {
+      const mapOptions = {};
+      // 设置地图中心点坐标
+      mapOptions.center = { lat: 39.9, lng: 116.4 };
+      // 设置地图初始化缩放级别
+      mapOptions.zoom = 18;
+      // 设置地图语言
+      mapOptions.language = "ZH";
+      // 设置地图加载时使用的瓦片类型，支持vector（矢量）或raster（栅格）
+      mapOptions.sourceType = "raster";
+      // 创建地图对象
+      var map = new HWMapJsSDK.HWMap(document.getElementById("map"), mapOptions);
+
+      // 在线 WebSocket 测试：wss://guardian-api.itheima.net/share?shareId=1796478621932150785&shareType=1&userType=receiver
+      // 地址参数：?shareId=1796478621932150785&shareType=1&userType=receiver
+      const ws = new WebSocket("wss://guardian-api.itheima.net/share" + location.search);
+      ws.addEventListener("open", () => {
+        console.log("opened");
+      });
+      ws.addEventListener("message", (event) => {
+        const info = JSON.parse(event.data);
+        map.panTo({ lat: info.latitude, lng: info.longitude });
+        if (mMarker) {
+          mMarker.setMap(null);
+          mMarker = null;
+        }
+        mMarker = new HWMapJsSDK.HWMarker({
+          map: map,
+          position: { lat: info.latitude, lng: info.longitude },
+          zIndex: 10,
+          icon: {
+            opacity: 0.5,
+            scale: 1,
+          },
+        });
+      });
+    }
+</script>
+</body>
+</html>
