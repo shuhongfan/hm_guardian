@@ -57,6 +57,7 @@
     "pages/Test/TorchTestPage",
     "pages/Test/AVPlayerTestPage",
     "pages/Test/LocationKitTestPage",
-    "pages/Test/HuaweiMapTestPage"
+    "pages/Test/HuaweiMapTestPage",
+    "pages/Test/WebSocketTestPage"
   ]
 }
