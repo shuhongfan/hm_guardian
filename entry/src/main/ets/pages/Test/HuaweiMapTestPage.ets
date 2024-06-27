@@ -12,19 +12,25 @@ struct HuaweiMapDemo {
   aboutToAppear(): void {
     // 地图初始化参数，设置地图中心点坐标及层级
     this.mapOption = {
+      // 地图相机位置
       position: {
+        // 中心点
         target: {
-          latitude: 39.9,
-          longitude: 116.4
+          latitude: 31.231706,
+          longitude: 121.472644
         },
-        zoom: 10
-      }
+        // 缩放级别 (跟地图右下角加减是对应的)
+        zoom: 18
+      },
+      // 比例尺
+      scaleControlsEnabled: true,
+      // myLocationControlsEnabled: true
     };
 
     // 地图初始化的回调
     this.callback = async (err, mapController) => {
       if (!err) {
-        // 获取地图的控制器类，用来操作地图
+        // 获取地图的控制器类，用来操作地图（操作地图核心控制器，可用于注册地图回调，事件，在地图上绘制东西，相机移动等）
         this.mapController = mapController;
         this.mapController.on("mapLoad", () => {
           console.info(this.TAG, `on-mapLoad`);
@@ -35,7 +41,12 @@ struct HuaweiMapDemo {
 
   build() {
     Stack() {
-      // 调用MapComponent组件初始化地图
+      // 调用 MapComponent 组件初始化地图
+      /**
+       *   MapComponent 华为原生地图(Petal Maps)
+       *     mapOptions     地图初始化的配置
+       *     mapCallback    地图回调
+       */
       MapComponent({ mapOptions: this.mapOption, mapCallback: this.callback })
         .width('100%')
         .height('100%');
