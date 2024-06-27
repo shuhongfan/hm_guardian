@@ -32,8 +32,16 @@ struct HuaweiMapDemo {
       if (!err) {
         // 获取地图的控制器类，用来操作地图（操作地图核心控制器，可用于注册地图回调，事件，在地图上绘制东西，相机移动等）
         this.mapController = mapController;
+        // 地图加载完毕
         this.mapController.on("mapLoad", () => {
           console.info(this.TAG, `on-mapLoad`);
+          // 真正有功能的定位按钮
+          this.mapController?.setMyLocationEnabled(true)
+          this.mapController?.setMyLocationControlsEnabled(true)
+          // 自主定制点击定位时的业务代码
+          // this.mapController?.on('myLocationButtonClick', () => {
+          //   AlertDialog.show({ message: '你点击了定位按钮' })
+          // })
         });
       }
     };
