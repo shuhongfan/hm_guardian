@@ -5,7 +5,7 @@ import { map, mapCommon, MapComponent } from '@kit.MapKit'
 import { webSocket } from '@kit.NetworkKit'
 import { locationManager, themeManager } from '../../../manager'
 import { call } from '@kit.TelephonyKit'
-import { getEmergencyContactAPI } from '../../../api'
+import { getEmergencyContactAPI, postShareCreate, ShareType } from '../../../api'
 import { isEmulator } from '../../../common/dev'
 import { geoLocationManager } from '@kit.LocationKit'
 
@@ -66,12 +66,16 @@ struct GuardNightPage {
     this.onLocationChange()
     // 地图初始化
     this.initMap()
+    // 初始化 WebSocket
+    this.initWebSocket()
   }
 
   // 页面卸载
   aboutToDisappear() {
     // 关闭位置变化订阅，释放资源
     this.offLocationChange()
+    // 断开 WebSocket 连接
+    this.closeWebSocket()
   }
 
   // 获取紧急联系人详情
@@ -94,6 +98,11 @@ struct GuardNightPage {
         interval: 3, // 上报时间间隔，单位：秒
       },
       async (location) => {
+        // 通过 ws 共享行程，把位置信息以文本方式上传服务器
+        this.ws?.send(JSON.stringify(location))
+        // 把地图相机移动到定位点
+        this.moveMapCameraToLocation()
+
         // 逆地理编码，把坐标转成地址
         const addresses = await geoLocationManager.getAddressesFromLocation({
           locale: 'zh',
@@ -105,9 +114,6 @@ struct GuardNightPage {
         if (addresses.length > 0) {
           this.placeName = addresses[0]?.placeName || ''
         }
-
-        // 把地图相机移动到定位点
-        this.moveMapCameraToLocation()
       }
     )
   }
@@ -187,6 +193,28 @@ struct GuardNightPage {
   }
 
   // -------------- ↑ 地图服务 ↑ --------------
+
+  // -------------- ↓ WebSocket 服务 ↓ --------------
+  async initWebSocket() {
+    // 创建共享
+    const res = await postShareCreate(ShareType.LOCATION)
+    const shareId = res.data.result.shareId
+    // 1. 创建 ws 对象
+    this.ws = webSocket.createWebSocket()
+    // 2. 与服务器建立双向连接
+    this.ws.connect(`wss://guardian-api.itheima.net/share?shareType=1&shareId=${shareId}&userType=sender`)
+    // 3.
+    this.ws.on('open', (err) => {
+      promptAction.showToast({ message: err ? '连接失败' : '当前行程已共享' + shareId })
+    })
+  }
+
+  async closeWebSocket() {
+    await this.ws?.close()
+    promptAction.showToast({ message: '行程共享结束' })
+  }
+
+  // -------------- ↑ WebSocket 服务 ↑ --------------
 
   build() {
     Column() {
