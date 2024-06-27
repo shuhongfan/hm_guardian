@@ -23,7 +23,7 @@ struct GuardNightPage {
     'ohos.permission.APPROXIMATELY_LOCATION',
     'ohos.permission.LOCATION'
   ];
-  // 定位
+  // 华为地图
   private mapOption?: mapCommon.MapOptions;
   private callback?: AsyncCallback<map.MapComponentController>;
   private mapController?: map.MapComponentController;
@@ -64,6 +64,8 @@ struct GuardNightPage {
     await locationManager.requestPermissions()
     // 订阅位置变化（实时定位）
     this.onLocationChange()
+    // 地图初始化
+    this.initMap()
   }
 
   // 页面卸载
@@ -113,6 +115,69 @@ struct GuardNightPage {
   }
 
   // -------------- 位置服务 --------------
+
+
+  // -------------- ↓ 地图服务 ↓ --------------
+  // 初始化地图
+  initMap() {
+    this.isShowMap = true
+    // 地图初始化参数，设置地图中心点坐标及层级
+    this.mapOption = {
+      // 地图相机位置
+      position: {
+        // 中心点
+        target: {
+          latitude: 31.231706,
+          longitude: 121.472644
+        },
+        // 缩放级别
+        zoom: 18
+      },
+      // 比例尺
+      scaleControlsEnabled: true,
+    };
+
+    // 地图初始化的回调
+    this.callback = async (err, mapController) => {
+      if (!err) {
+        // 获取地图的控制器类，用来操作地图（操作地图核心控制器，可用于注册地图回调，事件，在地图上绘制东西，相机移动等）
+        this.mapController = mapController;
+        // 地图加载完毕
+        this.mapController.on("mapLoad", async () => {
+
+          // 真正有功能的定位按钮
+          this.mapController?.setMyLocationEnabled(true)
+          this.mapController?.setMyLocationControlsEnabled(true)
+
+          // 获取我的位置 (获取 WGS84/GPS 卫星坐标系)
+          const location = await geoLocationManager.getCurrentLocation()
+          // 转换成国内坐标系
+          // 温馨提示：在国内站点，中国大陆、中国香港和中国澳门使用GCJ02坐标系，中国台湾和海外使用WGS84坐标系。
+          const gcjLocation = await map.convertCoordinate(
+            mapCommon.CoordinateType.WGS84, // GPS 坐标系
+            mapCommon.CoordinateType.GCJ02, // GCJ 国内坐标系(国测局)
+            location
+          )
+
+          //----- ↓ 地图相机 ↓ -----
+          // 创建CameraUpdate对象
+          const cameraUpdate = map.newCameraPosition({
+            target: {
+              // 华为地图的坐标系用的时 GCJ02（国测局坐标系）
+              latitude: gcjLocation.latitude,
+              longitude: gcjLocation.longitude
+            },
+            zoom: 15,
+          });
+          // 以动画方式移动地图相机
+          this.mapController?.animateCamera(cameraUpdate);
+          //----- ↑ 地图相机 ↑ -----
+        });
+      }
+    };
+  }
+
+  // -------------- ↑ 地图服务 ↑ --------------
 
   build() {
     Column() {
