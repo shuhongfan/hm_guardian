@@ -105,6 +105,9 @@ struct GuardNightPage {
         if (addresses.length > 0) {
           this.placeName = addresses[0]?.placeName || ''
         }
+
+        // 把地图相机移动到定位点
+        this.moveMapCameraToLocation()
       }
     )
   }
@@ -149,32 +152,38 @@ struct GuardNightPage {
           this.mapController?.setMyLocationEnabled(true)
           this.mapController?.setMyLocationControlsEnabled(true)
 
-          // 获取我的位置 (获取 WGS84/GPS 卫星坐标系)
-          const location = await geoLocationManager.getCurrentLocation()
-          // 转换成国内坐标系
-          // 温馨提示：在国内站点，中国大陆、中国香港和中国澳门使用GCJ02坐标系，中国台湾和海外使用WGS84坐标系。
-          const gcjLocation = await map.convertCoordinate(
-            mapCommon.CoordinateType.WGS84, // GPS 坐标系
-            mapCommon.CoordinateType.GCJ02, // GCJ 国内坐标系(国测局)
-            location
-          )
-
-          //----- ↓ 地图相机 ↓ -----
-          // 创建CameraUpdate对象
-          const cameraUpdate = map.newCameraPosition({
-            target: {
-              // 华为地图的坐标系用的时 GCJ02（国测局坐标系）
-              latitude: gcjLocation.latitude,
-              longitude: gcjLocation.longitude
-            },
-            zoom: 15,
-          });
-          // 以动画方式移动地图相机
-          this.mapController?.animateCamera(cameraUpdate);
-          //----- ↑ 地图相机 ↑ -----
+          // 地图初始化时，移动相机到定位点
+          this.moveMapCameraToLocation()
         });
       }
     };
+  }
+
+  // 地图初始化时，移动相机到定位点
+  async moveMapCameraToLocation() {
+    // 获取我的位置 (获取 WGS84/GPS 卫星坐标系)
+    const location = await geoLocationManager.getCurrentLocation()
+    // 转换成国内坐标系
+    // 温馨提示：在国内站点，中国大陆、中国香港和中国澳门使用GCJ02坐标系，中国台湾和海外使用WGS84坐标系。
+    const gcjLocation = await map.convertCoordinate(
+      mapCommon.CoordinateType.WGS84, // GPS 坐标系
+      mapCommon.CoordinateType.GCJ02, // GCJ 国内坐标系(国测局)
+      location
+    )
+
+    //----- ↓ 地图相机 ↓ -----
+    // 创建CameraUpdate对象
+    const cameraUpdate = map.newCameraPosition({
+      target: {
+        // 华为地图的坐标系用的时 GCJ02（国测局坐标系）
+        latitude: gcjLocation.latitude,
+        longitude: gcjLocation.longitude
+      },
+      zoom: 18,
+    });
+    // 以动画方式移动地图相机
+    this.mapController?.animateCamera(cameraUpdate);
+    //----- ↑ 地图相机 ↑ -----
   }
 
   // -------------- ↑ 地图服务 ↑ --------------
