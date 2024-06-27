@@ -77,7 +77,7 @@ struct PhotoIndexPage {
   build() {
     Navigation() {
       Stack({ alignContent: Alignment.Bottom }) {
-        if (this.list.length) {
+        if (this.groupList.length) {
           Column({ space: 10 }) {
             if (this.isShowDelete) {
               Row() {
