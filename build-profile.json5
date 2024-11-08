@@ -3,19 +3,7 @@
     // 证书签名信息，每个同学的都不一样，克隆项目的时候，先把默认的签名信息删除掉，再通过 DevEco Studio 自己生成
     // 应用运行到真机，也必须签名（手机安全要求）
     "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "storePassword": "00000019E618AD10A3C5944BA41627AF15FC08AD4C41E232802A3DAA2ACCCB2F6D0FD8BEF45A2F6F48",
-          "certpath": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/守护助手BJ02.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "00000019084702BD1108C746FB1C6483D597ED3370D212287E2865DD96191F320405B61D79A77731A0",
-          "profile": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/守护助手Debug.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/megasu/Documents/HarmonyOS/appKey_BJ02/hm_guardian.p12"
-        }
-      }
+
     ],
     "products": [
       {

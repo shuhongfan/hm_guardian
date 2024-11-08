@@ -136,13 +136,13 @@ class AudioCapturerManager {
     //  2) 准备累加值，用于自动停止
     let bufferSize: number = 0
     // 2. 调用on('writeData')方法，订阅监听音频数据写入回调
-    audioRenderer.on('writeData', async (buffer) => {
+    audioRenderer.on('writeData', (buffer) => {
       // 3) 把 buffer 信息写入到音频渲染器中
       fileIo.readSync(file.fd, buffer)
       // 获取文件信息，如果读取时已经超出文件大小，自动停止
       bufferSize += buffer.byteLength
       if (bufferSize >= stat.size) {
-        await audioRenderer.stop() // 停止渲染器(播放器)
+        audioRenderer.stop() // 停止渲染器(播放器)
         audioRenderer.release() // 释放资源(硬件)
         this.audioRenderer = null // 释放变量
       }
