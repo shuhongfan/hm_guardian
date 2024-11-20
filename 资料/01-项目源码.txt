@@ -1,0 +1,11 @@
+
+【压缩包说明】
+
+  1. hm_guardian_template.zip  为项目模版代码
+
+  2. hm_guardian_project.zip   为项目源码
+
+【特别注意】
+
+需解压到非中文路径下，才能用 DevEcoStudio 打开
+
