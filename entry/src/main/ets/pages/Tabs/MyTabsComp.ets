@@ -1,5 +1,6 @@
 import { router } from '@kit.ArkUI'
 import { LOGIN_INFO, LoginInfoResponse } from '../../common/constants'
+import { deviceInfo } from '@kit.BasicServicesKit'
 
 interface UsageItem {
   icon: Resource
@@ -20,6 +21,15 @@ export struct MyTabsComp {
   @State memorySize: number = 0
   @State cpuUsage: number = 0
   @State statfsFreeSize: number = 0
+
+  aboutToAppear(): void {
+    this.getDeviceInfo()
+  }
+
+  getDeviceInfo(){
+    // AlertDialog.show({message:deviceInfo.marketName})
+    this.deviceName=deviceInfo.marketName
+  }
 
   // 标题行
   @Builder
